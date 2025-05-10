@@ -10,7 +10,7 @@ import {
   Newspaper,
   Zap,
 } from "lucide-react"
-
+import { Link } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
@@ -140,9 +140,23 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
+      
+      {/* Nearby Financial */}
+      <section id="testimonials" className="py-20">
+        <div className="container">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">Nearby Financial Services</h2>
+            <p className="mt-4 text-xl text-muted-foreground">Find the nearby financial services includes cryto atm,advisors,etc.</p>
+           
+          </div>
+          <div className="text-center mt-10">
+          <Link to="/map" className='text-white bg-blue-500 hover:bg-blue-600 px-5 py-2 rounded'>Explore Nearby Financial Services</Link>
+          </div>
+          </div>
+          </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="py-20">
+      <section id="testimonials" className="py-15">
         <div className="container">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">Trusted by Investors Worldwide</h2>
