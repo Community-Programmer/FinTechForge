@@ -24,6 +24,7 @@ import { AiChatbot } from "./pages/Dashboard/Chatbot";
 import EtfHeatmap from "./pages/Dashboard/MarketTrends/EtfHeatmap";
 import ForexHeatMap from "./pages/Dashboard/MarketTrends/ForexHeatmap";
 import StockPage from "./pages/Dashboard/StockPage";
+import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 
 const mainLayoutRoutes = [
   {
@@ -50,66 +51,67 @@ const dashboardLayoutRoutes = [
     path: "",
     index: true,
     element: <Home />,
-  }, {
+  },
+  {
     path: "news",
     index: true,
-    element: <MarketNews
-     />,
-  }, {
+    element: <MarketNews />,
+  },
+  {
     path: "analysis",
     index: true,
-    element: <StockPage/>,
+    element: <StockPage />,
   },
   {
     path: "finance-chatbot",
     index: true,
-    element: <AiChatbot/>,
+    element: <AiChatbot />,
   },
   {
     path: "currencyconvertor",
     index: true,
-    element: <CurrencyConverter/>,
+    element: <CurrencyConverter />,
   },
   {
     path: "stock-heatmap",
     index: true,
-    element: <StockHeatMap/>,
+    element: <StockHeatMap />,
   },
   {
     path: "crypto-heatmap",
     index: true,
-    element: <CryptoHeatmap/>,
+    element: <CryptoHeatmap />,
   },
   {
     path: "etf-heatmap",
     index: true,
-    element: <EtfHeatmap/>,
-  },{
+    element: <EtfHeatmap />,
+  },
+  {
     path: "forex-heatmap",
     index: true,
-    element: <ForexHeatMap/>,
-  }
-  
+    element: <ForexHeatMap />,
+  },
 ];
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootWrapper />, 
+    element: <RootWrapper />,
     children: [
       {
         path: "/",
-        element: <ProtectedRoute />, 
+        element: <ProtectedRoute />,
         children: [
           {
             path: "/Features",
-            element: <Features/>,
-
-          }, {
+            element: <Features />,
+          },
+          {
             path: "/dashboard",
-            element:<DashBoardLayout/> ,
+            element: <DashBoardLayout />,
             children: dashboardLayoutRoutes,
-          }
+          },
         ],
       },
       {
@@ -120,6 +122,7 @@ const router = createBrowserRouter([
       {
         path: "/Login",
         element: <LoginForm />,
+        errorElement: <ErrorBoundary />,
       },
       {
         path: "/SignUp",
@@ -140,7 +143,7 @@ const router = createBrowserRouter([
       {
         path: "/reset-password/:resetToken",
         element: <PasswordResetForm />,
-      }
+      },
     ],
   },
 ]);

@@ -49,6 +49,16 @@ const LoginForm: React.FC = () => {
     setShowPassword(!showPassword);
   };
 
+  //Error testing
+  // if (
+  //   !import.meta.env.VITE_GOOGLE_CLIENT_ID ||
+  //   !import.meta.env.VITE_GITHUB_CLIENT_ID
+  // ) {
+  //   throw new Error(
+  //     "Social login is not configured. Please set environment variables."
+  //   );
+  // }
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-blue-400 via-blue-200 to-blue-400">
       <div
@@ -58,7 +68,6 @@ const LoginForm: React.FC = () => {
           backgroundSize: "100px 100px",
         }}
       />
-
       <div className="w-full max-w-xl z-10 flex items-center justify-center">
         <Card className="w-full h-full backdrop-blur-sm bg-white shadow-xl border-0">
           <CardHeader className="space-y-1 flex flex-col items-center pt-8">
@@ -135,7 +144,6 @@ const LoginForm: React.FC = () => {
                       required
                       className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 pr-10"
                     />
-
                     <button
                       type="button"
                       onClick={togglePasswordVisibility}
