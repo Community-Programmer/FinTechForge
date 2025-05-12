@@ -1,6 +1,12 @@
 # 💸 FinTechForge
 
-**FinTechForge** is a cutting-edge, open-source, and highly modular platform crafted to deliver advanced, AI-powered financial tools and actionable insights. 💡 From performing sentiment analysis on financial news 📈 to offering robust, secure authentication systems 🔐 and dynamic dashboards 📊, this project equips developers, data analysts, and students with the essential tools to build, customize, and scale finance-driven applications. 💻
+<p align="center">
+  <img src="https://drive.google.com/uc?export=view&id=1dFNxsNJ_H4RJ2Zbix0xR210SBbecV8rZ" width="120" alt="FinTechForge Logo" />
+</p>
+
+
+
+**FinTechForge** is a cutting-edge, open-source, and highly modular platform crafted to deliver advanced, AI-powered financial tools and actionable insights. 💡 Whether it's performing sentiment analysis on financial news 📈 to offering robust, secure authentication systems 🔐 and dynamic dashboards 📊, this project equips developers, data analysts, and students with the essential tools to build, customize, and scale finance-driven applications. 💻
 
 Designed with flexibility in mind, FinTechForge empowers you to seamlessly integrate state-of-the-art AI algorithms 🤖, create interactive data visualizations 📉, and ensure top-tier security standards—all within a scalable architecture 🏗️. Whether you’re exploring machine learning models for market predictions 📊, building real-time financial tracking dashboards ⏱️, or enhancing user security features 🔒, FinTechForge serves as the ideal foundation for creating next-generation financial solutions. 🌍
 
@@ -76,6 +82,10 @@ npm start
 
 ```bash
 cd ../backend-python
+
+python -m venv venv
+source venv/bin/activate
+
 pip install -r requirements.txt
 python app.py
 ```
@@ -95,18 +105,18 @@ Then open `http://localhost:5173` in your browser.
 ## 🤝 Contributing
 
 ❤️ Contribute and be part of our growing community!! Check out [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on how to get started. You can also explore:
-
 - 🌟`good first issue`
 - 🚨  `help wanted`
-- 💬 Join the discussion tab
+- 💬 Join the Discussions tab on GitHub
 
 ---
 
 ## 📢 Community & Support
 
-"The only source of knowledge is experience." 🌱
+**The only source of knowledge is experience.** 🌱
 
 If you need help or want to engage with the community, please visit:
+
 - 🗨️ [GitHub Discussions](https://github.com/Community-Programme/FinTechForge/discussions)
 - 🐞 [Raise an Issue](https://github.com/Community-Programme/FinTechForge/issues)
 
