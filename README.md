@@ -1,7 +1,7 @@
 # 💸 FinTechForge
 
 <p align="center">
-  <img src="https://drive.google.com/uc?export=view&id=1dFNxsNJ_H4RJ2Zbix0xR210SBbecV8rZ" width="120" alt="FinTechForge Logo" />
+  <img src="https://drive.google.com/uc?export=view&id=1dFNxsNJ_H4RJ2Zbix0xR210SBbecV8rZ" width="300" alt="FinTechForge Logo" />
 </p>
 
 
