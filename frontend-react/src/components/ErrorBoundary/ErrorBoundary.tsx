@@ -2,16 +2,25 @@
 import { useRouteError, isRouteErrorResponse } from "react-router-dom";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 
 export default function ErrorBoundary() {
   const error = useRouteError();
 
   let message = "Something went wrong.";
+
   if (isRouteErrorResponse(error)) {
     message = error.statusText;
   } else if (error instanceof Error) {
     message = error.message;
   }
+
+  // pre-logging the errors for triaging production issues
+  useEffect(() => {
+    if (error) {
+      console.error("Route Error:", error);
+    }
+  }, [error]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-red-50 p-6">
