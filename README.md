@@ -124,7 +124,7 @@ If you need help or want to engage with the community, please visit:
 
 ## 🌍 Impact
 
-FinTechForge aims to democratize financial technology by providing an open-source platform that empowers developers, students, and innovators to build and experiment with financial tools. It fosters hands-on learning, real-world experimentation, and collaboration, making it easier for anyone to contribute to the future of finance. 💡
+FinTechForge aims to democratize financial technology by providing an open-source platform that empowers developers, students, and innovators to build and experiment with financial tools. It fosters hands-on learning, real-world experimentation, and collaboration, making it easier for anyone to contribute to the future of finance.💡
 
 ### 🔮 Future Scope
 
