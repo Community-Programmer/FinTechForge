@@ -4,7 +4,7 @@ import { getChatbotResponse } from "./financeController";
 
 const financeRouter = Router();
 
-financeRouter.post("/chat", getChatbotResponse);
+financeRouter.get("/chat", getChatbotResponse);
 
 
 export default financeRouter
