@@ -87,7 +87,7 @@ python -m venv venv
 source venv/bin/activate
 
 pip install -r requirements.txt
-python app.py
+uvicorn main:app --reload
 ```
 
 #### 4. Frontend (React)
@@ -117,8 +117,8 @@ Then open `http://localhost:5173` in your browser.
 
 If you need help or want to engage with the community, please visit:
 
-- 🗨️ [GitHub Discussions](https://github.com/Community-Programme/FinTechForge/discussions)
-- 🐞 [Raise an Issue](https://github.com/Community-Programme/FinTechForge/issues)
+- 🗨️ [GitHub Discussions](https://github.com/Community-Programmer/FinTechForge/discussions)
+- 🐞 [Raise an Issue](https://github.com/Community-Programmer/FinTechForge/issues)
 
 ---
 
