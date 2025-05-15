@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
   return (
     <>
       <footer className="border-t bg-background py-12">
-        <div className="container">
+        <div className="container mx-auto px-4 md:px-8 max-w-screen-lg">
           <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
             <div className="flex items-center gap-2 font-bold text-xl">
               <PieChart className="h-6 w-6 text-blue-500" />

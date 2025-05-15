@@ -34,18 +34,18 @@ const Navbar: React.FC = () => {
             <h1 className="text-xl font-bold text-gray-800">FinTechForge</h1>
           </div>
           <div className="hidden md:flex items-center space-x-6">
-            <Link to="/" className="text-gray-600 hover:text-gray-800">
+            <Link to="/" className="text-gray-600 hover:text-gray-800 hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">
               Home
             </Link>
-            <Link to="/dashboard" className="text-gray-600 hover:text-gray-800">
+            <Link to="/dashboard" className="text-gray-600 hover:text-gray-800 hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">
               Dashboard
             </Link>
-            <Link to="/About" className="text-gray-600 hover:text-gray-800">
+            <Link to="/About" className="text-gray-600 hover:text-gray-800 hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">
               About
             </Link>
             <Link
               to="/Premium"
-              className="text-gray-600 hover:text-gray-800 flex items-center"
+              className="text-gray-600 hover:text-gray-800 flex items-center hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out"
             >
               Premium
               <Crown className="ml-1 h-4 w-4 text-yellow-500" />
