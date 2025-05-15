@@ -12,6 +12,19 @@ import newsRouter from './FinanceNews/newsRoute';
 import currencyRouter from './CurrecncyConvertor/currencyRoutes';
 import { getChatbotResponse } from './FinanceChatbot/financeController';
 
+import React from 'react';
+import FinancialHealthScore from './components/FinancialHealthScore/FinancialHealthScore';
+
+function App() {
+  return (
+    <div>
+      <FinancialHealthScore />
+    </div>
+  );
+}
+
+export default App;
+
 
 config();
 
