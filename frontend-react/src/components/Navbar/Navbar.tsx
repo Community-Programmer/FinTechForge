@@ -19,7 +19,7 @@ const Navbar: React.FC = () => {
   const handleLogout = ()=>{
     // code for Logout
   }
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn ? false : true);
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn );
   const user = useSelector((state: RootState) => state.auth.user );
   return (
     <>
