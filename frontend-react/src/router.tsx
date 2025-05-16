@@ -8,28 +8,26 @@ import About from "./pages/About/About"; // Changed from "@"
 import Features from "./pages/Features/Features"; // Changed from "@"
 import Premium from "./pages/Premium/Premium"; // Changed from "@"
 import Pricing from "./pages/Pricing/Pricing"; 
+import Profile from "./pages/Profile/Profile"
 
-import LoginForm from "./pages/Login/Login"; // Changed from "@"
-import SignUpForm from "./pages/SignUp/SignUp"; // Changed from "@"
-import VerificationEmailSent from "./pages/EmailVerification/VerificationEmailSent"; // Changed from "@"
-import VerificationStatus from "./pages/EmailVerification/VerificationStatus"; // Changed from "@"
-import ForgotPassword from "./pages/ForgotPassword/ForgotPassword"; // Changed from "@"
-import PasswordResetForm from "./pages/ForgotPassword/PasswordResetForm"; // Changed from "@"
 
-import Home from "./pages/Dashboard/Home"; // Changed from "@"
-import { MarketNews } from "./pages/Dashboard/News"; // Changed from "@"
-import { CurrencyConverter } from "./pages/Dashboard/CurrencyConvertor"; // Changed from "@"
-import StockHeatMap from "./pages/Dashboard/MarketTrends/StockHeatMap"; // Changed from "@"
-import CryptoHeatmap from "./pages/Dashboard/MarketTrends/CryptoHeatmap"; // Changed from "@"
-import { AiChatbot } from "./pages/Dashboard/Chatbot"; // Changed from "@"
-import EtfHeatmap from "./pages/Dashboard/MarketTrends/EtfHeatmap"; // Changed from "@"
-import ForexHeatMap from "./pages/Dashboard/MarketTrends/ForexHeatmap"; // Changed from "@"
-import StockPage from "./pages/Dashboard/StockPage"; // Changed from "@"
-import NearServices from "./pages/NearbyATM/NearServices";
-import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute"; // Changed from "@"
-import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary"; // Changed from "@"
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import RootWrapper from "./Layout/RootWrapper";
+import VerificationEmailSent from "./pages/EmailVerification/VerificationEmailSent";
+import VerificationStatus from "./pages/EmailVerification/VerificationStatus";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+import PasswordResetForm from "./pages/ForgotPassword/PasswordResetForm";
+import DashBoardLayout from "./Layout/DashBoardLayout";
+import Home from "./pages/Dashboard/Home";
+import { MarketNews } from "./pages/Dashboard/News";
+import { CurrencyConverter } from "./pages/Dashboard/CurrencyConvertor";
+import StockHeatMap from "./pages/Dashboard/MarketTrends/StockHeatMap";
+import CryptoHeatmap from "./pages/Dashboard/MarketTrends/CryptoHeatmap";
+import { AiChatbot } from "./pages/Dashboard/Chatbot";
+import EtfHeatmap from "./pages/Dashboard/MarketTrends/EtfHeatmap";
+import ForexHeatMap from "./pages/Dashboard/MarketTrends/ForexHeatmap";
+import StockPage from "./pages/Dashboard/StockPage";
 
-// Define route arrays
 const mainLayoutRoutes = [
   {
     path: "/",
@@ -56,6 +54,11 @@ const mainLayoutRoutes = [
   {
     path:"/Pricing",
     element:<Pricing/>
+  },
+  {
+    path: "/profile",
+    element : <Profile />
+
   }
 ];
 
@@ -111,8 +114,7 @@ const dashboardLayoutRoutes = [
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootWrapper />,
-    errorElement: <ErrorBoundary />,
+    element: <RootWrapper />, 
     children: [
       {
         path: "/",
@@ -122,18 +124,23 @@ const router = createBrowserRouter([
 
       {
         path: "/",
-        element: <ProtectedRoute />,
+        element: <ProtectedRoute />, 
         children: [
           {
-            path: "Features",
-            element: <Features />,
-          },
-          {
+            path: "/Features",
+            element: <Features/>,
+
+          }, {
             path: "/dashboard",
-            element: <DashBoardLayout />,
+            element:<DashBoardLayout/> ,
             children: dashboardLayoutRoutes,
-          },
+          }
         ],
+      },
+      {
+        path: "/",
+        element: <MainLayout />,
+        children: mainLayoutRoutes,
       },
       {
         path: "/Login",
@@ -158,9 +165,10 @@ const router = createBrowserRouter([
       {
         path: "/reset-password/:resetToken",
         element: <PasswordResetForm />,
-      },
+      }
     ],
   },
 ]);
+
 
 export default router;

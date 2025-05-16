@@ -1,7 +1,7 @@
 /* Scroll Bar Design  */
 
 ::-webkit-scrollbar {
-    width: 5px;
+    width: 9px;
 }
 
 ::-webkit-scrollbar-track {
