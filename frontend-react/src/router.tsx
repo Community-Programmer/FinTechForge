@@ -1,12 +1,12 @@
-// router.tsx
 import { createBrowserRouter } from "react-router-dom";
-import MainLayout from "@/Layout/MainLayout";
-import HomePage from "@/pages/Home/Home";
-import LoginForm from "./pages/Login/Login";
-import SignUpForm from "./pages/SignUp/SignUp";
-import About from "./pages/About/About";
-import Features from "./pages/Features/Features";
-import Premium from "./pages/Premium/Premium";
+import MainLayout from "./Layout/MainLayout"; // Changed from "@"
+import RootWrapper from "./Layout/RootWrapper"; // Changed from "@"
+import DashBoardLayout from "./Layout/DashBoardLayout"; // Changed from "@"
+
+import HomePage from "./pages/Home/Home"; // Changed from "@"
+import About from "./pages/About/About"; // Changed from "@"
+import Features from "./pages/Features/Features"; // Changed from "@"
+import Premium from "./pages/Premium/Premium"; // Changed from "@"
 
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import RootWrapper from "./Layout/RootWrapper";
@@ -24,14 +24,17 @@ import { AiChatbot } from "./pages/Dashboard/Chatbot";
 import EtfHeatmap from "./pages/Dashboard/MarketTrends/EtfHeatmap";
 import ForexHeatMap from "./pages/Dashboard/MarketTrends/ForexHeatmap";
 import StockPage from "./pages/Dashboard/StockPage";
-import Profile from "./pages/Profile/Profile";
-
 
 const mainLayoutRoutes = [
   {
     path: "/",
     index: true,
     element: <HomePage />,
+  },
+  {
+    path: "/map",
+    index: true,
+    element: <NearServices />,
   },
   {
     path: "/About",
@@ -52,54 +55,78 @@ const dashboardLayoutRoutes = [
     path: "",
     index: true,
     element: <Home />,
-  }, {
+  },
+  {
     path: "news",
     index: true,
-    element: <MarketNews
-     />,
-  }, {
+    element: <MarketNews />,
+  },
+  {
     path: "analysis",
     index: true,
-    element: <StockPage/>,
+    element: <StockPage />,
   },
   {
     path: "finance-chatbot",
     index: true,
-    element: <AiChatbot/>,
+    element: <AiChatbot />,
   },
   {
     path: "currencyconvertor",
     index: true,
-    element: <CurrencyConverter/>,
+    element: <CurrencyConverter />,
   },
   {
     path: "stock-heatmap",
     index: true,
-    element: <StockHeatMap/>,
+    element: <StockHeatMap />,
   },
   {
     path: "crypto-heatmap",
     index: true,
-    element: <CryptoHeatmap/>,
+    element: <CryptoHeatmap />,
   },
   {
     path: "etf-heatmap",
     index: true,
-    element: <EtfHeatmap/>,
-  },{
+    element: <EtfHeatmap />,
+  },
+  {
     path: "forex-heatmap",
     index: true,
-    element: <ForexHeatMap/>,
-  }
-  
+    element: <ForexHeatMap />,
+  },
 ];
 
+// Create the router with routes
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootWrapper />,
+    element: <RootWrapper />, 
     children: [
       {
+        path: "/",
+        element: <MainLayout />,
+        children: mainLayoutRoutes,
+      },
+
+      {
+        path: "/",
+        element: <ProtectedRoute />, 
+        children: [
+          {
+            path: "/Features",
+            element: <Features/>,
+
+          }, {
+            path: "/dashboard",
+            element:<DashBoardLayout/> ,
+            children: dashboardLayoutRoutes,
+          }
+        ],
+      },
+      {
+        path: "/",
         element: <MainLayout />,
         children: mainLayoutRoutes,
       },
@@ -126,21 +153,9 @@ const router = createBrowserRouter([
       {
         path: "/reset-password/:resetToken",
         element: <PasswordResetForm />,
-      },
-       {
-         element: <ProtectedRoute />,
-         children: [
-    {
-      path: "profile",
-      element: <Profile />,
-    },
-    {
-      path: "dashboard",
-      element: <DashBoardLayout />,
-      children: dashboardLayoutRoutes,
-    },
-  ],
-},],},
+      }
+    ],
+  },
 ]);
 
 
