@@ -11,6 +11,10 @@ import { logout } from "@/store/auth/authSlice";
 import { AppDispatch } from "@/store/store";
 import { useNavigate } from "react-router-dom";
 import UserAvatar from "@/components/UserAvatar/UserAvatar";
+import fintechforgeLogo from "../../assets/fintechforge-logo.png";
+
+<img src={fintechforgeLogo} alt="FinTechForge Logo" />
+
 
 const Navbar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -36,21 +40,7 @@ const Navbar: React.FC = () => {
       <nav className="bg-white shadow-md">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8 text-blue-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-            <h1 className="text-xl font-bold text-gray-800">FinTechForge</h1>
+            <img src={fintechforgeLogo} alt="fintechForgeLogo" className = "h-10 w-auto" />  
           </div>
 
           {/* Navigation links - hidden on mobile, visible on md+ screens */}

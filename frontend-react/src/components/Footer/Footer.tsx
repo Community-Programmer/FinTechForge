@@ -1,6 +1,7 @@
 import { PieChart } from 'lucide-react'
 import React from 'react'
 import { Link } from 'react-router-dom'
+import fintechforgeLogo from '../../assets/fintechforge-logo.png';
 
 const Footer: React.FC = () => {
   return (
@@ -9,8 +10,7 @@ const Footer: React.FC = () => {
         <div className="container">
           <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
             <div className="flex items-center gap-2 font-bold text-xl">
-              <PieChart className="h-6 w-6 text-blue-500" />
-              <span>FinTechForge</span>
+             <img src={fintechforgeLogo} alt="fintechForgeLogo" className = "h-12 " />  
             </div>
             <nav className="flex flex-wrap items-center justify-center gap-6">
               <Link to="#" className="text-sm text-muted-foreground hover:text-foreground">

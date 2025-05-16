@@ -1,5 +1,6 @@
 import * as React from "react";
 import { AArrowUp, BarChart3, BarChart3Icon, CircleDollarSign, Coins, CreditCard, LayoutDashboard, MessageSquare, Newspaper, TrendingUp } from "lucide-react";
+import fintechForgeLogo from '../../assets/fintechforge-logo.png';
 
 import {
   Sidebar,
@@ -82,10 +83,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar {...props}>
       <SidebarHeader className="flex items-center justify-between p-4">
       <div className="flex items-center space-x-2">
-              <div className="bg-primary rounded-md p-1">
-                <BarChart3 className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-bold">FinanceAI</span>
+             <img src= {fintechForgeLogo} alt="fintechforge- Logo"/>
             </div>
       </SidebarHeader>
       <SidebarContent>
