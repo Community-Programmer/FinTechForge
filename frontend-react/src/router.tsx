@@ -7,6 +7,7 @@ import HomePage from "./pages/Home/Home"; // Changed from "@"
 import About from "./pages/About/About"; // Changed from "@"
 import Features from "./pages/Features/Features"; // Changed from "@"
 import Premium from "./pages/Premium/Premium"; // Changed from "@"
+import Profile from "./pages/Profile/Profile"
 
 import LoginForm from "./pages/Login/Login"; // Changed from "@"
 import SignUpForm from "./pages/SignUp/SignUp"; // Changed from "@"
@@ -52,6 +53,10 @@ const mainLayoutRoutes = [
     path: "/Premium",
     element: <Premium />,
   },
+  {
+    path: "/profile",
+    element : <Profile />
+  }
 ];
 
 const dashboardLayoutRoutes = [

@@ -6,12 +6,21 @@ import { Link } from "react-router-dom";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import MainTicker from "../Ticker/MainTicker";
-
+import { CircleUserRound,LogOut,User,X } from 'lucide-react';
+import { useState } from "react";
 
 const Navbar: React.FC = () => {
+  const [dropDown,setDropDown] = useState(false);
 
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const user = useSelector((state: RootState) => state.auth.user);
+  const handleDropDown = () =>{
+    setDropDown(dropDown ? false :true);
+  }
+
+  const handleLogout = ()=>{
+    // code for Logout
+  }
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn ? false : true);
+  const user = useSelector((state: RootState) => state.auth.user );
   return (
     <>
       <nav className="bg-white shadow-md">
@@ -66,10 +75,37 @@ const Navbar: React.FC = () => {
 
 
           {isLoggedIn && (<div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm mt-2 sm:mt-0">
-          <div className="ml-auto flex-1 sm:flex-initial">
-          <div className="flex gap-3 relative">
-          <span className="font-bold">Logined as: {user}</span>
-          </div>
+          <div className="ml-auto flex-1 sm:flex-initial relative">
+            <div className="flex gap-3 relative">
+              <CircleUserRound  onClick={handleDropDown} className="w-10 h-10 font-normal text-zinc-600 dark:text-zinc-300 cursor-pointer transition-colors duration-200 hover:text-zinc-800 dark:hover:text-white" />
+              {dropDown && (
+                <div className="w-56 p-4 bg-white dark:bg-[#1e1e1e] border border-gray-300 dark:border-zinc-700 rounded-xl shadow-lg flex flex-col gap-4 absolute right-4 top-14 z-50">
+                <X className="absolute right-5 top-3 w-6 h-6 text-zinc-600 hover:text-black dark:text-zinc-300 cursor-pointer" onClick={handleDropDown} />
+                  <div className="flex flex-col items-center gap-2">
+                    <CircleUserRound className="w-[70px] h-[70px] text-zinc-700 dark:text-zinc-300" />
+                    <h1 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">{user}</h1>
+                  </div>
+                 <div className="flex flex-col gap-1 w-full">
+                  <Link to="/profile" className="w-full ">
+                    <button
+                      className="flex items-center gap-3 w-full p-2 cursor-pointer text-left text-zinc-700 dark:text-zinc-200  hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-primary dark:hover:text-white  rounded-md transition-all duration-200"
+                    >
+                      <User className="w-5 h-5" />
+                      <span className="text-sm font-medium">Profile</span>
+                    </button>
+                  </Link>
+
+                  <button
+                    className="flex items-center gap-3 w-full p-2 text-left text-red-500 cursor-pointer hover:bg-red-50 dark:hover:bg-zinc-800 hover:text-red-600  rounded-md transition-all duration-200"
+                    onClick={handleLogout} 
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span className="text-sm font-medium">Logout</span>
+                  </button>
+                </div>
+                </div>
+              )}
+            </div>
           </div>
           </div>)}
           <Sheet>
