@@ -1,16 +1,23 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import type { User } from '@/types/auth';
+import { RootState } from '../store';
+ 
+  const initialState: {
+  isLoggedIn: boolean;
+  user: User | null;
+  accessToken: string | null;
+  loading: boolean;
+} = {
+  isLoggedIn: false,
+  user: null,
+  accessToken: null,
+  loading: true,
+};
+  export const silentRefresh = createAsyncThunk('auth/silentRefresh', async (_, { dispatch, getState }) => {
+    const { isLoggedIn, accessToken } = (getState() as RootState).auth;
 
-  
-  const initialState = {
-    isLoggedIn : false,
-    user: null,
-    accessToken: null,
-    loading: true
-  };
-
-
-  export const silentRefresh = createAsyncThunk('auth/silentRefresh', async (_, { dispatch }) => {
+  if (!accessToken && isLoggedIn) return;
     try {
       const response = await axios.post('http://localhost:5050/api/v1/auth/refresh', {}, { withCredentials: true });
       return response.data;
@@ -31,6 +38,8 @@ import axios from 'axios';
       },
       logout: (state) => {
         state.accessToken = null;
+        state.isLoggedIn = false;
+        state.user = null;
         state.loading = false;
       },
     },

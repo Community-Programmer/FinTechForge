@@ -50,7 +50,7 @@ const HomePage: React.FC = () => {
               View Demo
             </Button>
           </div>
-          <div className="mt-16 w-full max-w-5xl overflow-hidden rounded-xl border bg-background shadow-xl">
+          <div className="container mx-auto px-4 py-10 md:px-8 max-w-screen-lg">
             <img src={dashboardImage} alt="Dashboard Preview" className="w-full object-cover" />
           </div>
         </div>
@@ -58,7 +58,7 @@ const HomePage: React.FC = () => {
 
       {/* Features Section */}
       <section id="features" className="py-20">
-        <div className="container">
+        <div className="container mx-auto px-4 md:px-8 max-w-screen-lg mt-16">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">All-in-one Financial Intelligence</h2>
             <p className="mt-4 text-xl text-muted-foreground">
@@ -92,7 +92,7 @@ const HomePage: React.FC = () => {
 
       {/* Dashboard Preview */}
       <section id="dashboard" className="bg-slate-50 py-20">
-        <div className="container">
+        <div className="container mx-auto px-4 md:px-8 max-w-screen-lg mt-16">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 items-center">
             <div>
               <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
@@ -157,7 +157,7 @@ const HomePage: React.FC = () => {
 
       {/* Testimonials */}
       <section id="testimonials" className="py-15">
-        <div className="container">
+        <div className="container mx-auto px-4 md:px-8 max-w-screen-lg mt-16">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">Trusted by Investors Worldwide</h2>
             <p className="mt-4 text-xl text-muted-foreground">See what our users are saying about their experience</p>

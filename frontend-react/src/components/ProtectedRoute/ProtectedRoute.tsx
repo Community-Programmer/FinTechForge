@@ -1,17 +1,25 @@
 import { RootState } from '@/store/store';
+import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
-const ProtectedRoute = () => {
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const loading = useSelector((state: RootState) => state.auth.loading);
+type ProtectedRouteProps = {
+  children?: ReactNode;
+};
+
+const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+  const { isLoggedIn, accessToken, loading } = useSelector((state: RootState) => state.auth);
   const location = useLocation();
 
-  if (loading) {
-    return null;
+    console.log("ProtectedRoute - isLoggedIn:", isLoggedIn, "accessToken:", accessToken, "loading:", loading);
+
+  if (loading) return <div>Loading...</div>;
+
+  if (!isLoggedIn || !accessToken) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return isLoggedIn ? <Outlet /> : <Navigate to="/login" state={{ from: location }} replace />;
+  return <>{children ? children : <Outlet />}</>;
 };
 
 export default ProtectedRoute;
