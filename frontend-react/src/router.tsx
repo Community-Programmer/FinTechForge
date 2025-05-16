@@ -24,6 +24,8 @@ import { AiChatbot } from "./pages/Dashboard/Chatbot";
 import EtfHeatmap from "./pages/Dashboard/MarketTrends/EtfHeatmap";
 import ForexHeatMap from "./pages/Dashboard/MarketTrends/ForexHeatmap";
 import StockPage from "./pages/Dashboard/StockPage";
+import Profile from "./pages/Profile/Profile";
+
 
 const mainLayoutRoutes = [
   {
@@ -95,25 +97,9 @@ const dashboardLayoutRoutes = [
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootWrapper />, 
+    element: <RootWrapper />,
     children: [
       {
-        path: "/",
-        element: <ProtectedRoute />, 
-        children: [
-          {
-            path: "/Features",
-            element: <Features/>,
-
-          }, {
-            path: "/dashboard",
-            element:<DashBoardLayout/> ,
-            children: dashboardLayoutRoutes,
-          }
-        ],
-      },
-      {
-        path: "/",
         element: <MainLayout />,
         children: mainLayoutRoutes,
       },
@@ -140,9 +126,22 @@ const router = createBrowserRouter([
       {
         path: "/reset-password/:resetToken",
         element: <PasswordResetForm />,
-      }
-    ],
-  },
+      },
+       {
+         element: <ProtectedRoute />,
+         children: [
+    {
+      path: "profile",
+      element: <Profile />,
+    },
+    {
+      path: "dashboard",
+      element: <DashBoardLayout />,
+      children: dashboardLayoutRoutes,
+    },
+  ],
+},],},
 ]);
+
 
 export default router;
