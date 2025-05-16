@@ -7,21 +7,33 @@ const plans = [
   {
     name: "Basic",
     price: "500/mo",
-    features: ["1 project", "Email support", "Basic analytics"],
+    features: {
+      projects: "1 project",
+      support: "Email support",
+      analytics: "Basic analytics",
+    },
     cta: "Get Started",
     popular: false,
   },
   {
     name: "Pro",
-    price: "2000/mo",
-    features: ["5 projects", "Priority email support", "Advanced analytics"],
+    price: "1500/mo",
+    features: {
+      projects: "5 projects",
+      support: "Priority email support",
+      analytics: "Advanced analytics",
+    },
     cta: "Upgrade",
     popular: true,
   },
   {
     name: "Enterprise",
     price: "8000/mo",
-    features: ["Unlimited projects", "Phone & email support", "Custom analytics"],
+    features: {
+      projects: "Unlimited projects",
+      support: "Phone & email support",
+      analytics: "Custom analytics",
+    },
     cta: "Contact Sales",
     popular: false,
   },
@@ -29,33 +41,29 @@ const plans = [
 
 export default function StatePage() {
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-3xl md:text-4xl font-bold text-center mb-4">Choose Your Plan</h1>
-      <p className="text-center text-gray-600 mb-10">Flexible pricing for teams of all sizes</p>
+    <div className="container mx-auto px-4 py-12 bg-gradient-to-br from-white via-blue-50 to-blue-100 min-h-screen">
+      <h1 className="text-3xl md:text-4xl font-bold text-center mb-4 text-blue-800">Compare Plans</h1>
+      <p className="text-center text-blue-600 mb-10">Find the right plan for your team</p>
 
       <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {plans.map((plan) => (
           <Card
             key={plan.name}
-            className={`rounded-2xl shadow-md transition transform hover:scale-105 ${
-              plan.popular ? "border-2 border-primary" : ""
-            }`}
+            className="rounded-2xl shadow-md transition transform hover:scale-105 bg-white border border-gray-200 hover:border-blue-500 hover:shadow-lg"
           >
             <CardHeader className="text-center">
-              <CardTitle className="text-xl">
-                {plan.name} {plan.popular && <Badge className="ml-2">Most Popular</Badge>}
+              <CardTitle className="text-xl text-blue-700">
+                {plan.name} {plan.popular && <Badge className="ml-2 bg-blue-600 text-white">Most Popular</Badge>}
               </CardTitle>
-              <div className="text-3xl font-bold mt-2">{plan.price}</div>
+              <div className="text-3xl font-bold mt-2 text-blue-900">{plan.price}</div>
             </CardHeader>
             <CardContent>
-              <ul className="mb-6 space-y-2">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="text-gray-700 text-sm">
-                    • {feature}
-                  </li>
-                ))}
+              <ul className="mb-6 space-y-2 text-sm text-gray-700">
+                <li><strong>Projects:</strong> {plan.features.projects}</li>
+                <li><strong>Support:</strong> {plan.features.support}</li>
+                <li><strong>Analytics:</strong> {plan.features.analytics}</li>
               </ul>
-              <Button className="w-full">{plan.cta}</Button>
+              <Button className="w-full bg-blue-600 text-white hover:bg-blue-700">{plan.cta}</Button>
             </CardContent>
           </Card>
         ))}
