@@ -50,6 +50,12 @@ const Navbar: React.FC = () => {
               Premium
               <Crown className="ml-1 h-4 w-4 text-yellow-500" />
             </Link>
+            <Link
+              to="/Pricing"
+              className="text-gray-600 hover:text-gray-800 flex items-center"
+            >
+              Pricing
+            </Link>
           </div>
 
           {
@@ -99,6 +105,12 @@ const Navbar: React.FC = () => {
                 >
                   Premium
                   <Crown className="ml-1 h-4 w-4 text-yellow-500" />
+                </Link>
+                <Link
+                  to="/Pricing"
+                  className="text-gray-600 hover:text-gray-800 flex items-center"
+                >
+                  Pricng
                 </Link>
                 <Link to="/Login">
                   <Button variant="outline">Log In</Button>
