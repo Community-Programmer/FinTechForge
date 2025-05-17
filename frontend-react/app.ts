@@ -4,13 +4,13 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import http from 'http';
 import { Server } from 'socket.io';
-import globalErrorHandler from './middleware/globalErrorHandler';
+import globalErrorHandler from '../backend-node/src/middleware/globalErrorHandler';
 import passport from 'passport'
-import passportConfig from './config/passport';
-import authRouter from './auth/authRoute';
-import newsRouter from './FinanceNews/newsRoute';
-import currencyRouter from './CurrecncyConvertor/currencyRoutes';
-import { getChatbotResponse } from './FinanceChatbot/financeController';
+import passportConfig from '../backend-node/src/config/passport';
+import authRouter from '../backend-node/src/auth/authRoute';
+import newsRouter from '../backend-node/src/FinanceNews/newsRoute';
+import currencyRouter from '../backend-node/src/CurrecncyConvertor/currencyRoutes';
+import { getChatbotResponse } from '../backend-node/src/FinanceChatbot/financeController';
 
 import React from 'react';
 import FinancialHealthScore from './components/FinancialHealthScore/FinancialHealthScore';
