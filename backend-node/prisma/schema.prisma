@@ -25,6 +25,16 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+model UserSkillTree {
+  id          String @id @default(uuid()) @map("_id")
+  user        User   @relation(fields: [userId], references: [id])
+  userId      String @db.ObjectId
+  skillTreeId String
+  progress    Json // Stores completed nodes, etc.
+
+  @@unique([userId, skillTreeId])
+}
+
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
   userId            String  @db.ObjectId
@@ -71,20 +81,103 @@ model EducationProgress {
   completed   Boolean   @default(false)
   xpEarned    Int       @default(0)
   completedAt DateTime?
+
+  @@unique([userId, lessonId])
+}
+
+model Lesson {
+  id             String          @id @default(uuid()) @map("_id")
+  title          String
+  description    String
+  duration       Int // in minutes
+  xpReward       Int
+  category       String
+  icon           String?
+  learningPath   LearningPath?   @relation(fields: [learningPathId], references: [id])
+  learningPathId String?         @db.ObjectId
+  quizzes        Quiz[]
+  flashcardDecks FlashcardDeck[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Quiz {
+  id          String         @id @default(uuid()) @map("_id")
+  lesson      Lesson?        @relation(fields: [lessonId], references: [id])
+  lessonId    String?        @db.ObjectId
+  title       String
+  description String
+  xpReward    Int
+  questions   QuizQuestion[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model QuizQuestion {
+  id            String   @id @default(uuid()) @map("_id")
+  quiz          Quiz     @relation(fields: [quizId], references: [id])
+  quizId        String   @db.ObjectId
+  question      String
+  options       String[]
+  correctAnswer Int
+  explanation   String
+}
+
+model FlashcardDeck {
+  id          String      @id @default(uuid()) @map("_id")
+  lesson      Lesson?     @relation(fields: [lessonId], references: [id])
+  lessonId    String?     @db.ObjectId
+  title       String
+  description String
+  flashcards  Flashcard[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Flashcard {
+  id     String        @id @default(uuid()) @map("_id")
+  deck   FlashcardDeck @relation(fields: [deckId], references: [id])
+  deckId String        @db.ObjectId
+  front  String
+  back   String
+}
+
+model LearningPath {
+  id        String   @id @default(uuid()) @map("_id")
+  title     String
+  color     String
+  icon      String?
+  lessons   Lesson[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SkillChallenge {
+  id          String   @id @default(uuid()) @map("_id")
+  title       String
+  description String
+  difficulty  String
+  xpReward    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Reward {
+  id          String  @id @default(uuid()) @map("_id")
+  title       String
+  description String
+  icon        String?
+  unlockAtXp  Int
 }
 
 model Achievement {
-  id       String   @id @default(uuid()) @map("_id")
-  user     User     @relation(fields: [userId], references: [id])
-  userId   String   @db.ObjectId
-  type     String
-  earnedAt DateTime @default(now())
-}
-
-model UserSkillTree {
-  id          String @id @default(uuid()) @map("_id")
-  user        User   @relation(fields: [userId], references: [id])
-  userId      String @db.ObjectId
-  skillTreeId String
-  progress    Json // Stores completed nodes, etc.
+  id          String   @id @default(uuid()) @map("_id")
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String   @db.ObjectId
+  type        String
+  title       String
+  description String
+  color       String?
+  requirement String?
+  earnedAt    DateTime @default(now())
 }
