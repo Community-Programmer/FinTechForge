@@ -1,6 +1,6 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 interface LessonCardProps {
   id: string;
@@ -23,10 +23,10 @@ export const LessonCard: React.FC<LessonCardProps> = ({
   category,
   icon,
 }) => {
-  const router = useNavigate();
+  const navigate = useNavigate();
 
   const handleStartLesson = () => {
-    router(`/education/lesson/${id}`);
+    navigate(`/education/lesson/${id}`);
   };
 
   return (
@@ -84,3 +84,42 @@ export const LessonCard: React.FC<LessonCardProps> = ({
     </div>
   );
 };
+
+// Main component to list all lessons
+export default function LessonsList() {
+  const [lessons, setLessons] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/v1/education/lesson")
+      .then(res => res.json())
+      .then(data => setLessons(data.lessons))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-2xl font-bold mb-6">Available Lessons</h2>
+      {lessons.length === 0 ? (
+        <p>No lessons available at the moment.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {lessons.map((lesson: LessonCardProps) => (
+            <LessonCard
+              key={lesson.id}
+              id={lesson.id}
+              title={lesson.title}
+              description={lesson.description}
+              duration={lesson.duration}
+              xpReward={lesson.xpReward}
+              progress={lesson.progress}
+              category={lesson.category}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

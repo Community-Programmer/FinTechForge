@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -6,6 +6,13 @@ interface Flashcard {
   id: string;
   front: string;
   back: string;
+}
+
+interface FlashcardDeck {
+  id: string;
+  title: string;
+  description: string;
+  flashcards: Flashcard[];
 }
 
 interface FlashcardDeckProps {
@@ -158,4 +165,28 @@ export const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
       </div>
     </div>
   );
-};
+}
+
+export default function FlashcardDeckPage({ deckId } : {deckId : string}) {
+  const [deck, setDeck] = useState<FlashcardDeck | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`/api/v1/education/flashcard/${deckId}`)
+      .then(res => res.json())
+      .then(data => setDeck(data.deck))
+      .finally(() => setLoading(false));
+  }, [deckId]);
+
+  if (loading) return <div>Loading...</div>;
+  
+  if (!deck) return <div>Flashcard deck not found</div>;
+
+  return (
+    <FlashcardDeck
+      cards={deck.flashcards}
+      title={deck.title}
+      description={deck.description}
+    />
+  );
+}

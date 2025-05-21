@@ -1,22 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 
+interface Reward {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+}
+
 export const UpcomingRewards: React.FC = () => {
-  // Mock data for upcoming rewards
-  const rewards = [
-    {
-      id: "portfolio-analyzer",
-      title: "Portfolio Analyzer",
-      description: "Unlock advanced portfolio analysis tools",
-      icon: "📊",
-    },
-    {
-      id: "expert-guides",
-      title: "Expert Guides",
-      description: "Access in-depth financial strategy guides",
-      icon: "📚",
-    },
-  ];
+  const [rewards, setRewards] = useState<Reward[]>([]);
+
+  useEffect(() => {
+    fetch("/api/v1/education/reward")
+      .then(res => res.json())
+      .then(data => setRewards(data.rewards));
+  }, []);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

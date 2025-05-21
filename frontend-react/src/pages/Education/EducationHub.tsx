@@ -3,10 +3,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UpcomingRewards } from "@/components/Education/UpcomingRewards";
 import { ProgressPath } from "@/components/Education/ProgressPath";
 import { AchievementsList } from "@/components/Education/AchievementList";
-import { SkillChallenges } from "@/components/Education/SkillChallenge";
+import SkillChallenges from "@/components/Education/SkillChallenge";
 import { PracticeList } from "@/components/Education/PracticeList";
 import { FeaturedLesson } from "@/components/Education/FeaturedList";
-import { LearningPathsList } from "@/components/Education/LearningPathList";
+import LearningPathsList from "@/components/Education/LearningPathList";
 import Navbar from "@/components/Navbar/Navbar";
 
 const EducationHub: React.FC = () => {

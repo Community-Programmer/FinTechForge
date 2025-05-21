@@ -1,23 +1,24 @@
-import React from "react";
-import { PROGRESSION_TIERS } from "@/lib/gamification";
-import { calculateXpGain } from "@/hooks/use-progress";
+import React, { useEffect, useState } from "react";
 
-export interface UserProgress {
+interface UserProgress {
   xp: number;
   streak: number;
-  currentTier: PROGRESS_TIERS;
+  currentTier: string;
+  nextTier: string;
+  nextTierThreshold: number;
+  level: number;
 }
-
 export const ProgressTracker: React.FC = () => {
-  // In a real implementation, this would come from a hook or context
-  const CurrentUserProgress = {
-    xp: 3250,
-    streak: 14,
-    currentTier: "STRATEGIST",
-    nextTier: "EXPERT",
-    nextTierThreshold: 6000,
-    level: 7,
-  };
+
+  const [progress, setProgress] = useState<UserProgress | null>(null);
+
+  useEffect(() => {
+    fetch("/api/v1/gamification/summary")
+      .then(res => res.json())
+      .then(data => setProgress(data));
+  }, []);
+
+  if (!progress) return <div>Loading...</div>;
 
   return (
     <div className="p-4 bg-white rounded-lg shadow">
