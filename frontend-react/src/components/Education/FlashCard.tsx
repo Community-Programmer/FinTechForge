@@ -1,7 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import Spinner from "../ui/spinner";
 
+// Use the same interfaces as PracticeList.tsx
 interface Flashcard {
   id: string;
   front: string;
@@ -12,6 +16,7 @@ interface FlashcardDeck {
   id: string;
   title: string;
   description: string;
+  lessonId?: string;
   flashcards: Flashcard[];
 }
 
@@ -26,6 +31,7 @@ export const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
   title,
   description,
 }) => {
+  // Existing component code remains the same
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [animation, setAnimation] = useState<"swipeLeft" | "swipeRight" | null>(
@@ -33,6 +39,7 @@ export const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
   );
   const touchStartX = useRef<number | null>(null);
 
+  // All other methods remain the same
   const handleCardFlip = () => {
     setIsFlipped(!isFlipped);
   };
@@ -69,12 +76,9 @@ export const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
     const touchEndX = e.changedTouches[0].clientX;
     const diff = touchStartX.current - touchEndX;
 
-    // Swipe right to left (next card)
     if (diff > 50) {
       handleNextCard();
-    }
-    // Swipe left to right (previous card)
-    else if (diff < -50) {
+    } else if (diff < -50) {
       handlePrevCard();
     }
 
@@ -165,28 +169,67 @@ export const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
       </div>
     </div>
   );
-}
+};
 
-export default function FlashcardDeckPage({ deckId } : {deckId : string}) {
+// Update FlashcardDeckPage to use useParams and axios
+const FlashcardDeckPage: React.FC = () => {
+  // Get deckId from URL params
+  const { deckId } = useParams<{ deckId: string }>();
   const [deck, setDeck] = useState<FlashcardDeck | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`/api/v1/education/flashcard/${deckId}`)
-      .then(res => res.json())
-      .then(data => setDeck(data.deck))
-      .finally(() => setLoading(false));
+    const fetchDeck = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `/api/v1/education/flashcard/${deckId}`,
+          {
+            withCredentials: true,
+          }
+        );
+        setDeck(response.data.flashcardDeck);
+        setError(null);
+      } catch (err) {
+        console.error("Failed to fetch flashcard deck:", err);
+        setError("Failed to load flashcard deck");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (deckId) {
+      fetchDeck();
+    }
   }, [deckId]);
 
-  if (loading) return <div>Loading...</div>;
-  
-  if (!deck) return <div>Flashcard deck not found</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center p-8">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (error || !deck) {
+    return (
+      <div className="bg-red-50 p-4 rounded-lg text-red-600 mb-6">
+        <h3 className="font-medium mb-1">Error</h3>
+        <p>{error || "Flashcard deck not found"}</p>
+      </div>
+    );
+  }
 
   return (
-    <FlashcardDeck
-      cards={deck.flashcards}
-      title={deck.title}
-      description={deck.description}
-    />
+    <div className="max-w-3xl mx-auto p-4">
+      <FlashcardDeck
+        cards={deck.flashcards}
+        title={deck.title}
+        description={deck.description}
+      />
+    </div>
   );
-}
+};
+
+export default FlashcardDeckPage;
