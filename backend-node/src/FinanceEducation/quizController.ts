@@ -1,9 +1,11 @@
-import { prisma } from '../../prisma/client.js';
+import { prisma } from '../../prisma/client';
 import { Request, Response } from 'express';
 // Get all quizzes
 export async function getQuizzes(req: Request, res: Response) {
   try {
-    const quizzes = await prisma.quiz.findMany({ include: { questions: true } });
+    const quizzes = await prisma.quiz.findMany({
+      include: { questions: true },
+    });
     res.status(200).json({ quizzes });
   } catch (error) {
     console.error('Error fetching quizzes:', error);
@@ -15,7 +17,10 @@ export async function getQuizzes(req: Request, res: Response) {
 export async function getQuizById(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const quiz = await prisma.quiz.findUnique({ where: { id }, include: { questions: true } });
+    const quiz = await prisma.quiz.findUnique({
+      where: { id },
+      include: { questions: true },
+    });
     if (!quiz) return res.status(404).json({ error: 'Quiz not found' });
     res.status(200).json({ quiz });
   } catch (error) {
@@ -80,11 +85,14 @@ export async function submitQuiz(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const { answers } = req.body; // [{questionId, answerIndex}]
-    const quiz = await prisma.quiz.findUnique({ where: { id }, include: { questions: true } });
+    const quiz = await prisma.quiz.findUnique({
+      where: { id },
+      include: { questions: true },
+    });
     if (!quiz) return res.status(404).json({ error: 'Quiz not found' });
     let score = 0;
-    quiz.questions.forEach((q) => {
-      const userAnswer = answers.find((a : any) => a.questionId === q.id);
+    quiz.questions.forEach(q => {
+      const userAnswer = answers.find((a: any) => a.questionId === q.id);
       if (userAnswer && userAnswer.answerIndex === q.correctAnswer) score++;
     });
     res.status(200).json({ score, total: quiz.questions.length });
@@ -92,4 +100,4 @@ export async function submitQuiz(req: Request, res: Response) {
     console.error('Error submitting quiz:', error);
     res.status(500).json({ error: 'Failed to submit quiz' });
   }
-} 
+}

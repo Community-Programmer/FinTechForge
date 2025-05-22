@@ -7,7 +7,7 @@ import {
   getAchievements,
   getSkillTrees,
   updateSkillTree,
-} from './gamificationController.js';
+} from './gamificationController';
 import { Application } from 'express-serve-static-core';
 
 const router = Router();

@@ -4,8 +4,8 @@ import {
   getSkillChallengeById,
   createSkillChallenge,
   updateSkillChallenge,
-  deleteSkillChallenge
-} from './skillChallengeController.js';
+  deleteSkillChallenge,
+} from './skillChallengeController';
 
 const router = Router();
 
@@ -15,4 +15,4 @@ router.post('/', createSkillChallenge);
 router.patch('/:id', updateSkillChallenge);
 router.delete('/:id', deleteSkillChallenge);
 
-export default router; 
+export default router;

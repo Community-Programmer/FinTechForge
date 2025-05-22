@@ -5,8 +5,8 @@ import {
   createQuiz,
   updateQuiz,
   deleteQuiz,
-  submitQuiz
-} from './quizController.js';
+  submitQuiz,
+} from './quizController';
 
 const router = Router();
 
@@ -17,4 +17,4 @@ router.patch('/:id', updateQuiz);
 router.delete('/:id', deleteQuiz);
 router.post('/:id/submit', submitQuiz as RequestHandler);
 
-export default router; 
+export default router;

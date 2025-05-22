@@ -4,8 +4,8 @@ import {
   getLessonById,
   createLesson,
   updateLesson,
-  deleteLesson
-} from './lessonController.js';
+  deleteLesson,
+} from './lessonController';
 
 const router = Router();
 
@@ -15,4 +15,4 @@ router.post('/', createLesson);
 router.patch('/:id', updateLesson);
 router.delete('/:id', deleteLesson);
 
-export default router; 
+export default router;

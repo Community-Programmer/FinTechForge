@@ -4,8 +4,8 @@ import {
   getLearningPathById,
   createLearningPath,
   updateLearningPath,
-  deleteLearningPath
-} from './learningPathController.js';
+  deleteLearningPath,
+} from './learningPathController';
 
 const router = Router();
 
@@ -15,4 +15,4 @@ router.post('/', createLearningPath);
 router.patch('/:id', updateLearningPath);
 router.delete('/:id', deleteLearningPath);
 
-export default router; 
+export default router;

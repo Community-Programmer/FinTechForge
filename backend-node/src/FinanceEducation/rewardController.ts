@@ -1,4 +1,4 @@
-import { prisma } from '../../prisma/client.js';
+import { prisma } from '../../prisma/client';
 import { Request, Response } from 'express';
 
 // Get all rewards
@@ -13,7 +13,7 @@ export async function getRewards(req: Request, res: Response) {
 }
 
 // Get reward by ID
-export async function getRewardById(req: Request, res: Response){
+export async function getRewardById(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const reward = await prisma.reward.findUnique({ where: { id } });
@@ -23,4 +23,4 @@ export async function getRewardById(req: Request, res: Response){
     console.error('Error fetching reward:', error);
     res.status(500).json({ error: 'Failed to fetch reward' });
   }
-} 
+}

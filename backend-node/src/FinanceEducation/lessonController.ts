@@ -1,10 +1,10 @@
-import { prisma } from '../../prisma/client.js';
+import { prisma } from '../../prisma/client';
 import { Request, Response } from 'express';
 // Get all lessons
 export async function getLessons(req: Request, res: Response) {
   try {
     const lessons = await prisma.lesson.findMany({
-      include: { quizzes: true, flashcardDecks: true }
+      include: { quizzes: true, flashcardDecks: true },
     });
     res.status(200).json({ lessons });
   } catch (error) {
@@ -19,7 +19,7 @@ export async function getLessonById(req: Request, res: Response) {
     const { id } = req.params;
     const lesson = await prisma.lesson.findUnique({
       where: { id },
-      include: { quizzes: true, flashcardDecks: true }
+      include: { quizzes: true, flashcardDecks: true },
     });
     if (!lesson) return res.status(404).json({ error: 'Lesson not found' });
     res.status(200).json({ lesson });
@@ -32,9 +32,25 @@ export async function getLessonById(req: Request, res: Response) {
 // Create lesson
 export async function createLesson(req: Request, res: Response) {
   try {
-    const { title, description, duration, xpReward, category, icon, learningPathId } = req.body;
+    const {
+      title,
+      description,
+      duration,
+      xpReward,
+      category,
+      icon,
+      learningPathId,
+    } = req.body;
     const lesson = await prisma.lesson.create({
-      data: { title, description, duration, xpReward, category, icon, learningPathId },
+      data: {
+        title,
+        description,
+        duration,
+        xpReward,
+        category,
+        icon,
+        learningPathId,
+      },
     });
     res.status(201).json({ lesson });
   } catch (error) {
@@ -68,4 +84,4 @@ export async function deleteLesson(req: Request, res: Response) {
     console.error('Error deleting lesson:', error);
     res.status(500).json({ error: 'Failed to delete lesson' });
   }
-} 
+}

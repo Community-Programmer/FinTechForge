@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client'; // Make sure this import exists
-
-const prisma = new PrismaClient(); // Make sure prisma is defined
+import { prisma } from '../../prisma/client';
 
 // Define progression tier type
 interface ProgressionTier {
