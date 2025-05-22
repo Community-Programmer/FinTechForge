@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import { config } from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -17,6 +17,7 @@ import quizRoute from './FinanceEducation/quizRoute';
 import flashcardRoute from './FinanceEducation/flashcardRoute';
 import learningPathRoute from './FinanceEducation/learningPathRoute';
 import skillChallengeRoute from './FinanceEducation/skillChallengeRoute';
+import userStatsRoute from './FinanceEducation/userStatsRoute';
 import rewardRoute from './FinanceEducation/rewardRoute';
 
 config();
@@ -62,6 +63,7 @@ app.use('/api/v1/education/learning-path', learningPathRoute);
 app.use('/api/v1/education/skill-challenge', skillChallengeRoute);
 app.use('/api/v1/education/reward', rewardRoute);
 app.use('/api/v1/education/gamification', gamificationRoute);
+app.use('/api/v1/education/stats', userStatsRoute);
 app.use(globalErrorHandler);
 
 export { server, io };
