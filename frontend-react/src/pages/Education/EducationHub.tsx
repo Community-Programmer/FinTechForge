@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UpcomingRewards } from "@/components/Education/UpcomingRewards";
 import { ProgressPath } from "@/components/Education/ProgressPath";
@@ -8,21 +8,50 @@ import { PracticeList } from "@/components/Education/PracticeList";
 import { FeaturedLesson } from "@/components/Education/FeaturedList";
 import LearningPathsList from "@/components/Education/LearningPathList";
 import Navbar from "@/components/Navbar/Navbar";
+import { useUserStats } from "@/hooks/use-user-stats"; // Import the custom hook
+import { useAchievement } from "@/hooks/use-achievement";
+import Spinner from "@/components/ui/spinner"; // Create or import a spinner component
 
 const EducationHub: React.FC = () => {
-  // State could eventually be moved to a context or fetched from API
   const [currentTab, setCurrentTab] = useState("learn");
 
-  // Dummy data for the education hub (would normally come from API)
-  const userData = {
-    level: 7,
-    xp: 3250,
-    xpRequired: 4000,
-    streak: 14,
-    lessons: 23,
-    achievements: 12,
-    currentRank: "Budget Master",
-  };
+  // Replace static data with API data
+  const { userStats, loading, error } = useUserStats();
+  const { checkAchievementEligibility } = useAchievement();
+
+  // Check for new achievements whenever userStats changes
+  useEffect(() => {
+    if (userStats) {
+      checkAchievementEligibility(userStats);
+    }
+  }, [userStats, checkAchievementEligibility]);
+
+  // Show loading state while fetching data
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spinner size="large" />
+      </div>
+    );
+  }
+
+  // Show error message if data fetch failed
+  if (error || !userStats) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-red-500 text-center p-4">
+          <h3 className="text-xl font-bold">Something went wrong</h3>
+          <p>{error || "Unable to load user data"}</p>
+          <button
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg"
+            onClick={() => window.location.reload()}
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full px-1">
@@ -47,7 +76,7 @@ const EducationHub: React.FC = () => {
                   />
                 </svg>
               </span>
-              <span>{userData.level}</span>
+              <span>{userStats.level}</span>
             </div>
             <div className="flex items-center gap-1">
               <span className="rounded-full bg-white/20 p-1">
@@ -64,22 +93,24 @@ const EducationHub: React.FC = () => {
                   />
                 </svg>
               </span>
-              <span>{userData.streak} day streak</span>
+              <span>{userStats.streak} day streak</span>
             </div>
           </div>
         </div>
 
         {/* XP Progress Bar */}
         <div className="mb-4">
-          <div className="text-sm">Level {userData.level}</div>
+          <div className="text-sm">Level {userStats.level}</div>
           <div className="w-full h-2 bg-blue-700 rounded-full overflow-hidden">
             <div
               className="h-full bg-white rounded-full"
-              style={{ width: `${(userData.xp / userData.xpRequired) * 100}%` }}
+              style={{
+                width: `${(userStats.xp / userStats.xpRequired) * 100}%`,
+              }}
             />
           </div>
           <div className="text-sm text-right">
-            {userData.xp} / {userData.xpRequired} XP
+            {userStats.xp} / {userStats.xpRequired} XP
           </div>
         </div>
 
@@ -97,7 +128,7 @@ const EducationHub: React.FC = () => {
                 fill="currentColor"
               />
             </svg>
-            <div className="text-xl font-bold">{userData.lessons}</div>
+            <div className="text-xl font-bold">{userStats.lessons}</div>
             <div className="text-sm md:text-md lg:text-lg">Lessons</div>
           </div>
           <div className="bg-blue-500 p-4 rounded-lg flex flex-col items-center">
@@ -112,7 +143,7 @@ const EducationHub: React.FC = () => {
                 fill="currentColor"
               />
             </svg>
-            <div className="text-xl font-bold">{userData.achievements}</div>
+            <div className="text-xl font-bold">{userStats.achievements}</div>
             <div className="text-sm md:text-md lg:text-lg">Achievements</div>
           </div>
           <div className="bg-blue-500 p-4 rounded-lg flex flex-col items-center">
@@ -127,7 +158,7 @@ const EducationHub: React.FC = () => {
                 fill="currentColor"
               />
             </svg>
-            <div className="text-xl font-bold">{userData.currentRank}</div>
+            <div className="text-xl font-bold">{userStats.currentRank}</div>
             <div className="text-sm md:text-md lg:text-lg">Current Rank</div>
           </div>
         </div>
