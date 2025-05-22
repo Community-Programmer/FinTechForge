@@ -14,6 +14,9 @@ model User {
   password          String?
   emailVerified     DateTime?
   image             String?
+  level             Int                 @default(1)
+  xp                Int                 @default(5)
+  currentRank       String              @default("Novice")
   accounts          Account[]
   educationProgress EducationProgress[]
   achievements      Achievement[]
