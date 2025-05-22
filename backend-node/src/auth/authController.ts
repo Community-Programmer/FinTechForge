@@ -62,13 +62,11 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
       });
 
       await sendVerificationEmail(newUser.email, verificationToken);
-      res
-        .status(200)
-        .json({
-          message: 'Sent verification email',
-          isVerified: false,
-          success: true,
-        });
+      res.status(200).json({
+        message: 'Sent verification email',
+        isVerified: false,
+        success: true,
+      });
       return;
     }
 
@@ -115,13 +113,11 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
       });
 
       await sendVerificationEmail(user.email, verificationToken);
-      res
-        .status(200)
-        .json({
-          message: 'Sent verification email',
-          isVerified: false,
-          success: true,
-        });
+      res.status(200).json({
+        message: 'Sent verification email',
+        isVerified: false,
+        success: true,
+      });
       return;
     }
 
@@ -160,13 +156,11 @@ const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
       const user = await getUserById(verificationToken?.userId);
 
       if (user?.emailVerified) {
-        res
-          .status(200)
-          .json({
-            Code: 'ALREADY_VERIFIED',
-            message: 'Email Already Verified',
-            success: true,
-          });
+        res.status(200).json({
+          Code: 'ALREADY_VERIFIED',
+          message: 'Email Already Verified',
+          success: true,
+        });
         return;
       }
 
@@ -188,13 +182,11 @@ const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
           emailVerified: new Date(),
         },
       });
-      res
-        .status(200)
-        .json({
-          Code: 'VERIFIED',
-          message: 'Email Verified Successfully',
-          success: true,
-        });
+      res.status(200).json({
+        Code: 'VERIFIED',
+        message: 'Email Verified Successfully',
+        success: true,
+      });
     } else {
       return next(
         createHttpError(
@@ -221,7 +213,7 @@ const generateResetToken = async (
 
   try {
     const user = await getUserByEmail(email);
-
+    console.log(email);
     if (!user) {
       res.status(200).json({ message: 'Email not registered' });
       return;
@@ -373,7 +365,7 @@ const refreshToken = async (
 
         const { accessToken } = generateTokens(user.id);
 
-        res.json({ accessToken , user: user.username});
+        res.json({ accessToken, user: user.username });
       }
     );
   } catch (error) {

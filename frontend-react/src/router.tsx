@@ -8,18 +8,15 @@ import About from "./pages/About/About"; // Changed from "@"
 import Features from "./pages/Features/Features"; // Changed from "@"
 import Premium from "./pages/Premium/Premium"; // Changed from "@"
 
-import Pricing from "./pages/Pricing/Pricing"; 
+import Pricing from "./pages/Pricing/Pricing";
 
-import Profile from "./pages/Profile/Profile"
-
+import Profile from "./pages/Profile/Profile";
 
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
-import RootWrapper from "./Layout/RootWrapper";
 import VerificationEmailSent from "./pages/EmailVerification/VerificationEmailSent";
 import VerificationStatus from "./pages/EmailVerification/VerificationStatus";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import PasswordResetForm from "./pages/ForgotPassword/PasswordResetForm";
-import DashBoardLayout from "./Layout/DashBoardLayout";
 import Home from "./pages/Dashboard/Home";
 import { MarketNews } from "./pages/Dashboard/News";
 import { CurrencyConverter } from "./pages/Dashboard/CurrencyConvertor";
@@ -29,6 +26,9 @@ import { AiChatbot } from "./pages/Dashboard/Chatbot";
 import EtfHeatmap from "./pages/Dashboard/MarketTrends/EtfHeatmap";
 import ForexHeatMap from "./pages/Dashboard/MarketTrends/ForexHeatmap";
 import StockPage from "./pages/Dashboard/StockPage";
+import LoginForm from "./pages/Login/Login";
+import SignUpForm from "./pages/SignUp/SignUp";
+import EducationHub from "./pages/Education/EducationHub";
 
 const mainLayoutRoutes = [
   {
@@ -39,7 +39,7 @@ const mainLayoutRoutes = [
   {
     path: "/map",
     index: true,
-    element: <NearServices />,
+    // element: <NearServices />,
   },
   {
     path: "/About",
@@ -54,14 +54,13 @@ const mainLayoutRoutes = [
     element: <Premium />,
   },
   {
-
-    path:"/Pricing",
-    element:<Pricing/>
-
+    path: "/Pricing",
+    element: <Pricing />,
+  },
+  {
     path: "/profile",
-    element : <Profile />
-
-  }
+    element: <Profile />,
+  },
 ];
 
 const dashboardLayoutRoutes = [
@@ -116,27 +115,27 @@ const dashboardLayoutRoutes = [
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootWrapper />, 
+    element: <RootWrapper />,
     children: [
       {
         path: "/",
         element: <MainLayout />,
         children: mainLayoutRoutes,
       },
-
+      { path: "/education", element: <EducationHub /> },
       {
         path: "/",
-        element: <ProtectedRoute />, 
+        element: <ProtectedRoute />,
         children: [
           {
             path: "/Features",
-            element: <Features/>,
-
-          }, {
+            element: <Features />,
+          },
+          {
             path: "/dashboard",
-            element:<DashBoardLayout/> ,
+            element: <DashBoardLayout />,
             children: dashboardLayoutRoutes,
-          }
+          },
         ],
       },
       {
@@ -167,10 +166,9 @@ const router = createBrowserRouter([
       {
         path: "/reset-password/:resetToken",
         element: <PasswordResetForm />,
-      }
+      },
     ],
   },
 ]);
-
 
 export default router;
