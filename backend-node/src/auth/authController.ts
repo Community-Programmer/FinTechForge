@@ -18,38 +18,44 @@ import {
 } from '../utils/sendEmail';
 import pkg from 'jsonwebtoken';
 
+import {
+  signupSchema,
+  signinSchema,
+  resetPasswordSchema,
+  emailOnlySchema,
+} from './authSchemas';
 const { verify, sign } = pkg;
 
-//TODO : Add Data Validation (Zod etc.)
+
+
 
 const signup = async (req: Request, res: Response, next: NextFunction) => {
-  const { username, email, password } = req.body;
+  const result = signupSchema.safeParse(req.body);
+
+  if (!result.success) {
+    const errors = result.error.format();
+    return next(createHttpError(400, { message: 'Validation error', errors }));
+  }
+
+  const { username, email, password } = result.data;
 
   try {
     const existingUser = await prisma.user.findUnique({
-      where: {
-        email,
-      },
+      where: { email },
     });
 
     if (existingUser) {
-      const error = createHttpError(400, 'User already exists with this email');
-      return next(error);
+      return next(createHttpError(400, 'User already exists with this email'));
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await prisma.user.create({
-      data: {
-        username,
-        email,
-        password: hashedPassword,
-      },
+      data: { username, email, password: hashedPassword },
     });
 
     if (newUser) {
       const verificationToken = generateVerificationToken();
-
       const tokenExpiration = new Date();
       tokenExpiration.setHours(tokenExpiration.getMinutes() + 24);
 
@@ -62,13 +68,12 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
       });
 
       await sendVerificationEmail(newUser.email, verificationToken);
-      res
-        .status(200)
-        .json({
-          message: 'Sent verification email',
-          isVerified: false,
-          success: true,
-        });
+
+      res.status(200).json({
+        message: 'Sent verification email',
+        isVerified: false,
+        success: true,
+      });
       return;
     }
 
@@ -82,9 +87,16 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const signin = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { email, password } = req.body;
+  const result = signinSchema.safeParse(req.body);
 
+  if (!result.success) {
+    const errors = result.error.format();
+    return next(createHttpError(400, { message: 'Validation error', errors }));
+  }
+
+  const { email, password } = result.data;
+
+  try {
     const user = await getUserByEmail(email);
 
     if (!user) {
@@ -102,7 +114,6 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
       }
 
       const verificationToken = generateVerificationToken();
-
       const tokenExpiration = new Date();
       tokenExpiration.setHours(tokenExpiration.getMinutes() + 24);
 
@@ -115,13 +126,11 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
       });
 
       await sendVerificationEmail(user.email, verificationToken);
-      res
-        .status(200)
-        .json({
-          message: 'Sent verification email',
-          isVerified: false,
-          success: true,
-        });
+      res.status(200).json({
+        message: 'Sent verification email',
+        isVerified: false,
+        success: true,
+      });
       return;
     }
 
@@ -150,6 +159,7 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+
 const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
   const { token } = req.params;
 
@@ -160,13 +170,11 @@ const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
       const user = await getUserById(verificationToken?.userId);
 
       if (user?.emailVerified) {
-        res
-          .status(200)
-          .json({
-            Code: 'ALREADY_VERIFIED',
-            message: 'Email Already Verified',
-            success: true,
-          });
+        res.status(200).json({
+          Code: 'ALREADY_VERIFIED',
+          message: 'Email Already Verified',
+          success: true,
+        });
         return;
       }
 
@@ -181,20 +189,15 @@ const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
       }
 
       await prisma.user.update({
-        where: {
-          id: verificationToken.userId,
-        },
-        data: {
-          emailVerified: new Date(),
-        },
+        where: { id: verificationToken.userId },
+        data: { emailVerified: new Date() },
       });
-      res
-        .status(200)
-        .json({
-          Code: 'VERIFIED',
-          message: 'Email Verified Successfully',
-          success: true,
-        });
+
+      res.status(200).json({
+        Code: 'VERIFIED',
+        message: 'Email Verified Successfully',
+        success: true,
+      });
     } else {
       return next(
         createHttpError(
@@ -205,7 +208,6 @@ const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
     }
   } catch (err) {
     console.log(err);
-
     return next(
       createHttpError(400, 'Unknown error occurred during token verification.')
     );
@@ -217,7 +219,14 @@ const generateResetToken = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { email } = req.body;
+  const result = emailOnlySchema.safeParse(req.body);
+
+  if (!result.success) {
+    const errors = result.error.format();
+    return next(createHttpError(400, { message: 'Validation error', errors }));
+  }
+
+  const { email } = result.data;
 
   try {
     const user = await getUserByEmail(email);
@@ -231,9 +240,7 @@ const generateResetToken = async (
 
     if (existingToken) {
       await prisma.passwordResetToken.delete({
-        where: {
-          userId: user.id,
-        },
+        where: { userId: user.id },
       });
     }
 
@@ -250,9 +257,10 @@ const generateResetToken = async (
     });
 
     await sendPassowrdResetEmail(email, resetToken);
-    res
-      .status(200)
-      .json({ message: 'Sent Password reset link to registered email.' });
+
+    res.status(200).json({
+      message: 'Sent Password reset link to registered email.',
+    });
   } catch (error) {
     console.log(error);
     return next(
@@ -261,47 +269,41 @@ const generateResetToken = async (
   }
 };
 
+
 const resetPassword = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  const result = resetPasswordSchema.safeParse(req.body);
+
+  if (!result.success) {
+    const errors = result.error.format();
+    return next(createHttpError(400, { message: 'Validation error', errors }));
+  }
+
+  const { password } = result.data;
   const { token } = req.params;
-  const { password, confirmPassword } = req.body;
 
   try {
     const resetToken = await prisma.passwordResetToken.findUnique({
-      where: {
-        token,
-      },
+      where: { token },
     });
 
     if (!resetToken) {
       return next(createHttpError(400, 'Invalid reset token'));
     }
 
-    if (password !== confirmPassword) {
-      return next(createHttpError(400, 'Password does not match'));
-    }
-
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await prisma.user.update({
-      where: {
-        id: resetToken.userId,
-      },
-      data: {
-        password: hashedPassword,
-      },
+      where: { id: resetToken.userId },
+      data: { password: hashedPassword },
     });
 
     await prisma.passwordResetToken.update({
-      where: {
-        token,
-      },
-      data: {
-        isUsed: true,
-      },
+      where: { token },
+      data: { isUsed: true },
     });
 
     res.status(200).json({ Code: 'RESET_SUCCESSFUL', success: true });
@@ -322,9 +324,7 @@ const verifyResetToken = async (
 
   try {
     const resetToken = await prisma.passwordResetToken.findUnique({
-      where: {
-        token,
-      },
+      where: { token },
     });
 
     const now = new Date();
@@ -373,7 +373,7 @@ const refreshToken = async (
 
         const { accessToken } = generateTokens(user.id);
 
-        res.json({ accessToken , user: user.username});
+        res.json({ accessToken, user: user.username });
       }
     );
   } catch (error) {
@@ -382,13 +382,13 @@ const refreshToken = async (
   }
 };
 
+
 const googleCallback = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const _req = req as AuthRequest;
-
   const { accessToken, refreshToken } = generateTokens(_req.user.id);
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
