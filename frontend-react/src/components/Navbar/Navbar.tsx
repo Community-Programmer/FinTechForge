@@ -5,6 +5,9 @@ import { Link } from "react-router-dom";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import MainTicker from "../Ticker/MainTicker";
+import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
+import { Users } from 'lucide-react';
 
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useDispatch } from "react-redux";
@@ -37,8 +40,8 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <>
-      <nav className="bg-white shadow-md">
+    <div className="flex flex-col justify-center items-center">
+      <nav className="bg-white shadow-md w-full">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <img src={fintechforgeLogo} alt="fintechForgeLogo" className = "h-10 w-auto" />  
@@ -67,6 +70,12 @@ const Navbar: React.FC = () => {
               className="text-gray-600 hover:text-gray-800 flex items-center"
             >
               Pricing
+            </Link>
+
+            <Link 
+             to="/Community"
+            >
+                <Users className="w-7 h-7 border-2 border-gray-500 rounded p-1  hover:bg-gray-200"/>
             </Link>
           </div>
 
@@ -240,9 +249,13 @@ const Navbar: React.FC = () => {
             )}
           </div>
         </div>
-        <MainTicker/>
+        </SheetContent>
+        </Sheet>
+        </div>
       </nav>
-    </>
+      <MainTicker>
+      </MainTicker>
+    </div>
   );
 };
 

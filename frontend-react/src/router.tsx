@@ -9,17 +9,14 @@ import Features from "./pages/Features/Features"; // Changed from "@"
 import Premium from "./pages/Premium/Premium"; // Changed from "@"
 
 import Pricing from "./pages/Pricing/Pricing"; 
-
+import Community from "./pages/Community/Community";
 import Profile from "./pages/Profile/Profile"
 
 
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
-import RootWrapper from "./Layout/RootWrapper";
 import VerificationEmailSent from "./pages/EmailVerification/VerificationEmailSent";
 import VerificationStatus from "./pages/EmailVerification/VerificationStatus";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
-import PasswordResetForm from "./pages/ForgotPassword/PasswordResetForm";
-import DashBoardLayout from "./Layout/DashBoardLayout";
 import Home from "./pages/Dashboard/Home";
 import { MarketNews } from "./pages/Dashboard/News";
 import { CurrencyConverter } from "./pages/Dashboard/CurrencyConvertor";
@@ -36,11 +33,11 @@ const mainLayoutRoutes = [
     index: true,
     element: <HomePage />,
   },
-  {
+  /*{
     path: "/map",
     index: true,
     element: <NearServices />,
-  },
+  },*/
   {
     path: "/About",
     element: <About />,
@@ -57,7 +54,13 @@ const mainLayoutRoutes = [
 
     path:"/Pricing",
     element:<Pricing/>
+  },
+   {
 
+    path:"/Community",
+    element:<Community/>
+  },
+  {
     path: "/profile",
     element : <Profile />
 
@@ -144,14 +147,14 @@ const router = createBrowserRouter([
         element: <MainLayout />,
         children: mainLayoutRoutes,
       },
-      {
+     /* {
         path: "/Login",
         element: <LoginForm />,
       },
       {
         path: "/SignUp",
         element: <SignUpForm />,
-      },
+      },*/
       {
         path: "/verifymail",
         element: <VerificationEmailSent />,
@@ -164,10 +167,10 @@ const router = createBrowserRouter([
         path: "/forgot-password",
         element: <ForgotPassword />,
       },
-      {
+      /*{
         path: "/reset-password/:resetToken",
         element: <PasswordResetForm />,
-      }
+      }*/
     ],
   },
 ]);
