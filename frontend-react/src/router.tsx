@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "./Layout/MainLayout"; // Changed from "@"
-import RootWrapper from "./Layout/RootWrapper"; // Changed from "@"
-import DashBoardLayout from "./Layout/DashBoardLayout"; // Changed from "@"
+// import RootWrapper from "./Layout/RootWrapper"; // Changed from "@"
+// import DashBoardLayout from "./Layout/DashBoardLayout"; // Changed from "@"
 
 import HomePage from "./pages/Home/Home"; // Changed from "@"
 import About from "./pages/About/About"; // Changed from "@"
@@ -29,6 +29,9 @@ import { AiChatbot } from "./pages/Dashboard/Chatbot";
 import EtfHeatmap from "./pages/Dashboard/MarketTrends/EtfHeatmap";
 import ForexHeatMap from "./pages/Dashboard/MarketTrends/ForexHeatmap";
 import StockPage from "./pages/Dashboard/StockPage";
+import NearServices from "./pages/NearbyATM/NearServices"
+import LoginForm from "./pages/Login/Login"
+import SignUpForm from "./pages/SignUp/SignUp";
 
 const mainLayoutRoutes = [
   {
@@ -57,7 +60,8 @@ const mainLayoutRoutes = [
 
     path:"/Pricing",
     element:<Pricing/>
-
+  },
+  {
     path: "/profile",
     element : <Profile />
 

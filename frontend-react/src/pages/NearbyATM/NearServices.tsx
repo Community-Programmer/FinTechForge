@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import ServiceFilters from "./SubComponents/ServiceFilters";
 import SearchBar from "./SubComponents/SearchBar";
@@ -12,44 +11,38 @@ import { serviceTypes, injectMarkerStyles } from "./SubComponents/markerUtils";
 import { fetchAllServices } from "./SubComponents/apiUtils";
 
 export default function FinancialServicesMap() {
-  const [location, setLocation] = useState(null);
-  const [searchLocation, setSearchLocation] = useState(null);
-  const [places, setPlaces] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [radius, setRadius] = useState(1000);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilters, setActiveFilters] = useState(
+  const [location, setLocation] = useState<[number, number] | null>(null);
+  const [searchLocation, setSearchLocation] = useState<[number, number] | null>(null);
+  const [places, setPlaces] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [radius, setRadius] = useState<number>(1000);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [activeFilters, setActiveFilters] = useState<Record<string, boolean>>(
     Object.keys(serviceTypes).reduce((acc, type) => {
       acc[type] = true;
       return acc;
-    }, {})
+    }, {} as Record<string, boolean>)
   );
 
-  // Inject CSS for colored markers on component mount
+  // Inject custom marker styles
   useEffect(() => {
     injectMarkerStyles();
   }, []);
 
-  // Function to fetch location by address using Nominatim API
-  const searchByAddress = async (query) => {
+  const searchByAddress = async (query: string) => {
     try {
       setLoading(true);
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
       );
       const data = await response.json();
-      
-      if (data && data.length > 0) {
+
+      if (data?.length) {
         const { lat, lon } = data[0];
-        setSearchLocation([parseFloat(lat), parseFloat(lon)]);
-        fetchAllServices(
-          [parseFloat(lat), parseFloat(lon)], 
-          radius, 
-          setPlaces, 
-          setLoading, 
-          setError
-        );
+        const coords: [number, number] = [parseFloat(lat), parseFloat(lon)];
+        setSearchLocation(coords);
+        fetchAllServices(coords, radius, setPlaces, setLoading, setError);
       } else {
         setError("Location not found. Please try again.");
         setTimeout(() => setError(null), 3000);
@@ -62,88 +55,87 @@ export default function FinancialServicesMap() {
     }
   };
 
-  // Initialize map with user's location
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const { latitude, longitude } = pos.coords;
-        const userLocation = [latitude, longitude];
-        setLocation(userLocation);
-        setSearchLocation(userLocation);
-        fetchAllServices(userLocation, radius, setPlaces, setLoading, setError);
+        const coords: [number, number] = [pos.coords.latitude, pos.coords.longitude];
+        setLocation(coords);
+        setSearchLocation(coords);
+        fetchAllServices(coords, radius, setPlaces, setLoading, setError);
       },
       (err) => {
         console.error("Geolocation failed:", err);
-        setError("Could not access your location. Please allow location access or use the search feature.");
-        setLoading(false);
-        
-        // Set default location to city center (e.g., New York City)
-        const defaultLocation = [40.7128, -74.0060];
-        setLocation(defaultLocation);
-        setSearchLocation(defaultLocation);
-        fetchAllServices(defaultLocation, radius, setPlaces, setLoading, setError);
+        setError("Could not access your location. Using default location.");
+
+        const defaultCoords: [number, number] = [40.7128, -74.0060]; // NYC
+        setLocation(defaultCoords);
+        setSearchLocation(defaultCoords);
+        fetchAllServices(defaultCoords, radius, setPlaces, setLoading, setError);
       }
     );
   }, []);
 
-  // Handle filter changes
-  const toggleFilter = (type) => {
+  const toggleFilter = (type: string) => {
     setActiveFilters((prev) => ({
       ...prev,
       [type]: !prev[type],
     }));
   };
 
-  // Handle radius change
-  const handleRadiusChange = (newRadius) => {
+  const handleRadiusChange = (newRadius: number) => {
     setRadius(newRadius);
     if (searchLocation) {
       fetchAllServices(searchLocation, newRadius, setPlaces, setLoading, setError);
     }
   };
 
-  // Handle search form submission
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       searchByAddress(searchQuery);
     }
   };
 
-  // Filter places based on active filters
   const filteredPlaces = places.filter((place) => activeFilters[place.type]);
 
-  // Count services by type
-  const serviceCounts = {};
-  Object.keys(serviceTypes).forEach(type => {
-    serviceCounts[type] = places.filter(p => p.type === type).length;
+  const serviceCounts: Record<string, number> = {};
+  Object.keys(serviceTypes).forEach((type) => {
+    serviceCounts[type] = places.filter((p) => p.type === type).length;
   });
 
   return (
     <div className="flex flex-col h-screen max-h-screen">
-      {/* Header with search and filters */}
+      {/* Header */}
       <div className="bg-white p-4 shadow-md z-10">
-        <h1 className="text-2xl font-bold text-center mb-4">Financial Services Finder</h1>
-        
-        <SearchBar 
+        <h1 className="text-2xl font-bold text-center mb-4">
+          Financial Services Finder
+        </h1>
+
+        <SearchBar
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           handleSearch={handleSearch}
           loading={loading}
         />
-        
-        <RadiusSelector 
+
+        <RadiusSelector
           radius={radius}
           handleRadiusChange={handleRadiusChange}
         />
-        
-        <ServiceFilters 
+
+        <ServiceFilters
           serviceTypes={serviceTypes}
           activeFilters={activeFilters}
           toggleFilter={toggleFilter}
         />
+
+        {error && (
+          <p className="text-red-600 text-center mt-2 transition-all duration-300">
+            {error}
+          </p>
+        )}
       </div>
-      
+
       {/* Map */}
       <MapView
         location={location}
@@ -153,9 +145,9 @@ export default function FinancialServicesMap() {
         filteredPlaces={filteredPlaces}
         serviceTypes={serviceTypes}
       />
-      
-      {/* Stats footer */}
-      <StatsFooter 
+
+      {/* Footer */}
+      <StatsFooter
         filteredPlaces={filteredPlaces}
         radius={radius}
         serviceTypes={serviceTypes}

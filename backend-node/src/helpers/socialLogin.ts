@@ -2,7 +2,7 @@ import {
   Profile as GoogleProfile,
   VerifyCallback,
 } from 'passport-google-oauth20';
-import { prisma } from '../../prisma/client';
+import prisma from '../../prisma/client';
 import { getUserByEmail } from './data';
 import { Profile as GithubProfile } from 'passport-github2';
 
