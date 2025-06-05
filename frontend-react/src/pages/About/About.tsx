@@ -98,10 +98,6 @@ const About: React.FC = () => {
         <p className="text-lg text-gray-600">
           Join the FinTechForge community and start building your vision for the future of finance today!
         </p>
-        {/* You could add a call to action button here if desired */}
-        {/* <Link to="/signup" className="mt-6 inline-block bg-blue-600 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-blue-700 transition-colors duration-300">
-          Get Started
-        </Link> */}
       </div>
     </div>
   );

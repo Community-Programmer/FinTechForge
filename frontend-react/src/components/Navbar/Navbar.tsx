@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Crown, User, LogOut, Menu } from "lucide-react"; // <--- Ensure Menu is imported here
+import { Crown, User, LogOut, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
@@ -13,7 +13,7 @@ import { AppDispatch } from "@/store/store";
 import { useNavigate } from "react-router-dom";
 import UserAvatar from "@/components/UserAvatar/UserAvatar";
 import fintechforgeLogo from "../../assets/fintechforge-logo.png";
-import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"; // <--- ADD THIS IMPORT
+import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 
 
 const Navbar: React.FC = () => {
@@ -114,7 +114,7 @@ const Navbar: React.FC = () => {
                   <Link to="/Login"><Button variant="outline">Log In</Button></Link>
                   <Link to="/SignUp"><Button>Sign Up</Button></Link>
                 </div>
-              </SheetContent> {/* <--- **THIS WAS THE MISSING CLOSING TAG!** */}
+              </SheetContent>
             </Sheet>
             )}
 
