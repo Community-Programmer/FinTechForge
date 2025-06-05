@@ -10,16 +10,15 @@ import Premium from "./pages/Premium/Premium"; // Changed from "@"
 
 import Pricing from "./pages/Pricing/Pricing"; 
 
-import Profile from "./pages/Profile/Profile"
+
 
 
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
-import RootWrapper from "./Layout/RootWrapper";
+
 import VerificationEmailSent from "./pages/EmailVerification/VerificationEmailSent";
 import VerificationStatus from "./pages/EmailVerification/VerificationStatus";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import PasswordResetForm from "./pages/ForgotPassword/PasswordResetForm";
-import DashBoardLayout from "./Layout/DashBoardLayout";
 import Home from "./pages/Dashboard/Home";
 import { MarketNews } from "./pages/Dashboard/News";
 import { CurrencyConverter } from "./pages/Dashboard/CurrencyConvertor";
@@ -29,6 +28,10 @@ import { AiChatbot } from "./pages/Dashboard/Chatbot";
 import EtfHeatmap from "./pages/Dashboard/MarketTrends/EtfHeatmap";
 import ForexHeatMap from "./pages/Dashboard/MarketTrends/ForexHeatmap";
 import StockPage from "./pages/Dashboard/StockPage";
+import LoginForm from "./pages/Login/Login";
+import NearServices from "./pages/NearbyATM/NearServices";
+import Profile from "./pages/Profile/Profile";
+import SignUpForm from "./pages/SignUp/SignUp";
 
 const mainLayoutRoutes = [
   {
@@ -57,7 +60,8 @@ const mainLayoutRoutes = [
 
     path:"/Pricing",
     element:<Pricing/>
-
+  },
+  {
     path: "/profile",
     element : <Profile />
 
