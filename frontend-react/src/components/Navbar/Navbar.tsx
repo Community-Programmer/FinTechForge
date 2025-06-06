@@ -6,14 +6,21 @@ import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import MainTicker from "../Ticker/MainTicker";
 
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { useDispatch } from "react-redux";
 import { logout } from "@/store/auth/authSlice";
 import { AppDispatch } from "@/store/store";
 import { useNavigate } from "react-router-dom";
 import UserAvatar from "@/components/UserAvatar/UserAvatar";
 import fintechforgeLogo from "../../assets/fintechforge-logo.png";
+
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
+
 
 
 const Navbar: React.FC = () => {
@@ -41,17 +48,27 @@ const Navbar: React.FC = () => {
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <img src={fintechforgeLogo} alt="fintechForgeLogo" className="h-10 w-auto" />
+
           </div>
 
           {/* Navigation links - hidden on mobile, visible on md+ screens */}
           <div className="hidden md:flex items-center space-x-6">
-            <Link to="/" className="text-gray-600 hover:text-gray-800 hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">
+            <Link
+              to="/"
+              className="text-gray-600 hover:text-gray-800 hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out"
+            >
               Home
             </Link>
-            <Link to="/dashboard" className="text-gray-600 hover:text-gray-800 hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">
+            <Link
+              to="/dashboard"
+              className="text-gray-600 hover:text-gray-800 hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out"
+            >
               Dashboard
             </Link>
-            <Link to="/About" className="text-gray-600 hover:text-gray-800 hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">
+            <Link
+              to="/About"
+              className="text-gray-600 hover:text-gray-800 hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out"
+            >
               About
             </Link>
             <Link
@@ -80,6 +97,7 @@ const Navbar: React.FC = () => {
               </Link>
             </div>
           )}
+
           {isLoggedIn && (<div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm mt-2 sm:mt-0">
             <div className="ml-auto flex-1 sm:flex-initial">
               <div className="flex gap-3 relative">
@@ -230,6 +248,66 @@ const Navbar: React.FC = () => {
             )}
             */}
           </div> {/* End of flex items-center div for mobile components */}
+
+                          
+                          <span className="font-semibold text-lg">?</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+
+                      <DropdownMenuContent className="w-60 p-4 mt-2">
+                        <DropdownMenuItem
+                          onClick={() => navigate("/profile")}
+                          className="cursor-pointer py-2 my-1"
+                        >
+                          <User className="mr-2 h-4 w-4 text-blue-500" />{" "}
+                          Profile
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          onClick={() => navigate("/dashboard")}
+                          className="cursor-pointer py-2 my-1"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="mr-2 h-4 w-4 text-blue-500"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                          </svg>{" "}
+                          Dashboard
+                        </DropdownMenuItem>
+
+                        <div className="pt-3 mt-2 border-t border-gray-100 flex flex-col gap-2">
+                          <Button
+                            variant="outline"
+                            onClick={() => navigate("/login")}
+                            className="w-full justify-center"
+                          >
+                            Log In
+                          </Button>
+                          <Button
+                            onClick={() => navigate("/signup")}
+                            className="w-full justify-center"
+                          >
+                            Sign Up
+                          </Button>
+                        </div>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
+
         </div>
         <MainTicker />
       </nav>

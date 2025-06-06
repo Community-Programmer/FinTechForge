@@ -1,4 +1,4 @@
-import passport, { PassportStatic } from 'passport';
+import { PassportStatic } from 'passport';
 import {
   Strategy as GoogleStrategy,
   Profile as GoogleProfile,
@@ -14,7 +14,6 @@ import {
   StrategyOptions,
 } from 'passport-jwt';
 import { config } from 'dotenv';
-import { Request } from 'express';
 import { LoginWithGithub, LoginWithGoogle } from '../helpers/socialLogin';
 import { getUserById } from '../helpers/data';
 
@@ -28,7 +27,6 @@ config();
 // console.log('GITHUB_CLIENT_SECRET:', process.env.GITHUB_CLIENT_SECRET);
 // console.log('GITHUB_CALLBACK_URL:', process.env.GITHUB_CALLBACK_URL);
 // console.log('ACCESS_JWT_SECRET:', process.env.ACCESS_JWT_SECRET);
-
 
 const GoogleProvider = new GoogleStrategy(
   {

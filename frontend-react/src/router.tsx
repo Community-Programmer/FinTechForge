@@ -8,10 +8,12 @@ import About from "./pages/About/About"; // Changed from "@"
 import Features from "./pages/Features/Features"; // Changed from "@"
 import Premium from "./pages/Premium/Premium"; // Changed from "@"
 
+
 import Pricing from "./pages/Pricing/Pricing"; 
 
 
 
+import Profile from "./pages/Profile/Profile";
 
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
@@ -42,7 +44,7 @@ const mainLayoutRoutes = [
   {
     path: "/map",
     index: true,
-    element: <NearServices />,
+    // element: <NearServices />,
   },
   {
     path: "/About",
@@ -58,14 +60,13 @@ const mainLayoutRoutes = [
   },
   {
 
-    path:"/Pricing",
-    element:<Pricing/>
+    path: "/Pricing",
+    element: <Pricing />,
   },
   {
     path: "/profile",
-    element : <Profile />
-
-  }
+    element: <Profile />,
+  },
 ];
 
 const dashboardLayoutRoutes = [
@@ -120,27 +121,27 @@ const dashboardLayoutRoutes = [
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootWrapper />, 
+    element: <RootWrapper />,
     children: [
       {
         path: "/",
         element: <MainLayout />,
         children: mainLayoutRoutes,
       },
-
+      { path: "/education", element: <EducationHub /> },
       {
         path: "/",
-        element: <ProtectedRoute />, 
+        element: <ProtectedRoute />,
         children: [
           {
             path: "/Features",
-            element: <Features/>,
-
-          }, {
+            element: <Features />,
+          },
+          {
             path: "/dashboard",
-            element:<DashBoardLayout/> ,
+            element: <DashBoardLayout />,
             children: dashboardLayoutRoutes,
-          }
+          },
         ],
       },
       {
@@ -171,10 +172,9 @@ const router = createBrowserRouter([
       {
         path: "/reset-password/:resetToken",
         element: <PasswordResetForm />,
-      }
+      },
     ],
   },
 ]);
-
 
 export default router;
