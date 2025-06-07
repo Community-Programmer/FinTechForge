@@ -10,7 +10,8 @@ import Premium from "./pages/Premium/Premium"; // Changed from "@"
 
 
 import Pricing from "./pages/Pricing/Pricing"; 
-
+import Community from "./pages/Community/Community";
+import Profile from "./pages/Profile/Profile"
 
 
 import Profile from "./pages/Profile/Profile";
@@ -41,11 +42,12 @@ const mainLayoutRoutes = [
     index: true,
     element: <HomePage />,
   },
-  {
+  /*{
     path: "/map",
     index: true,
-    // element: <NearServices />,
-  },
+    element: <NearServices />,
+  },*/
+
   {
     path: "/About",
     element: <About />,
@@ -59,9 +61,14 @@ const mainLayoutRoutes = [
     element: <Premium />,
   },
   {
+    path:"/Pricing",
+    element:<Pricing/>
+  },
+  {
 
-    path: "/Pricing",
-    element: <Pricing />,
+    path:"/Community",
+    element:<Community/>
+
   },
   {
     path: "/profile",
@@ -149,14 +156,14 @@ const router = createBrowserRouter([
         element: <MainLayout />,
         children: mainLayoutRoutes,
       },
-      {
+     /* {
         path: "/Login",
         element: <LoginForm />,
       },
       {
         path: "/SignUp",
         element: <SignUpForm />,
-      },
+      },*/
       {
         path: "/verifymail",
         element: <VerificationEmailSent />,
@@ -169,10 +176,10 @@ const router = createBrowserRouter([
         path: "/forgot-password",
         element: <ForgotPassword />,
       },
-      {
+      /*{
         path: "/reset-password/:resetToken",
         element: <PasswordResetForm />,
-      },
+      }*/
     ],
   },
 ]);
