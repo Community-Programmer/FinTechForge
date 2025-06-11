@@ -1,9 +1,24 @@
-
 "use client"
-export default function ServiceFilters({ serviceTypes, activeFilters, toggleFilter }) {
+
+// Fix: Add proper TypeScript interfaces
+interface ServiceType {
+  name: string;
+  icon: any;
+  color: string;
+  query: string;
+  alternativeQueries?: string[];
+}
+
+interface ServiceFiltersProps {
+  serviceTypes: Record<string, ServiceType>;
+  activeFilters: Record<string, boolean>;
+  toggleFilter: (type: string) => void;
+}
+
+export default function ServiceFilters({ serviceTypes, activeFilters, toggleFilter }: ServiceFiltersProps) {
   return (
     <div className="flex flex-wrap gap-2 mb-2">
-      {Object.entries(serviceTypes).map(([type, info]) => (
+      {Object.entries(serviceTypes).map(([type, info]: [string, ServiceType]) => (
         <button
           key={type}
           onClick={() => toggleFilter(type)}

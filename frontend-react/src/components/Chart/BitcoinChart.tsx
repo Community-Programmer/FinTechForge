@@ -1,7 +1,8 @@
 import { useEffect, useRef, memo } from 'react';
 
 function TradingViewWidget() {
-  const container = useRef();
+  // Fix: Add proper typing for useRef
+  const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const cryptoScript = document.createElement("script");

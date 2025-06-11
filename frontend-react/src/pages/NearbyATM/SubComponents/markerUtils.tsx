@@ -1,7 +1,8 @@
 import L from "leaflet";
 
 // Create custom colored markers using the CDN URL
-export const createColoredIcon = (color) => {
+// Fix: Add proper typing for color parameter
+export const createColoredIcon = (color: string) => {
   return new L.Icon({
     iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
     shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",

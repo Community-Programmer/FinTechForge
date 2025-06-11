@@ -1,8 +1,10 @@
 // TradingViewWidget.jsx
-import React, { useEffect, useRef, memo } from 'react';
+// Fix: Remove unused React import
+import { useEffect, useRef, memo } from 'react';
 
 function TradingViewWidget() {
-  const container = useRef();
+  // Fix: Add proper typing for useRef
+  const container = useRef<HTMLDivElement>(null);
 
   useEffect(
     () => {
@@ -27,7 +29,11 @@ function TradingViewWidget() {
           "width": "100%",
           "height": "100%"
         }`;
-      container.current.appendChild(script);
+      
+      // Fix: Add null check for container.current
+      if (container.current) {
+        container.current.appendChild(script);
+      }
     },
     []
   );

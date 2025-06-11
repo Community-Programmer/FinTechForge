@@ -1,7 +1,8 @@
 import { useEffect, useRef, memo } from 'react';
 
 function StockHeatMap() {
-  const container = useRef<HTMLElement | null>(null);
+  // Fix: Change HTMLElement to HTMLDivElement
+  const container = useRef<HTMLDivElement | null>(null);
 
   useEffect(
     () => {
@@ -27,7 +28,11 @@ function StockHeatMap() {
           "width": "100%",
           "height": "100%"
         }`;
-      container.current.appendChild(script);
+      
+      // Fix: Add null check for container.current
+      if (container.current) {
+        container.current.appendChild(script);
+      }
     },
     []
   );

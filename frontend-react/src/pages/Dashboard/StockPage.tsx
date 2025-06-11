@@ -7,9 +7,12 @@ const StockPage = () => {
 
   document.title = `Stock Details - ${symbol}`;
 
-  const handleSearch = (e) => {
+  // Fix: Add proper typing for event parameter
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const inputSymbol = e.target.elements.symbol.value.trim();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const inputSymbol = (formData.get('symbol') as string)?.trim();
     if (inputSymbol) {
       setSymbol(inputSymbol); // Update the stock symbol dynamically
     }

@@ -1,10 +1,31 @@
 import { serviceTypes } from "./markerUtils";
 
+// Fix: Add interface for Place type
+interface Place {
+  id: string;
+  lat: number;
+  lon: number;
+  name: string;
+  type: string;
+  address: string;
+  operator: string;
+  opening_hours: string;
+}
+
+// Fix: Add interface for service types
+interface ServiceType {
+  name: string;
+  icon: any;
+  color: string;
+  query: string;
+  alternativeQueries?: string[];
+}
+
 // Utility function to add delay between requests
-export const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Function to safely fetch from Overpass API with retry logic
-export const safeOverpassFetch = async (url, retries = 3, delayTime = 2000) => {
+export const safeOverpassFetch = async (url: string, retries = 3, delayTime = 2000) => {
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
       // Add exponential backoff delay after first attempt
@@ -38,27 +59,30 @@ export const safeOverpassFetch = async (url, retries = 3, delayTime = 2000) => {
         throw error;
       }
       
-      console.warn(`Overpass API fetch failed, retrying (attempt ${attempt + 1}/${retries}): ${error.message}`);
+      // Fix: Handle unknown error type
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.warn(`Overpass API fetch failed, retrying (attempt ${attempt + 1}/${retries}): ${errorMessage}`);
     }
   }
 };
 
 // Fetch data from Overpass API for a specific service type
-export const fetchServiceData = async (lat, lon, radius, serviceType) => {
+export const fetchServiceData = async (lat: number, lon: number, radius: number, serviceType: string): Promise<Place[]> => {
   try {
     // Build the main query
+    const serviceTypeData = serviceTypes[serviceType as keyof typeof serviceTypes] as ServiceType;
     const query = `[out:json];
-      ${serviceTypes[serviceType].query}(around:${radius},${lat},${lon});
+      ${serviceTypeData.query}(around:${radius},${lat},${lon});
       out body;`;
 
     const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
     const data = await safeOverpassFetch(url);
 
-    let results = data.elements.map((el) => ({
+    let results: Place[] = data.elements.map((el: any) => ({
       id: `${serviceType}_${el.id}`,
       lat: el.lat,
       lon: el.lon,
-      name: el.tags?.name || `${serviceTypes[serviceType].name} (Unnamed)`,
+      name: el.tags?.name || `${serviceTypeData.name} (Unnamed)`,
       type: serviceType,
       address: el.tags?.["addr:street"] 
         ? `${el.tags?.["addr:housenumber"] || ""} ${el.tags?.["addr:street"] || ""}, ${el.tags?.["addr:city"] || ""}`
@@ -69,10 +93,10 @@ export const fetchServiceData = async (lat, lon, radius, serviceType) => {
 
     // If there are alternative queries defined and the main query returned few results,
     // try the alternative queries - but sequentially to avoid rate limiting
-    if (serviceTypes[serviceType].alternativeQueries && results.length < 5) {
-      const alternativeResults = [];
+    if (serviceTypeData.alternativeQueries && results.length < 5) {
+      const alternativeResults: Place[] = [];
       
-      for (const altQuery of serviceTypes[serviceType].alternativeQueries) {
+      for (const altQuery of serviceTypeData.alternativeQueries) {
         // Add delay between queries to avoid rate limiting
         await delay(1000);
         
@@ -84,11 +108,11 @@ export const fetchServiceData = async (lat, lon, radius, serviceType) => {
         try {
           const altData = await safeOverpassFetch(altUrl);
           
-          const altResults = altData.elements.map((el) => ({
+          const altResults: Place[] = altData.elements.map((el: any) => ({
             id: `${serviceType}_alt_${el.id}`,
             lat: el.lat,
             lon: el.lon,
-            name: el.tags?.name || `${serviceTypes[serviceType].name} (Unnamed)`,
+            name: el.tags?.name || `${serviceTypeData.name} (Unnamed)`,
             type: serviceType,
             address: el.tags?.["addr:street"] 
               ? `${el.tags?.["addr:housenumber"] || ""} ${el.tags?.["addr:street"] || ""}, ${el.tags?.["addr:city"] || ""}`
@@ -128,19 +152,27 @@ export const fetchServiceData = async (lat, lon, radius, serviceType) => {
 };
 
 // Fetch all service types
-export const fetchAllServices = async (locationCoords, searchRadius, setPlaces, setLoading, setError) => {
+// Fix: Update function signature to accept tuple type
+export const fetchAllServices = async (
+  locationCoords: [number, number], 
+  searchRadius: number, 
+  setPlaces: React.Dispatch<React.SetStateAction<Place[]>>, 
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>, 
+  setError: React.Dispatch<React.SetStateAction<string | null>>
+) => {
   setLoading(true);
   setPlaces([]);
   setError(null);
   
   try {
     // Fetch services sequentially to avoid rate limiting
-    const allServices = [];
+    const allServices: Place[] = [];
     
     for (const type of Object.keys(serviceTypes)) {
       try {
         // Show user which service we're currently loading
-        setError(`Loading ${serviceTypes[type].name}...`);
+        const serviceTypeData = serviceTypes[type as keyof typeof serviceTypes] as ServiceType;
+        setError(`Loading ${serviceTypeData.name}...`);
         
         // Add a small delay between service types to avoid rate limiting
         if (allServices.length > 0) {
@@ -157,7 +189,7 @@ export const fetchAllServices = async (locationCoords, searchRadius, setPlaces, 
         allServices.push(...results);
         
         // Update places as we go to show progress
-        setPlaces(prev => [...prev, ...results]);
+        setPlaces((prev: Place[]) => [...prev, ...results]);
       } catch (err) {
         console.error(`Error fetching ${type}:`, err);
         // Continue with other service types even if this one failed

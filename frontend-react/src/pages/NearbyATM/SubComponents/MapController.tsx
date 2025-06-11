@@ -1,7 +1,13 @@
 import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 
-export default function MapController({ center, radius }) {
+// Fix: Add proper TypeScript interface with tuple type
+interface MapControllerProps {
+  center: [number, number] | null;
+  radius: number;
+}
+
+export default function MapController({ center, radius }: MapControllerProps) {
   const map = useMap();
   
   useEffect(() => {

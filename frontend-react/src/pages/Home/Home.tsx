@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   ArrowRight,
   BarChart3,
@@ -18,6 +17,43 @@ import dashboardImage from "@/assets/image.png"
 import mobileImage from "@/assets/mobile.png"
 import mainImage from "@/assets/main.png"
 
+// Fix: Add proper TypeScript interfaces
+interface FeatureCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}
+
+interface DashboardFeatureProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}
+
+interface TestimonialCardProps {
+  quote: string;
+  author: string;
+  role: string;
+}
+
+// Fix: Comment out interfaces to preserve them while avoiding TypeScript errors
+// These are preserved for when pricing section is uncommented
+// To use: uncomment the interfaces and remove the /* */ around the PricingCard component
+/*
+interface PricingCardProps {
+  title: string;
+  price: string;
+  description: string;
+  features: string[];
+  buttonText: string;
+  buttonVariant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  highlighted?: boolean;
+}
+
+interface CheckIconProps {
+  className?: string;
+}
+*/
 
 const HomePage: React.FC = () => {
 
@@ -258,7 +294,9 @@ const HomePage: React.FC = () => {
 }
 
 export default HomePage
-function FeatureCard({ icon, title, description }) {
+
+// Fix: Add proper TypeScript interfaces for component functions
+function FeatureCard({ icon, title, description }: FeatureCardProps) {
   return (
     <Card className="overflow-hidden">
       <CardContent className="p-6">
@@ -270,7 +308,7 @@ function FeatureCard({ icon, title, description }) {
   )
 }
 
-function DashboardFeature({ icon, title, description }) {
+function DashboardFeature({ icon, title, description }: DashboardFeatureProps) {
   return (
     <div className="flex items-start">
       <div className="mr-4 mt-1 flex h-8 w-8 items-center justify-center rounded-full border bg-background">{icon}</div>
@@ -282,7 +320,7 @@ function DashboardFeature({ icon, title, description }) {
   )
 }
 
-function TestimonialCard({ quote, author, role }) {
+function TestimonialCard({ quote, author, role }: TestimonialCardProps) {
   return (
     <Card>
       <CardContent className="p-6">
@@ -297,6 +335,9 @@ function TestimonialCard({ quote, author, role }) {
   )
 }
 
+// Fix: Keep the function but mark as unused - preserved for when pricing section is uncommented
+// This function is preserved for potential future use when pricing section is enabled
+/* 
 function PricingCard({
   title,
   price,
@@ -305,7 +346,7 @@ function PricingCard({
   buttonText,
   buttonVariant = "default",
   highlighted = false,
-}) {
+}: PricingCardProps) {
   return (
     <Card className={`overflow-hidden ${highlighted ? "border-blue-500 shadow-lg ring-1 ring-blue-500" : ""}`}>
       <CardContent className="p-6">
@@ -316,7 +357,7 @@ function PricingCard({
         </div>
         <p className="mt-2 text-sm text-muted-foreground">{description}</p>
         <ul className="mt-6 space-y-3">
-          {features.map((feature, index) => (
+          {features.map((feature: string, index: number) => (
             <li key={index} className="flex items-center">
               <CheckIcon className="mr-2 h-4 w-4 text-blue-500" />
               <span className="text-sm">{feature}</span>
@@ -330,8 +371,13 @@ function PricingCard({
     </Card>
   )
 }
+*/
 
-function CheckIcon(props) {
+// Fix: Comment out function to preserve it while avoiding TypeScript error
+// This function is preserved for when pricing section is uncommented
+// To use: uncomment this function and the PricingCard component
+/*
+function CheckIcon(props: CheckIconProps) {
   return (
     <svg
       {...props}
@@ -349,3 +395,4 @@ function CheckIcon(props) {
     </svg>
   )
 }
+*/

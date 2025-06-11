@@ -150,7 +150,7 @@ export function ChartArea({
                 active={active}
                 payload={payload}
                 label={label}
-                formatter={(value, name) => {
+                formatter={(value, _name) => {
                   return tooltipFormatter ? tooltipFormatter(value) : value.toFixed(2)
                 }}
                 labelFormatter={(label) => {
@@ -230,7 +230,7 @@ export function ChartBar({
                 active={active}
                 payload={payload}
                 label={label}
-                formatter={(value, name) => {
+                formatter={(value, _name) => {
                   return tooltipFormatter ? tooltipFormatter(value) : value.toFixed(2)
                 }}
                 labelFormatter={(label) => {
@@ -288,7 +288,7 @@ export function ChartPie({
             nameKey={nameKey}
             label
           >
-            {data.map((entry, index) => (
+            {data.map((_entry, index) => (
               <Cell
                 key={`cell-${index}`}
                 fill={colors ? colors[index % colors.length] : defaultColors[index % defaultColors.length]}
@@ -301,7 +301,7 @@ export function ChartPie({
                 active={active}
                 payload={payload}
                 label={label}
-                formatter={(value, name) => {
+                formatter={(value, _name) => {
                   return tooltipFormatter ? tooltipFormatter(value) : value.toFixed(2)
                 }}
                 labelFormatter={(label) => {
@@ -316,4 +316,3 @@ export function ChartPie({
     </div>
   )
 }
-

@@ -1,4 +1,3 @@
-
 import type React from "react"
 
 import { useState, useEffect } from "react"
@@ -358,7 +357,10 @@ function NewsCard({
   )
 }
 
-// Note: This is Mock data function that would be replaced with actual API call
+// Fix: Comment out function to preserve it while avoiding TypeScript error
+// This function is preserved for potential future use or as fallback mock data
+// To use: uncomment the function and call _getMockNewsData() or getMockNewsData()
+/*
 function getMockNewsData(): NewsItem[] {
   return [
     {
@@ -474,4 +476,4 @@ function getMockNewsData(): NewsItem[] {
     },
   ]
 }
-
+*/
