@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { objectIdSchema } from "./common";  
 
 export const flashcardSchema = z.object({
   question: z.string().min(1, "Question is required"),
@@ -6,18 +7,18 @@ export const flashcardSchema = z.object({
 });
 
 export const flashcardDeckIdParamSchema = z.object({
-  id: z.string().min(1, "Deck ID is required"),
+  id: objectIdSchema,
 });
 
 export const createFlashcardDeckSchema = z.object({
-  lessonId: z.string().min(1, "Lesson ID is required"),
+  lessonId: objectIdSchema,
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
   flashcards: z.array(flashcardSchema).min(1, "At least one flashcard is required"),
 });
 
 export const updateFlashcardDeckSchema = z.object({
-  lessonId: z.string().min(1).optional(),
+  lessonId: objectIdSchema.optional(),
   title: z.string().min(1).optional(),
   description: z.string().optional(),
   flashcards: z.array(flashcardSchema).optional(),

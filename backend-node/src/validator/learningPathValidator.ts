@@ -1,7 +1,7 @@
 import { z } from "zod";
-
+import { objectIdSchema } from "./common";
 export const learningPathIdParamSchema = z.object({
-  id: z.string().min(1, "Learning Path ID is required"),
+  id: objectIdSchema,
 });
 
 export const createLearningPathSchema = z.object({

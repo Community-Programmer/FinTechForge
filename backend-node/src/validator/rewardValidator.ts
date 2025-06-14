@@ -1,5 +1,6 @@
 import { z } from "zod";
+import { objectIdSchema } from "./common";
 
 export const rewardIdParamSchema = z.object({
-  id: z.string().min(1, "Reward ID is required"),
+  id: objectIdSchema,
 });

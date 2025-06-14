@@ -1,7 +1,7 @@
 import { z } from "zod";
-
+import { objectIdSchema } from "./common";
 export const completeModuleSchema = z.object({
-  lessonId: z.string().min(1, "Lesson ID is required"),
+  lessonId: objectIdSchema,
   xpEarned: z.number().int().min(0, "XP must be a non-negative integer"),
 });
 
@@ -14,6 +14,6 @@ export const addAchievementSchema = z.object({
 });
 
 export const updateSkillTreeSchema = z.object({
-  skillTreeId: z.string().min(1, "Skill Tree ID is required"),
+  skillTreeId:objectIdSchema,
   progress: z.number().min(0, "Progress must be a non-negative number"),
 });

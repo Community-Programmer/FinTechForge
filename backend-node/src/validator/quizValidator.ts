@@ -1,7 +1,7 @@
 import { z } from "zod";
-
+import { objectIdSchema } from "./common";
 export const quizIdParamSchema = z.object({
-  id: z.string().min(1, "Quiz ID is required"),
+  id: objectIdSchema,
 });
 
 export const quizQuestionSchema = z.object({
@@ -11,7 +11,7 @@ export const quizQuestionSchema = z.object({
 });
 
 export const createQuizSchema = z.object({
-  lessonId: z.string().min(1, "Lesson ID is required"),
+  lessonId: objectIdSchema,
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   xpReward: z.number().int().min(0, "XP Reward must be a non-negative integer"),
@@ -19,7 +19,7 @@ export const createQuizSchema = z.object({
 });
 
 export const updateQuizSchema = z.object({
-  lessonId: z.string().min(1).optional(),
+  lessonId: objectIdSchema.optional(),
   title: z.string().min(1).optional(),
   description: z.string().min(1).optional(),
   xpReward: z.number().int().min(0).optional(),
@@ -31,7 +31,7 @@ export const updateQuizSchema = z.object({
 export const submitQuizSchema = z.object({
   answers: z.array(
     z.object({
-      questionId: z.string().min(1, "Question ID is required"),
+      questionId: objectIdSchema,
       answerIndex: z.number().int().min(0, "Answer index is required"),
     })
   ).min(1, "At least one answer is required"),

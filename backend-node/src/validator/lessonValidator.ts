@@ -1,5 +1,5 @@
 import { z } from "zod";
-
+import { objectIdSchema } from "./common";
 export const lessonIdParamSchema = z.object({
   id: z.string().min(1, "Lesson ID is required"),
 });
@@ -11,7 +11,7 @@ export const createLessonSchema = z.object({
   xpReward: z.number().int().min(0, "XP Reward must be a non-negative integer"),
   category: z.string().min(1, "Category is required"),
   icon: z.string().min(1, "Icon is required"),
-  learningPathId: z.string().min(1, "Learning Path ID is required"),
+  learningPathId: objectIdSchema,
 });
 
 export const updateLessonSchema = z.object({

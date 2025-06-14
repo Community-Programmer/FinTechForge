@@ -1,7 +1,7 @@
 import { z } from "zod";
-
+import { objectIdSchema } from "./common";
 export const skillChallengeIdParamSchema = z.object({
-  id: z.string().min(1, "Skill Challenge ID is required"),
+  id: objectIdSchema,
 });
 
 export const createSkillChallengeSchema = z.object({
