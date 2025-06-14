@@ -5,13 +5,19 @@ import { getFlashcardDeckById,
   updateFlashcardDeck,
   deleteFlashcardDeck
  } from './flashcardController';
-
+import {
+  flashcardDeckIdParamSchema,
+  createFlashcardDeckSchema,
+  updateFlashcardDeckSchema
+} from '../validator/flashCardValidator';
+import { validateRequest } from '../middleware/validateRequest';
 const router = Router();
 
 router.get('/', getFlashcardDecks);
-router.get('/:id', getFlashcardDeckById as RequestHandler);
-router.post('/', createFlashcardDeck);
-router.patch('/:id', updateFlashcardDeck);
-router.delete('/:id', deleteFlashcardDeck);
+router.get('/:id',validateRequest(flashcardDeckIdParamSchema,"params"), getFlashcardDeckById as RequestHandler);
+router.post('/', validateRequest(createFlashcardDeckSchema), createFlashcardDeck);
+router.patch('/:id',validateRequest(flashcardDeckIdParamSchema, "params"),
+  validateRequest(updateFlashcardDeckSchema as any), updateFlashcardDeck);
+router.delete('/:id',validateRequest(flashcardDeckIdParamSchema,"params"), deleteFlashcardDeck);
 
 export default router; 

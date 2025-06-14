@@ -7,14 +7,24 @@ import {
   deleteQuiz,
   submitQuiz,
 } from './quizController';
+import {
+  quizIdParamSchema,
+  createQuizSchema,
+  updateQuizSchema,
+  submitQuizSchema,
+} from '../validator/quizValidator';
+import { validateRequest } from '../middleware/validateRequest';
 
 const router = Router();
 
 router.get('/', getQuizzes);
-router.get('/:id', getQuizById as RequestHandler);
-router.post('/', createQuiz);
-router.patch('/:id', updateQuiz);
-router.delete('/:id', deleteQuiz);
-router.post('/:id/submit', submitQuiz as RequestHandler);
+router.get('/:id',validateRequest(quizIdParamSchema, "params"), getQuizById as RequestHandler);
+router.post('/',validateRequest(createQuizSchema), createQuiz);
+router.patch('/:id',
+  validateRequest(quizIdParamSchema, "params"),
+  validateRequest(updateQuizSchema as any), updateQuiz);
+router.delete('/:id',validateRequest(quizIdParamSchema, "params"), deleteQuiz);
+router.post('/:id/submit',validateRequest(quizIdParamSchema, "params"),
+  validateRequest(submitQuizSchema), submitQuiz as RequestHandler);
 
 export default router;
