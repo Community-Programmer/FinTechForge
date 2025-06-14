@@ -76,7 +76,7 @@ const LoginForm: React.FC = () => {
                 <LinkIcon className="text-white w-6 h-6" />
               </div>
               <CardTitle className="text-3xl font-bold text-gray-800">
-                Finacne
+                FintechForge
               </CardTitle>
             </div>
           </CardHeader>
