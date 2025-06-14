@@ -63,8 +63,8 @@ const HomePage: React.FC = () => {
   <div className="flex min-h-screen flex-col">
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white py-20 md:py-32">
-        <div className="container flex flex-col items-center text-center">
+      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-950 transition-colors py-20 md:py-32">
+        <div className="container mx-auto px-4 md:px-8 max-w-screen-lg text-center flex flex-col items-center">
           <div className="inline-flex items-center rounded-full border bg-background px-3 py-1 text-sm">
             <span className="mr-1 rounded-full bg-blue-500 px-1.5 py-0.5 text-xs font-medium text-white">New</span>
             <span className="text-muted-foreground">AI-powered financial insights</span>
@@ -93,7 +93,7 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20">
+      <section id="features" className="bg-slate-50 dark:bg-gray-900 transition-colors py-20">
         <div className="container mx-auto px-4 md:px-8 max-w-screen-lg mt-16">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">All-in-one Financial Intelligence</h2>
@@ -127,7 +127,7 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Dashboard Preview */}
-      <section id="dashboard" className="bg-slate-50 py-20">
+      <section id="dashboard" className="bg-slate-50 dark:bg-gray-900 transition-colors py-20">
         <div className="container mx-auto px-4 md:px-8 max-w-screen-lg mt-16">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 items-center">
             <div>
@@ -178,8 +178,8 @@ const HomePage: React.FC = () => {
       </section>
       
       {/* Nearby Financial */}
-      <section id="testimonials" className="py-20">
-        <div className="container">
+      <section id="testimonials" className="bg-slate-50 dark:bg-gray-900 transition-colors py-20">
+        <div className="container mx-auto px-4 md:px-8 max-w-screen-lg">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">Nearby Financial Services</h2>
             <p className="mt-4 text-xl text-muted-foreground">Find the nearby financial services includes cryto atm,advisors,etc.</p>
@@ -192,7 +192,7 @@ const HomePage: React.FC = () => {
           </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="py-15">
+      <section id="testimonials" className="bg-slate-50 dark:bg-gray-900 transition-colors py-15">
         <div className="container mx-auto px-4 md:px-8 max-w-screen-lg mt-16">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">Trusted by Investors Worldwide</h2>
@@ -274,7 +274,7 @@ const HomePage: React.FC = () => {
 
       {/* CTA */}
       <section className="bg-blue-500 py-16">
-        <div className="container">
+        <div className="container mx-auto px-4 md:px-8 max-w-screen-lg">
           <div className="flex flex-col items-center text-center">
             <h2 className="text-3xl font-bold tracking-tighter text-white md:text-4xl">
               Ready to transform your financial future?
