@@ -9,6 +9,8 @@ import MainTicker from "../Ticker/MainTicker";
 import UserAvatar from "@/components/UserAvatar/UserAvatar";
 import fintechforgeLogo from "../../assets/fintechforge-logo.png";
 import { ModeToggle } from "@/components/mode-toggle";
+import { useTheme } from "@/components/theme-provider";
+
 
 import {
   Sheet,
@@ -23,7 +25,10 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
+
 const Navbar: React.FC = () => {
+  const { theme } = useTheme();
+  console.log(theme)
   const dispatch = useDispatch<AppDispatch>();
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const user = useSelector((state: RootState) => state.auth.user);
@@ -145,7 +150,8 @@ const Navbar: React.FC = () => {
           </div>
         </div>
       </nav>
-      <MainTicker />
+      <MainTicker theme={theme === "dark" ? "dark" : "light"} />
+
     </div>
   );
 };
