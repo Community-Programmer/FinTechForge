@@ -24,8 +24,8 @@ const { verify, sign } = pkg;
 
 const signup = async (req: Request, res: Response, next: NextFunction) => {
   const { username, email, password } = req.body;
-
   try {
+    // console.log("Done")
     const existingUser = await prisma.user.findUnique({
       where: {
         email,
