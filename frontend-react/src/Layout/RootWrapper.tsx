@@ -4,7 +4,7 @@ import { AppDispatch } from '@/store/store';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router-dom';
-
+import { ChatBot } from '@/components/ChatBot';
 
 const RootWrapper = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -13,7 +13,12 @@ const RootWrapper = () => {
     dispatch(silentRefresh());
   }, [dispatch]);
 
-  return <Outlet />;
+   return (
+    <>
+      <Outlet />
+      <ChatBot />
+    </>
+  );
 };
 
 export default RootWrapper;

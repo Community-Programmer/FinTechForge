@@ -2,13 +2,16 @@ import React from 'react';
 import { ChevronUpIcon } from '@heroicons/react/24/solid';
 import useScrollToTop from '@/hooks/useScrollToTop';
 import { motion, AnimatePresence } from 'framer-motion';  // Make sure framer-motion is installed
+import { useChatStore } from '@/stores/useChatStore';
 
+
+const { isChatOpen } = useChatStore();
 const ScrollToTopButton = () => {
   const { isVisible, scrollToTop } = useScrollToTop();
-
+  
   return (
     <AnimatePresence>
-      {isVisible && (
+      {isVisible && !isChatOpen &&(
         <motion.button
           key="scrollToTop"
           onClick={scrollToTop}
@@ -22,12 +25,12 @@ const ScrollToTopButton = () => {
             ease: [0.16, 1, 0.3, 1],
           }}
           className={`
-            fixed bottom-5 right-5
+            fixed bottom-30 right-4
             z-[9999]
             w-14 h-14
             rounded-full
             border border-border/40
-            bg-primary/90 dark:bg-primary/80
+            bg-primary/90 dark:bg-primary/100
             text-primary-foreground
             backdrop-blur-md
             shadow-xl shadow-ring/40
