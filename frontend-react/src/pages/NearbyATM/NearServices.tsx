@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
+// Fix: Remove unused imports
 import "leaflet/dist/leaflet.css";
 import ServiceFilters from "./SubComponents/ServiceFilters";
 import SearchBar from "./SubComponents/SearchBar";
@@ -11,16 +11,31 @@ import StatsFooter from "./SubComponents/StatsFooter";
 import { serviceTypes, injectMarkerStyles } from "./SubComponents/markerUtils";
 import { fetchAllServices } from "./SubComponents/apiUtils";
 
+// Fix: Add interface for Place type
+interface Place {
+  id: string;
+  lat: number;
+  lon: number;
+  name: string;
+  type: string;
+  address: string;
+  operator: string;
+  opening_hours: string;
+}
+
 export default function FinancialServicesMap() {
-  const [location, setLocation] = useState(null);
-  const [searchLocation, setSearchLocation] = useState(null);
-  const [places, setPlaces] = useState([]);
+  // Fix: Add proper types for state
+  const [location, setLocation] = useState<[number, number] | null>(null);
+  const [searchLocation, setSearchLocation] = useState<[number, number] | null>(null);
+  const [places, setPlaces] = useState<Place[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [_error, setError] = useState<string | null>(null);
   const [radius, setRadius] = useState(1000);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilters, setActiveFilters] = useState(
-    Object.keys(serviceTypes).reduce((acc, type) => {
+  
+  // Fix: Add proper typing for activeFilters
+  const [activeFilters, setActiveFilters] = useState<Record<string, boolean>>(
+    Object.keys(serviceTypes).reduce((acc: Record<string, boolean>, type) => {
       acc[type] = true;
       return acc;
     }, {})
@@ -32,7 +47,7 @@ export default function FinancialServicesMap() {
   }, []);
 
   // Function to fetch location by address using Nominatim API
-  const searchByAddress = async (query) => {
+  const searchByAddress = async (query: string) => {
     try {
       setLoading(true);
       const response = await fetch(
@@ -42,9 +57,11 @@ export default function FinancialServicesMap() {
       
       if (data && data.length > 0) {
         const { lat, lon } = data[0];
-        setSearchLocation([parseFloat(lat), parseFloat(lon)]);
+        // Fix: Ensure tuple type with as const
+        const coords: [number, number] = [parseFloat(lat), parseFloat(lon)];
+        setSearchLocation(coords);
         fetchAllServices(
-          [parseFloat(lat), parseFloat(lon)], 
+          coords, 
           radius, 
           setPlaces, 
           setLoading, 
@@ -67,7 +84,8 @@ export default function FinancialServicesMap() {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
-        const userLocation = [latitude, longitude];
+        // Fix: Ensure tuple type with explicit typing
+        const userLocation: [number, number] = [latitude, longitude];
         setLocation(userLocation);
         setSearchLocation(userLocation);
         fetchAllServices(userLocation, radius, setPlaces, setLoading, setError);
@@ -78,7 +96,8 @@ export default function FinancialServicesMap() {
         setLoading(false);
         
         // Set default location to city center (e.g., New York City)
-        const defaultLocation = [40.7128, -74.0060];
+        // Fix: Ensure tuple type with explicit typing
+        const defaultLocation: [number, number] = [40.7128, -74.0060];
         setLocation(defaultLocation);
         setSearchLocation(defaultLocation);
         fetchAllServices(defaultLocation, radius, setPlaces, setLoading, setError);
@@ -87,7 +106,7 @@ export default function FinancialServicesMap() {
   }, []);
 
   // Handle filter changes
-  const toggleFilter = (type) => {
+  const toggleFilter = (type: string) => {
     setActiveFilters((prev) => ({
       ...prev,
       [type]: !prev[type],
@@ -95,7 +114,7 @@ export default function FinancialServicesMap() {
   };
 
   // Handle radius change
-  const handleRadiusChange = (newRadius) => {
+  const handleRadiusChange = (newRadius: number) => {
     setRadius(newRadius);
     if (searchLocation) {
       fetchAllServices(searchLocation, newRadius, setPlaces, setLoading, setError);
@@ -103,7 +122,7 @@ export default function FinancialServicesMap() {
   };
 
   // Handle search form submission
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       searchByAddress(searchQuery);
@@ -114,7 +133,7 @@ export default function FinancialServicesMap() {
   const filteredPlaces = places.filter((place) => activeFilters[place.type]);
 
   // Count services by type
-  const serviceCounts = {};
+  const serviceCounts: Record<string, number> = {};
   Object.keys(serviceTypes).forEach(type => {
     serviceCounts[type] = places.filter(p => p.type === type).length;
   });

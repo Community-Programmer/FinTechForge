@@ -1,7 +1,13 @@
-import  { useEffect } from "react";
+import { useEffect } from "react";
 
-const TradingWidgets = ({ symbol }) => {
-  const loadWidget = (id, scriptUrl, config) => {
+// Fix: Add interface for component props
+interface TradingWidgetsProps {
+  symbol: string;
+}
+
+const TradingWidgets = ({ symbol }: TradingWidgetsProps) => {
+  // Fix: Add types for function parameters
+  const loadWidget = (id: string, scriptUrl: string, config: Record<string, any>) => {
     const container = document.getElementById(id);
     if (container) {
       container.innerHTML = ""; // Clear previous script

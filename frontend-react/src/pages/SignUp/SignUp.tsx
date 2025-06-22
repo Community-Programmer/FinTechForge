@@ -68,7 +68,7 @@ const SignUpForm: React.FC = () => {
                 <LinkIcon className="text-white w-6 h-6" />
               </div>
               <CardTitle className="text-3xl font-bold text-gray-800">
-              FinTechForge
+              FintechForge
               </CardTitle>
             </div>
           </CardHeader>

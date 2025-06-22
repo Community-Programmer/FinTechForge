@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 const StockTicker = () => {
   useEffect(() => {
@@ -14,10 +14,19 @@ const StockTicker = () => {
         "locale": "en"
       }
     `;
-    document.getElementById('tradingview-widget-container').appendChild(script);
+    
+    // Fix: Add null check for getElementById
+    const container = document.getElementById('tradingview-widget-container');
+    if (container) {
+      container.appendChild(script);
+    }
 
     return () => {
-      document.getElementById('tradingview-widget-container').removeChild(script);
+      // Fix: Add null check for cleanup
+      const container = document.getElementById('tradingview-widget-container');
+      if (container && container.contains(script)) {
+        container.removeChild(script);
+      }
     };
   }, []);
 

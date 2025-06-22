@@ -1,8 +1,10 @@
 // TradingViewWidget.jsx
-import React, { useEffect, useRef, memo } from 'react';
+// Fix: Remove unused React import
+import { useEffect, useRef, memo } from 'react';
 
 function TradingViewWidget() {
-  const container = useRef();
+  // Fix: Add proper typing for useRef
+  const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const sensexScript = document.createElement("script");

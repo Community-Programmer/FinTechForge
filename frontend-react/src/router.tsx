@@ -1,20 +1,22 @@
-// router.tsx
 import { createBrowserRouter } from "react-router-dom";
-import MainLayout from "@/Layout/MainLayout";
-import HomePage from "@/pages/Home/Home";
-import LoginForm from "./pages/Login/Login";
-import SignUpForm from "./pages/SignUp/SignUp";
-import About from "./pages/About/About";
-import Features from "./pages/Features/Features";
-import Premium from "./pages/Premium/Premium";
+import MainLayout from "./Layout/MainLayout"; // Changed from "@"
+import RootWrapper from "./Layout/RootWrapper"; // Changed from "@"
+import DashBoardLayout from "./Layout/DashBoardLayout"; // Changed from "@"
+
+import HomePage from "./pages/Home/Home"; // Changed from "@"
+import About from "./pages/About/About"; // Changed from "@"
+import Features from "./pages/Features/Features"; // Changed from "@"
+import Premium from "./pages/Premium/Premium"; // Changed from "@"
+
+
+import Pricing from "./pages/Pricing/Pricing"; 
+import Community from "./pages/Community/Community";
 
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
-import RootWrapper from "./Layout/RootWrapper";
+
 import VerificationEmailSent from "./pages/EmailVerification/VerificationEmailSent";
 import VerificationStatus from "./pages/EmailVerification/VerificationStatus";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
-import PasswordResetForm from "./pages/ForgotPassword/PasswordResetForm";
-import DashBoardLayout from "./Layout/DashBoardLayout";
 import Home from "./pages/Dashboard/Home";
 import { MarketNews } from "./pages/Dashboard/News";
 import { CurrencyConverter } from "./pages/Dashboard/CurrencyConvertor";
@@ -24,24 +26,37 @@ import { AiChatbot } from "./pages/Dashboard/Chatbot";
 import EtfHeatmap from "./pages/Dashboard/MarketTrends/EtfHeatmap";
 import ForexHeatMap from "./pages/Dashboard/MarketTrends/ForexHeatmap";
 import StockPage from "./pages/Dashboard/StockPage";
+
 import NearServices from "./pages/NearbyATM/NearServices";
 import News from "./pages/News/News";
+
+import Profile from "./pages/Profile/Profile";
+import EducationHub from "./pages/Education/EducationHub";
+import LoginForm from "./pages/Login/Login";
+import SignUpForm from "./pages/SignUp/SignUp";
+
+
 const mainLayoutRoutes = [
   {
     path: "/",
     index: true,
     element: <HomePage />,
   },
+
   {
     path:"/News",
     index : true,
     element : <News/>
   },
   {
+
+  /*{
+
     path: "/map",
     index: true,
-    element: <NearServices/>,
-  },
+    element: <NearServices />,
+  },*/
+
   {
     path: "/About",
     element: <About />,
@@ -54,6 +69,20 @@ const mainLayoutRoutes = [
     path: "/Premium",
     element: <Premium />,
   },
+  {
+    path:"/Pricing",
+    element:<Pricing/>
+  },
+  {
+
+    path:"/Community",
+    element:<Community/>
+
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
+  },
 ];
 
 const dashboardLayoutRoutes = [
@@ -61,66 +90,74 @@ const dashboardLayoutRoutes = [
     path: "",
     index: true,
     element: <Home />,
-  }, {
+  },
+  {
     path: "news",
     index: true,
-    element: <MarketNews
-     />,
-  }, {
+    element: <MarketNews />,
+  },
+  {
     path: "analysis",
     index: true,
-    element: <StockPage/>,
+    element: <StockPage />,
   },
   {
     path: "finance-chatbot",
     index: true,
-    element: <AiChatbot/>,
+    element: <AiChatbot />,
   },
   {
     path: "currencyconvertor",
     index: true,
-    element: <CurrencyConverter/>,
+    element: <CurrencyConverter />,
   },
   {
     path: "stock-heatmap",
     index: true,
-    element: <StockHeatMap/>,
+    element: <StockHeatMap />,
   },
   {
     path: "crypto-heatmap",
     index: true,
-    element: <CryptoHeatmap/>,
+    element: <CryptoHeatmap />,
   },
   {
     path: "etf-heatmap",
     index: true,
-    element: <EtfHeatmap/>,
-  },{
+    element: <EtfHeatmap />,
+  },
+  {
     path: "forex-heatmap",
     index: true,
-    element: <ForexHeatMap/>,
-  }
-  
+    element: <ForexHeatMap />,
+  },
 ];
 
+// Create the router with routes
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootWrapper />, 
+    element: <RootWrapper />,
     children: [
       {
         path: "/",
-        element: <ProtectedRoute />, 
+        element: <MainLayout />,
+        children: mainLayoutRoutes,
+      },
+      { path: "/education", element: <EducationHub /> },
+      {
+        path: "/",
+        element: <ProtectedRoute />,
         children: [
           {
             path: "/Features",
-            element: <Features/>,
-
-          }, {
+            element: <Features />,
+          },
+          {
             path: "/dashboard",
-            element:<DashBoardLayout/> ,
+            element: <DashBoardLayout />,
             children: dashboardLayoutRoutes,
-          }
+          },
         ],
       },
       {
@@ -148,10 +185,10 @@ const router = createBrowserRouter([
         path: "/forgot-password",
         element: <ForgotPassword />,
       },
-      {
+      /*{
         path: "/reset-password/:resetToken",
         element: <PasswordResetForm />,
-      }
+      }*/
     ],
   },
 ]);

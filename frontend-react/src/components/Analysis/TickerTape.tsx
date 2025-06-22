@@ -17,7 +17,12 @@ const TickerTape = () => {
       displayMode: "adaptive",
       locale: "en",
     });
-    document.getElementById("ticker-tape").appendChild(script);
+    
+    // Fix: Add null check for getElementById
+    const tickerElement = document.getElementById("ticker-tape");
+    if (tickerElement) {
+      tickerElement.appendChild(script);
+    }
   }, []);
 
   return <div id="ticker-tape" className="tradingview-widget-container"></div>;

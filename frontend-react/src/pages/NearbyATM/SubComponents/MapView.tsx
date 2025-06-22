@@ -1,9 +1,37 @@
-import React from "react";
+// Fix: Remove unused React import (was causing error)
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import { Loader2 } from "lucide-react";
 import L from "leaflet";
 import MapController from "./MapController";
 
+// Fix: Add minimal TypeScript interfaces with proper Leaflet types
+interface Place {
+  id: string;
+  lat: number;
+  lon: number;
+  name: string;
+  type: string;
+  address: string;
+  operator: string;
+  opening_hours: string;
+}
+
+interface ServiceType {
+  name: string;
+  icon: any;
+  color: string;
+}
+
+interface MapViewProps {
+  location: [number, number] | null;
+  searchLocation: [number, number] | null;
+  radius: number;
+  loading: boolean;
+  filteredPlaces: Place[];
+  serviceTypes: Record<string, ServiceType>;
+}
+
+// Fix: Add TypeScript typing to props (this was causing the binding element errors)
 export default function MapView({ 
   location, 
   searchLocation, 
@@ -11,7 +39,7 @@ export default function MapView({
   loading, 
   filteredPlaces, 
   serviceTypes 
-}) {
+}: MapViewProps) {
   return (
     <div className="flex-grow relative z-0">
       {location ? (
@@ -65,7 +93,8 @@ export default function MapView({
           )}
           
           {/* Service markers */}
-          {filteredPlaces.map((place) => (
+          {/* Fix: Add typing for place parameter (this was causing the 'place' implicitly has 'any' type error) */}
+          {filteredPlaces.map((place: Place) => (
             <Marker
               key={place.id}
               position={[place.lat, place.lon]}

@@ -1,7 +1,14 @@
-
 import { Loader2, Search } from "lucide-react";
 
-export default function SearchBar({ searchQuery, setSearchQuery, handleSearch, loading }) {
+// Fix: Add proper TypeScript interface
+interface SearchBarProps {
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  handleSearch: (e: React.FormEvent) => void;
+  loading: boolean;
+}
+
+export default function SearchBar({ searchQuery, setSearchQuery, handleSearch, loading }: SearchBarProps) {
   return (
     <form onSubmit={handleSearch} className="flex mb-4">
       <input

@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   ArrowRight,
   BarChart3,
@@ -18,6 +17,43 @@ import dashboardImage from "@/assets/image.png"
 import mobileImage from "@/assets/mobile.png"
 import mainImage from "@/assets/main.png"
 
+// Fix: Add proper TypeScript interfaces
+interface FeatureCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}
+
+interface DashboardFeatureProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}
+
+interface TestimonialCardProps {
+  quote: string;
+  author: string;
+  role: string;
+}
+
+// Fix: Comment out interfaces to preserve them while avoiding TypeScript errors
+// These are preserved for when pricing section is uncommented
+// To use: uncomment the interfaces and remove the /* */ around the PricingCard component
+/*
+interface PricingCardProps {
+  title: string;
+  price: string;
+  description: string;
+  features: string[];
+  buttonText: string;
+  buttonVariant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  highlighted?: boolean;
+}
+
+interface CheckIconProps {
+  className?: string;
+}
+*/
 
 const HomePage: React.FC = () => {
 
@@ -27,8 +63,8 @@ const HomePage: React.FC = () => {
   <div className="flex min-h-screen flex-col">
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white py-20 md:py-32">
-        <div className="container flex flex-col items-center text-center">
+      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-950 transition-colors py-20 md:py-32">
+        <div className="container mx-auto px-4 md:px-8 max-w-screen-lg text-center flex flex-col items-center">
           <div className="inline-flex items-center rounded-full border bg-background px-3 py-1 text-sm">
             <span className="mr-1 rounded-full bg-blue-500 px-1.5 py-0.5 text-xs font-medium text-white">New</span>
             <span className="text-muted-foreground">AI-powered financial insights</span>
@@ -50,15 +86,15 @@ const HomePage: React.FC = () => {
               View Demo
             </Button>
           </div>
-          <div className="mt-16 w-full max-w-5xl overflow-hidden rounded-xl border bg-background shadow-xl">
+          <div className="container mx-auto px-4 py-10 md:px-8 max-w-screen-lg">
             <img src={dashboardImage} alt="Dashboard Preview" className="w-full object-cover" />
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20">
-        <div className="container">
+      <section id="features" className="bg-slate-50 dark:bg-gray-900 transition-colors py-20">
+        <div className="container mx-auto px-4 md:px-8 max-w-screen-lg mt-16">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">All-in-one Financial Intelligence</h2>
             <p className="mt-4 text-xl text-muted-foreground">
@@ -91,8 +127,8 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Dashboard Preview */}
-      <section id="dashboard" className="bg-slate-50 py-20">
-        <div className="container">
+      <section id="dashboard" className="bg-slate-50 dark:bg-gray-900 transition-colors py-20">
+        <div className="container mx-auto px-4 md:px-8 max-w-screen-lg mt-16">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 items-center">
             <div>
               <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
@@ -142,8 +178,8 @@ const HomePage: React.FC = () => {
       </section>
       
       {/* Nearby Financial */}
-      <section id="testimonials" className="py-20">
-        <div className="container">
+      <section id="testimonials" className="bg-slate-50 dark:bg-gray-900 transition-colors py-20">
+        <div className="container mx-auto px-4 md:px-8 max-w-screen-lg">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">Nearby Financial Services</h2>
             <p className="mt-4 text-xl text-muted-foreground">Find the nearby financial services includes cryto atm,advisors,etc.</p>
@@ -156,8 +192,8 @@ const HomePage: React.FC = () => {
           </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="py-15">
-        <div className="container">
+      <section id="testimonials" className="bg-slate-50 dark:bg-gray-900 transition-colors py-15">
+        <div className="container mx-auto px-4 md:px-8 max-w-screen-lg mt-16">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">Trusted by Investors Worldwide</h2>
             <p className="mt-4 text-xl text-muted-foreground">See what our users are saying about their experience</p>
@@ -238,7 +274,7 @@ const HomePage: React.FC = () => {
 
       {/* CTA */}
       <section className="bg-blue-500 py-16">
-        <div className="container">
+        <div className="container mx-auto px-4 md:px-8 max-w-screen-lg">
           <div className="flex flex-col items-center text-center">
             <h2 className="text-3xl font-bold tracking-tighter text-white md:text-4xl">
               Ready to transform your financial future?
@@ -258,7 +294,9 @@ const HomePage: React.FC = () => {
 }
 
 export default HomePage
-function FeatureCard({ icon, title, description }) {
+
+// Fix: Add proper TypeScript interfaces for component functions
+function FeatureCard({ icon, title, description }: FeatureCardProps) {
   return (
     <Card className="overflow-hidden">
       <CardContent className="p-6">
@@ -270,7 +308,7 @@ function FeatureCard({ icon, title, description }) {
   )
 }
 
-function DashboardFeature({ icon, title, description }) {
+function DashboardFeature({ icon, title, description }: DashboardFeatureProps) {
   return (
     <div className="flex items-start">
       <div className="mr-4 mt-1 flex h-8 w-8 items-center justify-center rounded-full border bg-background">{icon}</div>
@@ -282,7 +320,7 @@ function DashboardFeature({ icon, title, description }) {
   )
 }
 
-function TestimonialCard({ quote, author, role }) {
+function TestimonialCard({ quote, author, role }: TestimonialCardProps) {
   return (
     <Card>
       <CardContent className="p-6">
@@ -297,6 +335,9 @@ function TestimonialCard({ quote, author, role }) {
   )
 }
 
+// Fix: Keep the function but mark as unused - preserved for when pricing section is uncommented
+// This function is preserved for potential future use when pricing section is enabled
+/* 
 function PricingCard({
   title,
   price,
@@ -305,7 +346,7 @@ function PricingCard({
   buttonText,
   buttonVariant = "default",
   highlighted = false,
-}) {
+}: PricingCardProps) {
   return (
     <Card className={`overflow-hidden ${highlighted ? "border-blue-500 shadow-lg ring-1 ring-blue-500" : ""}`}>
       <CardContent className="p-6">
@@ -316,7 +357,7 @@ function PricingCard({
         </div>
         <p className="mt-2 text-sm text-muted-foreground">{description}</p>
         <ul className="mt-6 space-y-3">
-          {features.map((feature, index) => (
+          {features.map((feature: string, index: number) => (
             <li key={index} className="flex items-center">
               <CheckIcon className="mr-2 h-4 w-4 text-blue-500" />
               <span className="text-sm">{feature}</span>
@@ -330,8 +371,13 @@ function PricingCard({
     </Card>
   )
 }
+*/
 
-function CheckIcon(props) {
+// Fix: Comment out function to preserve it while avoiding TypeScript error
+// This function is preserved for when pricing section is uncommented
+// To use: uncomment this function and the PricingCard component
+/*
+function CheckIcon(props: CheckIconProps) {
   return (
     <svg
       {...props}
@@ -349,3 +395,4 @@ function CheckIcon(props) {
     </svg>
   )
 }
+*/
