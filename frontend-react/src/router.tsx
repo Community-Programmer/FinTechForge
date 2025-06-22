@@ -25,11 +25,17 @@ import EtfHeatmap from "./pages/Dashboard/MarketTrends/EtfHeatmap";
 import ForexHeatMap from "./pages/Dashboard/MarketTrends/ForexHeatmap";
 import StockPage from "./pages/Dashboard/StockPage";
 import NearServices from "./pages/NearbyATM/NearServices";
+import News from "./pages/News/News";
 const mainLayoutRoutes = [
   {
     path: "/",
     index: true,
     element: <HomePage />,
+  },
+  {
+    path:"/News",
+    index : true,
+    element : <News/>
   },
   {
     path: "/map",
