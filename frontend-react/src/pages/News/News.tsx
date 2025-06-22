@@ -15,7 +15,8 @@ const News: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const apiKey = 'pub_9700dae672b544b59a9c08136faaad3b';
+  const apiKey = import.meta.env.VITE_NEWS_API_KEY;
+
 
   useEffect(() => {
     const fetchFinanceNews = async () => {
