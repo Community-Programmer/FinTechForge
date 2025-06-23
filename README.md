@@ -95,6 +95,7 @@ uvicorn main:app --reload
 
 ```bash
 cd ../frontend-react
+cp .env.example .env #add gemini-api-key
 npm install
 npm run dev
 ```
