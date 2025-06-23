@@ -85,8 +85,9 @@ cd ../backend-python
 
 python -m venv venv
 source venv/bin/activate
-
+cp .env.example .env #add gemini-api-key
 pip install -r requirements.txt
+python seed.py #to check if seeding is working
 uvicorn main:app --reload
 ```
 

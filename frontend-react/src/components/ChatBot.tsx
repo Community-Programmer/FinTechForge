@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
 import { useChatStore } from '@/store/useChatStore';
 
-const { setChatOpen } = useChatStore();
+
 
 // Initialize Gemini API (keeping your existing configuration)
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
@@ -44,7 +44,7 @@ interface Message {
 
 export function ChatBot() {
 
-  
+  const { setChatOpen } = useChatStore();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -98,8 +98,8 @@ export function ChatBot() {
 
     const userMessage = input.trim();
     setInput('');
-    setMessages(prev => [...prev, { 
-      role: 'user', 
+    setMessages(prev => [...prev, {
+      role: 'user',
       content: userMessage,
       timestamp: Date.now()
     }]);
@@ -107,14 +107,36 @@ export function ChatBot() {
     setIsTyping(true);
 
     try {
+      // 🧠 1. Fetch relevant context chunks from Chroma
+      const fetchContextChunks = async (query: string): Promise<string[]> => {
+        const res = await fetch(`http://localhost:8000/chroma-search?q=${encodeURIComponent(query)}`);
+        if (!res.ok) throw new Error("Chroma fetch failed");
+        const data = await res.json();
+        return data;
+      };
+
+      const contextChunks = await fetchContextChunks(userMessage);
+
+      // 🧠 2. Create a dynamic prompt using the context
+      const dynamicPrompt = `
+  You are a helpful financial AI assistant for FinTechForge.
+
+  Context:
+  ${contextChunks.join('\n\n')}
+
+  Respond professionally using only financial domain knowledge.
+  If the topic is unclear or irrelevant, politely redirect the user.`;
+
+      // 🧠 3. Convert message history to Gemini-compatible format
       const conversationHistory = messages.map(msg => ({
         role: msg.role === "assistant" ? "model" : "user",
         parts: [{ text: msg.content }],
       }));
 
+      // 🧠 4. Start Gemini chat with context-aware prompt
       const chat = model.startChat({
         history: [
-          { role: 'user', parts: [{ text: SYSTEM_PROMPT }] },
+          { role: 'user', parts: [{ text: dynamicPrompt }] },
           ...conversationHistory,
         ],
         generationConfig: {
@@ -129,16 +151,16 @@ export function ChatBot() {
       const response = await result.response;
       const text = response.text();
 
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
+      setMessages(prev => [...prev, {
+        role: 'assistant',
         content: text,
         timestamp: Date.now()
       }]);
     } catch (error) {
       console.error('Error generating response:', error);
       toast.error('Failed to generate response. Please try again.');
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
+      setMessages(prev => [...prev, {
+        role: 'assistant',
         content: 'I apologize, but I encountered an error. Please try again or rephrase your question.',
         timestamp: Date.now()
       }]);
@@ -147,6 +169,7 @@ export function ChatBot() {
       setIsTyping(false);
     }
   };
+
 
   const toggleChat = () => {
   setIsOpen((prev) => {

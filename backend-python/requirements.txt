@@ -7,3 +7,5 @@ duckduckgo-search
 groq
 yfinance
 firecrawl-py
+chromadb
+google-generativeai
