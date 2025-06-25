@@ -49,18 +49,8 @@ const LoginForm: React.FC = () => {
     setShowPassword(!showPassword);
   };
 
-  //Error testing
-  // if (
-  //   !import.meta.env.VITE_GOOGLE_CLIENT_ID ||
-  //   !import.meta.env.VITE_GITHUB_CLIENT_ID
-  // ) {
-  //   throw new Error(
-  //     "Social login is not configured. Please set environment variables."
-  //   );
-  // }
-
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-blue-400 via-blue-200 to-blue-400">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-blue-400 via-blue-200 to-blue-400 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div
         className="absolute inset-0 z-0 opacity-30"
         style={{
@@ -69,42 +59,35 @@ const LoginForm: React.FC = () => {
         }}
       />
       <div className="w-full max-w-xl z-10 flex items-center justify-center">
-        <Card className="w-full h-full backdrop-blur-sm bg-white shadow-xl border-0">
+        <Card className="w-full h-full backdrop-blur-sm bg-white dark:bg-gray-900 shadow-xl border-0">
           <CardHeader className="space-y-1 flex flex-col items-center pt-8">
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-tr from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
                 <LinkIcon className="text-white w-6 h-6" />
               </div>
-              <CardTitle className="text-3xl font-bold text-gray-800">
+              <CardTitle className="text-3xl font-bold text-gray-800 dark:text-white">
                 FintechForge
               </CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-6 px-8 py-6">
             <div className="space-y-2 text-center">
-              <h2 className="text-3xl font-semibold tracking-tight text-gray-800">
+              <h2 className="text-3xl font-semibold tracking-tight text-gray-800 dark:text-white">
                 Welcome back
               </h2>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 Enter your credentials to access your account
               </p>
               {errors.root && (
-                <div className="flex items-center bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md">
+                <div className="flex items-center bg-red-100 dark:bg-red-900 border-l-4 border-red-500 text-red-700 dark:text-red-300 p-4 rounded-md">
                   <AlertCircle className="w-5 h-5 mr-3" />
                   <span>{errors.root.message}</span>
                 </div>
               )}
             </div>
-            <form
-              className="space-y-4"
-              onSubmit={handleSubmit(onSubmit)}
-              noValidate
-            >
+            <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="space-y-2">
-                <Label
-                  htmlFor="email"
-                  className="text-sm font-medium text-gray-700"
-                >
+                <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-200">
                   Email
                 </Label>
                 <Input
@@ -113,18 +96,13 @@ const LoginForm: React.FC = () => {
                   type="email"
                   placeholder="m@example.com"
                   required
-                  className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                  className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-700"
                 />
-                {errors.email && (
-                  <p className="text-red-500">{errors.email.message}</p>
-                )}
+                {errors.email && <p className="text-red-500">{errors.email.message}</p>}
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label
-                    htmlFor="password"
-                    className="text-sm font-medium text-gray-700"
-                  >
+                  <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-200">
                     Password
                   </Label>
                   <Link
@@ -142,26 +120,18 @@ const LoginForm: React.FC = () => {
                       type={showPassword ? "text" : "password"}
                       placeholder="Your password"
                       required
-                      className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 pr-10"
+                      className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 pr-10 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-700"
                     />
                     <button
                       type="button"
                       onClick={togglePasswordVisibility}
                       className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                      aria-label={
-                        showPassword ? "Hide password" : "Show password"
-                      }
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                     >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5" />
-                      ) : (
-                        <Eye className="h-5 w-5" />
-                      )}
+                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
                   </div>
-                  {errors.password && (
-                    <p className="text-red-500">{errors.password.message}</p>
-                  )}
+                  {errors.password && <p className="text-red-500">{errors.password.message}</p>}
                 </div>
               </div>
               <Button
@@ -169,16 +139,15 @@ const LoginForm: React.FC = () => {
                 type="submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}{" "}
-                Sign In
+                {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />} Sign In
               </Button>
             </form>
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-300" />
+                <span className="w-full border-t border-gray-300 dark:border-gray-600" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-gray-500">
+                <span className="bg-white dark:bg-gray-900 px-2 text-gray-500 dark:text-gray-400">
                   Or continue with
                 </span>
               </div>
@@ -186,12 +155,9 @@ const LoginForm: React.FC = () => {
             <div className="grid grid-cols-2 gap-4">
               <SocialButtons />
             </div>
-            <div className="text-center text-sm text-gray-600">
+            <div className="text-center text-sm text-gray-600 dark:text-gray-400">
               Don't have an account?{" "}
-              <Link
-                to="/SignUp"
-                className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
-              >
+              <Link to="/SignUp" className="font-medium text-blue-600 hover:text-blue-800 hover:underline">
                 Create an account
               </Link>
             </div>
