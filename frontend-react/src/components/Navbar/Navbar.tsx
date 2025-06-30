@@ -11,7 +11,6 @@ import fintechforgeLogo from "../../assets/fintechforge-logo.png";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useTheme } from "@/components/theme-provider";
 
-
 import {
   Sheet,
   SheetTrigger,
@@ -25,10 +24,8 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
-
 const Navbar: React.FC = () => {
   const { theme } = useTheme();
-  console.log(theme)
   const dispatch = useDispatch<AppDispatch>();
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const user = useSelector((state: RootState) => state.auth.user);
@@ -53,6 +50,7 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center space-x-6">
             <Link to="/" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">Home</Link>
             <Link to="/dashboard" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">Dashboard</Link>
+            <Link to="/News" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">News</Link>
             <Link to="/About" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">About</Link>
             <Link to="/Premium" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white flex items-center hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">
               Premium <Crown className="ml-1 h-4 w-4 text-yellow-500" />
@@ -150,8 +148,8 @@ const Navbar: React.FC = () => {
           </div>
         </div>
       </nav>
-      <MainTicker theme={theme === "dark" ? "dark" : "light"} />
 
+      <MainTicker theme={theme === "dark" ? "dark" : "light"} />
     </div>
   );
 };
