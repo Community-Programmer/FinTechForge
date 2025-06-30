@@ -51,6 +51,30 @@ const Navbar: React.FC = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-6">
+
+            <Link to="/" className="text-gray-600 hover:text-gray-800">
+              Home
+            </Link>
+            
+            <Link to="/dashboard" className="text-gray-600 hover:text-gray-800">
+              Dashboard
+            </Link>
+            <Link
+                  to="/News"
+                  className="text-gray-600 hover:text-gray-800"
+                >
+                  News
+                </Link>
+            <Link to="/About" className="text-gray-600 hover:text-gray-800">
+              About
+            </Link>
+            <Link
+              to="/Premium"
+              className="text-gray-600 hover:text-gray-800 flex items-center"
+            >
+              Premium
+              <Crown className="ml-1 h-4 w-4 text-yellow-500" />
+
             <Link to="/" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">Home</Link>
             <Link to="/dashboard" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">Dashboard</Link>
             <Link to="/About" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">About</Link>
@@ -60,6 +84,7 @@ const Navbar: React.FC = () => {
             <Link to="/Pricing" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white flex items-center">Pricing</Link>
             <Link to="/Community">
               <Users className="w-7 h-7 border-2 border-gray-500 rounded p-1 hover:bg-gray-200 dark:hover:bg-gray-700" />
+
             </Link>
           </div>
 
@@ -148,6 +173,52 @@ const Navbar: React.FC = () => {
               </DropdownMenu>
             )}
           </div>
+
+          </div>)}
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="md:hidden">
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right">
+              <div className="flex flex-col space-y-4">
+                <Link to="/" className="text-gray-600 hover:text-gray-800">
+                  Home
+                </Link>
+                <Link
+                  to="/Features"
+                  className="text-gray-600 hover:text-gray-800"
+                >
+                  Features
+                </Link>
+                <Link
+                  to="/News"
+                  className="text-gray-600 hover:text-gray-800"
+                >
+                  News
+                </Link>
+                <Link to="/About" className="text-gray-600 hover:text-gray-800">
+                  About
+                </Link>
+                <Link
+                  to="/Premium"
+                  className="text-gray-600 hover:text-gray-800 flex items-center"
+                >
+                  Premium
+                  <Crown className="ml-1 h-4 w-4 text-yellow-500" />
+                </Link>
+                <Link to="/Login">
+                  <Button variant="outline">Log In</Button>
+                </Link>
+                <Link to="/SignUp">
+                  <Button>Sign Up</Button>
+                </Link>
+              </div>
+            </SheetContent>
+          </Sheet>
+
         </div>
       </nav>
       <MainTicker theme={theme === "dark" ? "dark" : "light"} />
