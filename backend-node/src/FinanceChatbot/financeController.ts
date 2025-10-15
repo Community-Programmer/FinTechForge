@@ -10,7 +10,7 @@ const getChatbotResponse = async (req: Request, res: Response, next: NextFunctio
 
     try {
 
-      const response = await axios.get('http://localhost:8000/api/v1/chatbot/chat', {
+      const response = await axios.get(`${process.env.PYTHON_BACKEND_URL}/chatbot/chat`, {
         params: { query }
       });
 

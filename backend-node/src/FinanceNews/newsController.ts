@@ -37,7 +37,7 @@ const getAllNews = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
 
-      const response = await axios.get('http://localhost:8000/api/v1/news/sentiment', {
+      const response = await axios.get(`${process.env.PYTHON_BACKEND_URL}/news/sentiment`, {
         params: { url }
       });
 

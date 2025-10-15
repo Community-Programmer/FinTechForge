@@ -19,7 +19,7 @@ import { RootState } from '../store';
 
   if (!accessToken && isLoggedIn) return;
     try {
-      const response = await axios.post('http://localhost:5050/api/v1/auth/refresh', {}, { withCredentials: true });
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/refresh`, {}, { withCredentials: true });
       return response.data;
     } catch (error) {
       dispatch(logout());

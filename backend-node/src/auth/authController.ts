@@ -387,7 +387,7 @@ const googleCallback = async (
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
   });
-  res.redirect(`http://localhost:5173`);
+  res.redirect(process.env.FRONTEND_URL!);
 };
 
 const githubCallback = async (
@@ -402,7 +402,7 @@ const githubCallback = async (
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
   });
-  res.redirect(`http://localhost:5173/success?accessToken=${accessToken}`);
+  res.redirect(`${process.env.FRONTEND_URL}/success?accessToken=${accessToken}`);
 };
 
 export {

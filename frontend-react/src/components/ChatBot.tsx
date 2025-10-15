@@ -109,7 +109,7 @@ export function ChatBot() {
     try {
       // 🧠 1. Fetch relevant context chunks from Chroma
       const fetchContextChunks = async (query: string): Promise<string[]> => {
-        const res = await fetch(`http://localhost:8000/chroma-search?q=${encodeURIComponent(query)}`);
+        const res = await fetch(`${ import.meta.env.VITE_DATABASE_URL}/chroma-search?q=${encodeURIComponent(query)}`);
         if (!res.ok) throw new Error("Chroma fetch failed");
         const data = await res.json();
         return data;

@@ -5,7 +5,7 @@ const sendVerificationEmail = async (email: string, token: string) => {
     from: process.env.EMAIL_USER,
     to: email,
     subject: 'Please verify your email address',
-    text: `Click the link to verify your email: http://localhost:5173/verifymail/${token}`,
+    text: `Click the link to verify your email: ${process.env.FRONTEND_URL}/verifymail/${token}`,
   };
 
   try {
@@ -20,7 +20,7 @@ const sendPassowrdResetEmail = async (email: string, token: string) => {
     from: process.env.EMAIL_USER,
     to: email,
     subject: 'Please use below link to reset your password',
-    text: `Click the link to reset your password: http://localhost:5173/reset-password/${token}`,
+    text: `Click the link to reset your password: ${process.env.FRONTEND_URL}/reset-password/${token}`,
   };
 
   try {

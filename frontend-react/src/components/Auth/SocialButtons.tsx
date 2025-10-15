@@ -1,15 +1,15 @@
 import { Button } from "../ui/button";
 
 const SocialButtons = () => {
-
+    
   const LoginWithGoogle = () => {
-      window.open('http://localhost:5050/api/v1/auth/google','_self');
+      window.open(`${import.meta.env.VITE_API_BASE_URL}/auth/google`, '_self');
   };
+
 
   const LoginWithGithub = () => {
-    window.open('http://localhost:5050/api/v1/auth/github','_self');
+    window.open(`${import.meta.env.VITE_API_BASE_URL}/auth/github`,'_self');
   };
-
 
   return (
     <>

@@ -75,7 +75,7 @@ cd FinTechForge
 cd backend-node
 npm install
 cp .env.example .env   # Add your DB and secret config
-npm start
+npm run dev
 ```
 
 #### 3. Backend (Python - AI & Sentiment)
