@@ -57,7 +57,7 @@ const Navbar: React.FC = () => {
             </Link>
             <Link to="/Pricing" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white flex items-center">Pricing</Link>
             <Link to="/Community">
-              <Users className="w-7 h-7 border-2 border-gray-500 rounded p-1 hover:bg-gray-200 dark:hover:bg-gray-700" />
+              Community
             </Link>
           </div>
 
