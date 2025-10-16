@@ -5,6 +5,9 @@ import axios from 'axios';
 
 
 const getAllNews = async (req: Request, res: Response, next: NextFunction) => {
+    if (!process.env.RAPID_API_KEY) {
+      return next(createHttpError(500, 'RapidAPI key is not configured'));
+    }
 
     const options = {
         method: 'GET',
