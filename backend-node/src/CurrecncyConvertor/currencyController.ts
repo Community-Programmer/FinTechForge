@@ -3,11 +3,15 @@ import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
 const getAllCurrency = async (req: Request, res: Response, next: NextFunction) => {
+    if (!process.env.RAPID_API_KEY) {
+      return next(createHttpError(500, 'RapidAPI key is not configured'));
+    }
+
     const options = {
         method: 'GET',
         url: 'https://currency-convertor-api.p.rapidapi.com/currency',
         headers: {
-          'x-rapidapi-key': '487da8424bmsh927b3c5b40bb07cp16fa97jsn645356862872',
+          'x-rapidapi-key': process.env.RAPID_API_KEY,
           'x-rapidapi-host': 'currency-convertor-api.p.rapidapi.com'
         }
       };
@@ -29,6 +33,9 @@ const getAllCurrency = async (req: Request, res: Response, next: NextFunction) =
 
 
   const convertCurrency = async (req: Request, res: Response, next: NextFunction) => {
+    if (!process.env.RAPID_API_KEY) {
+      return next(createHttpError(500, 'RapidAPI key is not configured'));
+    }
 
     const {amount, from , to} = req.query;
 
