@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Crown, User, LogOut, Menu, Users } from "lucide-react";
+import { Crown, User, LogOut, Menu } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { RootState, AppDispatch } from "@/store/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,18 +11,8 @@ import fintechforgeLogo from "../../assets/fintechforge-logo.png";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useTheme } from "@/components/theme-provider";
 
-import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-} from "@/components/ui/sheet";
-
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 const Navbar: React.FC = () => {
   const { theme } = useTheme();
@@ -39,28 +29,42 @@ const Navbar: React.FC = () => {
     return "Unknown User";
   };
 
+  // Shared hover style for desktop nav links:
+  // - inline-flex limits underline to text width
+  // - after pseudo adds animated underline without layout shift
+  // - uniform timing/colors for both themes
+  const navLink =
+    "relative inline-flex items-center font-medium " +
+    "text-gray-700 dark:text-gray-300 " +
+    "transition-colors duration-200 ease-out " +
+    "hover:text-gray-900 dark:hover:text-white " +
+    "after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 " +
+    "after:bg-current after:transition-all after:duration-200 hover:after:w-full";
+
   return (
     <div className="flex flex-col justify-center items-center">
       <nav className="bg-white dark:bg-black shadow-md w-full">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+          {/* Logo */}
           <div className="flex items-center space-x-4">
             <img src={fintechforgeLogo} alt="fintechForgeLogo" className="h-10 w-auto" />
           </div>
 
+          {/* Desktop navigation with standardized hover */}
           <div className="hidden md:flex items-center space-x-6">
-            <Link to="/" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">Home</Link>
-            <Link to="/dashboard" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">Dashboard</Link>
-            <Link to="/News" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">News</Link>
-            <Link to="/About" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">About</Link>
-            <Link to="/Premium" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white flex items-center hover:font-bold hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">
+            {/* Removed hover:font-bold to avoid size shift; underline and color now consistent */}
+            <Link to="/" className={navLink}>Home</Link>
+            <Link to="/dashboard" className={navLink}>Dashboard</Link>
+            <Link to="/News" className={navLink}>News</Link>
+            <Link to="/About" className={navLink}>About</Link>
+            <Link to="/Premium" className={navLink}>
               Premium <Crown className="ml-1 h-4 w-4 text-yellow-500" />
             </Link>
-            <Link to="/Pricing" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white flex items-center">Pricing</Link>
-            <Link to="/Community">
-              Community
-            </Link>
+            <Link to="/Pricing" className={navLink}>Pricing</Link>
+            <Link to="/Community" className={navLink}>Community</Link>
           </div>
 
+          {/* Auth actions (desktop) */}
           {!isLoggedIn && (
             <div className="hidden md:flex items-center space-x-2">
               <Link to="/login">
@@ -73,6 +77,7 @@ const Navbar: React.FC = () => {
             </div>
           )}
 
+          {/* Logged-in summary (desktop) */}
           {isLoggedIn && (
             <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm mt-2 sm:mt-0">
               <div className="ml-auto flex-1 sm:flex-initial">
@@ -84,6 +89,7 @@ const Navbar: React.FC = () => {
             </div>
           )}
 
+          {/* Mobile: Sheet-trigger and user menu remain unchanged */}
           <div className="md:hidden flex items-center">
             {!isLoggedIn && (
               <Sheet>
@@ -93,17 +99,31 @@ const Navbar: React.FC = () => {
                     <span className="sr-only">Toggle menu</span>
                   </Button>
                 </SheetTrigger>
+
+                {/* Keep right-side menu; menu link styles unchanged as requested */}
                 <SheetContent side="right">
                   <div className="flex flex-col space-y-4 mt-4">
-                    <Link to="/" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white">Home</Link>
-                    <Link to="/Features" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white">Features</Link>
-                    <Link to="/About" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white">About</Link>
-                    <Link to="/Premium" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white flex items-center">
+                    <Link to="/" className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                      Home
+                    </Link>
+                    <Link to="/Features" className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                      Features
+                    </Link>
+                    <Link to="/About" className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                      About
+                    </Link>
+                    <Link to="/Premium" className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center">
                       Premium <Crown className="ml-1 h-4 w-4 text-yellow-500" />
                     </Link>
-                    <Link to="/Pricing" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white flex items-center">Pricing</Link>
-                    <Link to="/Login"><Button variant="outline">Log In</Button></Link>
-                    <Link to="/SignUp"><Button>Sign Up</Button></Link>
+                    <Link to="/Pricing" className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center">
+                      Pricing
+                    </Link>
+                    <Link to="/Login">
+                      <Button variant="outline">Log In</Button>
+                    </Link>
+                    <Link to="/SignUp">
+                      <Button>Sign Up</Button>
+                    </Link>
                     <ModeToggle />
                   </div>
                 </SheetContent>
@@ -131,7 +151,8 @@ const Navbar: React.FC = () => {
                       <rect x="14" y="3" width="7" height="7"></rect>
                       <rect x="14" y="14" width="7" height="7"></rect>
                       <rect x="3" y="14" width="7" height="7"></rect>
-                    </svg> Dashboard
+                    </svg>{" "}
+                    Dashboard
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => {
