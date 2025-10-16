@@ -34,6 +34,7 @@ import Profile from "./pages/Profile/Profile";
 import EducationHub from "./pages/Education/EducationHub";
 import LoginForm from "./pages/Login/Login";
 import SignUpForm from "./pages/SignUp/SignUp";
+import NotFound from "./pages/NotFound/NotFound";
 
 
 const mainLayoutRoutes = [
@@ -188,6 +189,10 @@ const router = createBrowserRouter([
         path: "/reset-password/:resetToken",
         element: <PasswordResetForm />,
       }*/
+      {
+        path: "*",
+        element: <NotFound />,
+      },
     ],
   },
 ]);
