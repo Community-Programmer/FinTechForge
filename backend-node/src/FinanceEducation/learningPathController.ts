@@ -1,5 +1,6 @@
 import { prisma } from '../../prisma/client';
 import { Request, Response } from 'express';
+import { logger } from '../utils/logger';
 // Get all learning paths
 export async function getLearningPaths(req: Request, res: Response) {
   try {
@@ -8,7 +9,7 @@ export async function getLearningPaths(req: Request, res: Response) {
     });
     res.status(200).json({ paths });
   } catch (error) {
-    console.error('Error fetching learning paths:', error);
+    logger.error('Error fetching learning paths:', error);
     res.status(500).json({ error: 'Failed to fetch learning paths' });
   }
 }
@@ -25,7 +26,7 @@ export async function getLearningPathById(req: Request, res: Response) {
       return res.status(404).json({ error: 'Learning path not found' });
     res.status(200).json({ path });
   } catch (error) {
-    console.error('Error fetching learning path:', error);
+    logger.error('Error fetching learning path:', error);
     res.status(500).json({ error: 'Failed to fetch learning path' });
   }
 }
@@ -39,7 +40,7 @@ export async function createLearningPath(req: Request, res: Response) {
     });
     res.status(201).json({ path });
   } catch (error) {
-    console.error('Error creating learning path:', error);
+    logger.error('Error creating learning path:', error);
     res.status(500).json({ error: 'Failed to create learning path' });
   }
 }
@@ -54,7 +55,7 @@ export async function updateLearningPath(req: Request, res: Response) {
     });
     res.status(200).json({ path });
   } catch (error) {
-    console.error('Error updating learning path:', error);
+    logger.error('Error updating learning path:', error);
     res.status(500).json({ error: 'Failed to update learning path' });
   }
 }
@@ -66,7 +67,7 @@ export async function deleteLearningPath(req: Request, res: Response) {
     await prisma.learningPath.delete({ where: { id } });
     res.status(204).end();
   } catch (error) {
-    console.error('Error deleting learning path:', error);
+    logger.error('Error deleting learning path:', error);
     res.status(500).json({ error: 'Failed to delete learning path' });
   }
 }

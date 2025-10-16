@@ -17,6 +17,7 @@ import {
   sendVerificationEmail,
 } from '../utils/sendEmail';
 import pkg from 'jsonwebtoken';
+import { logger } from '../utils/logger';
 
 const { verify, sign } = pkg;
 
@@ -74,7 +75,7 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
       createHttpError(500, 'Unexpected error occurred while creating user')
     );
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(createHttpError(500, 'Error while processing your request'));
   }
 };
@@ -141,7 +142,7 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
 
     res.json({ accessToken, isVerified: true, success: true });
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return next(createHttpError(500, 'Error while processing your request'));
   }
 };
@@ -196,7 +197,7 @@ const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
       );
     }
   } catch (err) {
-    console.log(err);
+    logger.error(err);
 
     return next(
       createHttpError(400, 'Unknown error occurred during token verification.')
@@ -213,7 +214,7 @@ const generateResetToken = async (
 
   try {
     const user = await getUserByEmail(email);
-    console.log(email);
+    logger.error(email);
     if (!user) {
       res.status(200).json({ message: 'Email not registered' });
       return;
@@ -246,7 +247,7 @@ const generateResetToken = async (
       .status(200)
       .json({ message: 'Sent Password reset link to registered email.' });
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return next(
       createHttpError(400, 'An Unknown error occurred during password reset')
     );
@@ -298,7 +299,7 @@ const resetPassword = async (
 
     res.status(200).json({ Code: 'RESET_SUCCESSFUL', success: true });
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return next(
       createHttpError(400, 'An Unknown error occurred during password reset.')
     );
@@ -328,7 +329,7 @@ const verifyResetToken = async (
 
     res.status(200).json({ Code: 'VALID_TOKEN', success: true });
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return next(
       createHttpError(
         400,
@@ -369,7 +370,7 @@ const refreshToken = async (
       }
     );
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return next(createHttpError(500, 'Error refreshing token'));
   }
 };
@@ -402,7 +403,9 @@ const githubCallback = async (
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
   });
-  res.redirect(`${process.env.FRONTEND_URL}/success?accessToken=${accessToken}`);
+  res.redirect(
+    `${process.env.FRONTEND_URL}/success?accessToken=${accessToken}`
+  );
 };
 
 export {

@@ -5,6 +5,7 @@ import {
 import { prisma } from '../../prisma/client';
 import { getUserByEmail } from './data';
 import { Profile as GithubProfile } from 'passport-github2';
+import { logger } from '../utils/logger';
 
 export const LoginWithGoogle = async (
   profile: GoogleProfile,
@@ -51,7 +52,7 @@ export const LoginWithGoogle = async (
 
     done(null, user);
   } catch (err) {
-    console.error('Error during Google login:', err);
+    logger.error('Error during Google login:', err);
     done(err, false);
   }
 };
@@ -99,7 +100,7 @@ export const LoginWithGithub = async (
     }
     done(null, user);
   } catch (err) {
-    console.error('Error during GitHub login:', err);
+    logger.error('Error during GitHub login:', err);
     done(err, false);
   }
 };

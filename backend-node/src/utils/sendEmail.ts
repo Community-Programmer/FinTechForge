@@ -1,4 +1,5 @@
 import transporter from '../config/mailer';
+import { logger } from '../utils/logger';
 
 const sendVerificationEmail = async (email: string, token: string) => {
   const mailOptions = {
@@ -11,7 +12,7 @@ const sendVerificationEmail = async (email: string, token: string) => {
   try {
     const info = await transporter.sendMail(mailOptions);
   } catch (error) {
-    console.error('Error sending email:', error);
+    logger.error('Error sending email:', error);
   }
 };
 
@@ -26,7 +27,7 @@ const sendPassowrdResetEmail = async (email: string, token: string) => {
   try {
     const info = await transporter.sendMail(mailOptions);
   } catch (error) {
-    console.error('Error sending email:', error);
+    logger.error('Error sending email:', error);
   }
 };
 

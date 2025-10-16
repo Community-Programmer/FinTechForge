@@ -1,17 +1,18 @@
 import { io, server } from './src/app';
+import { logger } from './src/utils/logger';
 
 const startServer = async () => {
   const port = process.env.PORT || 5050;
 
   server.listen(port, () => {
-    console.log(`Listening on port: ${port}`);
+    logger.error(`Listening on port: ${port}`);
   });
 };
 
 io.on('connection', socket => {
-  console.log('New client connected');
+  logger.error('New client connected');
   socket.on('disconnect', () => {
-    console.log('Client disconnected');
+    logger.error('Client disconnected');
   });
 });
 

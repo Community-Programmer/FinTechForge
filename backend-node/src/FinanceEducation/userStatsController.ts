@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { prisma } from '../../prisma/client';
+import { logger } from '../utils/logger';
 
 // GET: Retrieve user stats
 export async function getUserStats(
@@ -47,7 +48,7 @@ export async function getUserStats(
 
     res.status(200).json(stats);
   } catch (error) {
-    console.error('Error fetching user stats:', error);
+    logger.error('Error fetching user stats:', error);
     res.status(500).json({ error: 'Failed to fetch user stats' });
   }
 }
@@ -83,7 +84,7 @@ export async function updateUserStats(
       },
     });
   } catch (error) {
-    console.error('Error updating user stats:', error);
+    logger.error('Error updating user stats:', error);
     res.status(500).json({ error: 'Failed to update user stats' });
   }
 }
@@ -144,7 +145,7 @@ export async function addXpAndCheckLevelUp(
       leveledUp: leveled,
     });
   } catch (error) {
-    console.error('Error adding XP:', error);
+    logger.error('Error adding XP:', error);
     res.status(500).json({ error: 'Failed to add XP' });
   }
 }
@@ -202,7 +203,7 @@ export async function checkAndUpdateStreak(
       lastActive: currentTime,
     });
   } catch (error) {
-    console.error('Error checking streak:', error);
+    logger.error('Error checking streak:', error);
     res.status(500).json({ error: 'Failed to check streak' });
   }
 }
@@ -230,7 +231,7 @@ export async function getFlashcardDecks(
     });
     res.status(200).json({ decks });
   } catch (error) {
-    console.error('Error fetching flashcard decks:', error);
+    logger.error('Error fetching flashcard decks:', error);
     res.status(500).json({ error: 'Failed to fetch flashcard decks' });
   }
 }
