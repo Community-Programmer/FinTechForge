@@ -7,6 +7,13 @@ import { Server } from 'socket.io';
 import globalErrorHandler from './middleware/globalErrorHandler';
 import passport from 'passport';
 import passportConfig from './config/passport';
+import { 
+  helmetConfig, 
+  generalRateLimit, 
+  authRateLimit, 
+  getCorsConfig, 
+  additionalSecurityHeaders 
+} from './config/security';
 import authRouter from './auth/authRoute';
 import newsRouter from './FinanceNews/newsRoute';
 import currencyRouter from './CurrecncyConvertor/currencyRoutes';
@@ -32,12 +39,12 @@ const io = new Server(server, {
   },
 });
 
-app.use(
-  cors({
-    credentials: true,
-    origin: process.env.FRONTEND_URL,
-  })
-);
+
+app.use(helmetConfig);
+app.use(additionalSecurityHeaders);
+app.use(generalRateLimit);
+
+app.use(cors(getCorsConfig()));
 
 app.use(express.json());
 app.use(cookieParser());
@@ -51,7 +58,7 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
-app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/auth', authRateLimit, authRouter);
 app.use('/api/v1/news', newsRouter);
 app.use('/api/v1/currency', currencyRouter);
 app.use('/api/v1/financechatbot', getChatbotResponse);

@@ -5,14 +5,14 @@ const startServer = async () => {
   const port = process.env.PORT || 5050;
 
   server.listen(port, () => {
-    logger.error(`Listening on port: ${port}`);
+    logger.info(`Listening on port: ${port}`);
   });
 };
 
 io.on('connection', socket => {
-  logger.error('New client connected');
+  logger.info('New client connected');
   socket.on('disconnect', () => {
-    logger.error('Client disconnected');
+    logger.info('Client disconnected');
   });
 });
 
