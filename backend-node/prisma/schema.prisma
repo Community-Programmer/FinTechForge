@@ -29,7 +29,7 @@ model User {
 }
 
 model UserSkillTree {
-  id          String @id @default(uuid()) @map("_id")
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
   user        User   @relation(fields: [userId], references: [id])
   userId      String @db.ObjectId
   skillTreeId String
@@ -43,12 +43,12 @@ model Account {
   userId            String  @db.ObjectId
   provider          String
   providerAccountId String  @unique
-  refresh_token     String? @db.String
-  access_token      String? @db.String
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.String
+  id_token          String?
   session_state     String?
 
   createdAt DateTime @default(now())
@@ -77,7 +77,7 @@ model PasswordResetToken {
 }
 
 model EducationProgress {
-  id          String    @id @default(uuid()) @map("_id")
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   user        User      @relation(fields: [userId], references: [id])
   userId      String    @db.ObjectId
   lessonId    String
@@ -89,7 +89,7 @@ model EducationProgress {
 }
 
 model Lesson {
-  id             String          @id @default(uuid()) @map("_id")
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
   title          String
   description    String
   duration       Int // in minutes
@@ -105,7 +105,7 @@ model Lesson {
 }
 
 model Quiz {
-  id          String         @id @default(uuid()) @map("_id")
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
   lesson      Lesson?        @relation(fields: [lessonId], references: [id])
   lessonId    String?        @db.ObjectId
   title       String
@@ -117,7 +117,7 @@ model Quiz {
 }
 
 model QuizQuestion {
-  id            String   @id @default(uuid()) @map("_id")
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
   quiz          Quiz     @relation(fields: [quizId], references: [id])
   quizId        String   @db.ObjectId
   question      String
@@ -127,7 +127,7 @@ model QuizQuestion {
 }
 
 model FlashcardDeck {
-  id          String      @id @default(uuid()) @map("_id")
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
   lesson      Lesson?     @relation(fields: [lessonId], references: [id])
   lessonId    String?     @db.ObjectId
   title       String
@@ -138,7 +138,7 @@ model FlashcardDeck {
 }
 
 model Flashcard {
-  id     String        @id @default(uuid()) @map("_id")
+  id     String        @id @default(auto()) @map("_id") @db.ObjectId
   deck   FlashcardDeck @relation(fields: [deckId], references: [id])
   deckId String        @db.ObjectId
   front  String
@@ -146,7 +146,7 @@ model Flashcard {
 }
 
 model LearningPath {
-  id        String   @id @default(uuid()) @map("_id")
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   title     String
   color     String
   icon      String?
@@ -156,7 +156,7 @@ model LearningPath {
 }
 
 model SkillChallenge {
-  id          String   @id @default(uuid()) @map("_id")
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String
   difficulty  String
@@ -166,7 +166,7 @@ model SkillChallenge {
 }
 
 model Reward {
-  id          String  @id @default(uuid()) @map("_id")
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String
   icon        String?
@@ -174,7 +174,7 @@ model Reward {
 }
 
 model Achievement {
-  id          String   @id @default(uuid()) @map("_id")
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   user        User     @relation(fields: [userId], references: [id])
   userId      String   @db.ObjectId
   type        String

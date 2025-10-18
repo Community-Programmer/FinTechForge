@@ -1,5 +1,6 @@
 import { prisma } from '../../prisma/client';
 import { Request, Response } from 'express';
+import { logger } from '../utils/logger';
 // Get all quizzes
 export async function getQuizzes(req: Request, res: Response) {
   try {
@@ -8,7 +9,7 @@ export async function getQuizzes(req: Request, res: Response) {
     });
     res.status(200).json({ quizzes });
   } catch (error) {
-    console.error('Error fetching quizzes:', error);
+    logger.error('Error fetching quizzes:', error);
     res.status(500).json({ error: 'Failed to fetch quizzes' });
   }
 }
@@ -24,7 +25,7 @@ export async function getQuizById(req: Request, res: Response) {
     if (!quiz) return res.status(404).json({ error: 'Quiz not found' });
     res.status(200).json({ quiz });
   } catch (error) {
-    console.error('Error fetching quiz:', error);
+    logger.error('Error fetching quiz:', error);
     res.status(500).json({ error: 'Failed to fetch quiz' });
   }
 }
@@ -47,7 +48,7 @@ export async function createQuiz(req: Request, res: Response) {
     });
     res.status(201).json({ quiz });
   } catch (error) {
-    console.error('Error creating quiz:', error);
+    logger.error('Error creating quiz:', error);
     res.status(500).json({ error: 'Failed to create quiz' });
   }
 }
@@ -63,7 +64,7 @@ export async function updateQuiz(req: Request, res: Response) {
     });
     res.status(200).json({ quiz });
   } catch (error) {
-    console.error('Error updating quiz:', error);
+    logger.error('Error updating quiz:', error);
     res.status(500).json({ error: 'Failed to update quiz' });
   }
 }
@@ -75,7 +76,7 @@ export async function deleteQuiz(req: Request, res: Response) {
     await prisma.quiz.delete({ where: { id } });
     res.status(204).end();
   } catch (error) {
-    console.error('Error deleting quiz:', error);
+    logger.error('Error deleting quiz:', error);
     res.status(500).json({ error: 'Failed to delete quiz' });
   }
 }
@@ -97,7 +98,7 @@ export async function submitQuiz(req: Request, res: Response) {
     });
     res.status(200).json({ score, total: quiz.questions.length });
   } catch (error) {
-    console.error('Error submitting quiz:', error);
+    logger.error('Error submitting quiz:', error);
     res.status(500).json({ error: 'Failed to submit quiz' });
   }
 }

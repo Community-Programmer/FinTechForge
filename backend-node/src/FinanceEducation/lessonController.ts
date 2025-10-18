@@ -1,5 +1,6 @@
 import { prisma } from '../../prisma/client';
 import { Request, Response } from 'express';
+import { logger } from '../utils/logger';
 // Get all lessons
 export async function getLessons(req: Request, res: Response) {
   try {
@@ -8,7 +9,7 @@ export async function getLessons(req: Request, res: Response) {
     });
     res.status(200).json({ lessons });
   } catch (error) {
-    console.error('Error fetching lessons:', error);
+    logger.error('Error fetching lessons:', error);
     res.status(500).json({ error: 'Failed to fetch lessons' });
   }
 }
@@ -24,7 +25,7 @@ export async function getLessonById(req: Request, res: Response) {
     if (!lesson) return res.status(404).json({ error: 'Lesson not found' });
     res.status(200).json({ lesson });
   } catch (error) {
-    console.error('Error fetching lesson:', error);
+    logger.error('Error fetching lesson:', error);
     res.status(500).json({ error: 'Failed to fetch lesson' });
   }
 }
@@ -54,7 +55,7 @@ export async function createLesson(req: Request, res: Response) {
     });
     res.status(201).json({ lesson });
   } catch (error) {
-    console.error('Error creating lesson:', error);
+    logger.error('Error creating lesson:', error);
     res.status(500).json({ error: 'Failed to create lesson' });
   }
 }
@@ -69,7 +70,7 @@ export async function updateLesson(req: Request, res: Response) {
     });
     res.status(200).json({ lesson });
   } catch (error) {
-    console.error('Error updating lesson:', error);
+    logger.error('Error updating lesson:', error);
     res.status(500).json({ error: 'Failed to update lesson' });
   }
 }
@@ -81,7 +82,7 @@ export async function deleteLesson(req: Request, res: Response) {
     await prisma.lesson.delete({ where: { id } });
     res.status(204).end();
   } catch (error) {
-    console.error('Error deleting lesson:', error);
+    logger.error('Error deleting lesson:', error);
     res.status(500).json({ error: 'Failed to delete lesson' });
   }
 }

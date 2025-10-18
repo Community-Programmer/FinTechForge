@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { prisma } from '../../prisma/client';
+import { logger } from '../utils/logger';
 
 // Define progression tier type
 interface ProgressionTier {
@@ -69,7 +70,7 @@ export const getGamificationSummary = async (
       progress: user.educationProgress,
     });
   } catch (error) {
-    console.error('Error getting gamification summary:', error);
+    logger.error('Error getting gamification summary:', error);
     res.status(500).json({ error: 'Failed to retrieve gamification data' });
   }
 };
@@ -139,7 +140,7 @@ export async function completeModule(
       message: 'Module completed successfully',
     });
   } catch (error) {
-    console.error('Error completing module:', error);
+    logger.error('Error completing module:', error);
     res.status(500).json({ error: 'Failed to complete module' });
   }
 }
@@ -182,7 +183,7 @@ export const addAchievement = async (
 
     res.status(201).json({ success: true, achievement });
   } catch (error) {
-    console.error('Error adding achievement:', error);
+    logger.error('Error adding achievement:', error);
     res.status(500).json({ error: 'Failed to add achievement' });
   }
 };
@@ -201,7 +202,7 @@ export const getAchievements = async (
 
     res.status(200).json({ achievements });
   } catch (error) {
-    console.error('Error fetching achievements:', error);
+    logger.error('Error fetching achievements:', error);
     res.status(500).json({ error: 'Failed to fetch achievements' });
   }
 };
@@ -220,7 +221,7 @@ export const getSkillTrees = async (
 
     res.status(200).json({ skillTrees });
   } catch (error) {
-    console.error('Error fetching skill trees:', error);
+    logger.error('Error fetching skill trees:', error);
     res.status(500).json({ error: 'Failed to fetch skill trees' });
   }
 };
@@ -251,7 +252,7 @@ export const updateSkillTree = async (
 
     res.status(200).json({ success: true, updated });
   } catch (error) {
-    console.error('Error updating skill tree:', error);
+    logger.error('Error updating skill tree:', error);
     res.status(500).json({ error: 'Failed to update skill tree' });
   }
 };

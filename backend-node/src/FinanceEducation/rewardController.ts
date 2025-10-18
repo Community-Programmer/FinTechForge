@@ -1,5 +1,6 @@
 import { prisma } from '../../prisma/client';
 import { Request, Response } from 'express';
+import { logger } from '../utils/logger';
 
 // Get all rewards
 export async function getRewards(req: Request, res: Response) {
@@ -7,7 +8,7 @@ export async function getRewards(req: Request, res: Response) {
     const rewards = await prisma.reward.findMany();
     res.status(200).json({ rewards });
   } catch (error) {
-    console.error('Error fetching rewards:', error);
+    logger.error('Error fetching rewards:', error);
     res.status(500).json({ error: 'Failed to fetch rewards' });
   }
 }
@@ -20,7 +21,7 @@ export async function getRewardById(req: Request, res: Response) {
     if (!reward) return res.status(404).json({ error: 'Reward not found' });
     res.status(200).json({ reward });
   } catch (error) {
-    console.error('Error fetching reward:', error);
+    logger.error('Error fetching reward:', error);
     res.status(500).json({ error: 'Failed to fetch reward' });
   }
 }

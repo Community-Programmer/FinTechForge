@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { prisma } from '../../prisma/client';
+import { logger } from '../utils/logger';
 
 // Get all skill challenges
 export async function getSkillChallenges(req: Request, res: Response) {
@@ -7,7 +8,7 @@ export async function getSkillChallenges(req: Request, res: Response) {
     const challenges = await prisma.skillChallenge.findMany();
     res.status(200).json({ challenges });
   } catch (error) {
-    console.error('Error fetching skill challenges:', error);
+    logger.error('Error fetching skill challenges:', error);
     res.status(500).json({ error: 'Failed to fetch skill challenges' });
   }
 }
@@ -21,7 +22,7 @@ export async function getSkillChallengeById(req: Request, res: Response) {
       return res.status(404).json({ error: 'Skill challenge not found' });
     res.status(200).json({ challenge });
   } catch (error) {
-    console.error('Error fetching skill challenge:', error);
+    logger.error('Error fetching skill challenge:', error);
     res.status(500).json({ error: 'Failed to fetch skill challenge' });
   }
 }
@@ -35,7 +36,7 @@ export async function createSkillChallenge(req: Request, res: Response) {
     });
     res.status(201).json({ challenge });
   } catch (error) {
-    console.error('Error creating skill challenge:', error);
+    logger.error('Error creating skill challenge:', error);
     res.status(500).json({ error: 'Failed to create skill challenge' });
   }
 }
@@ -50,7 +51,7 @@ export async function updateSkillChallenge(req: Request, res: Response) {
     });
     res.status(200).json({ challenge });
   } catch (error) {
-    console.error('Error updating skill challenge:', error);
+    logger.error('Error updating skill challenge:', error);
     res.status(500).json({ error: 'Failed to update skill challenge' });
   }
 }
@@ -62,7 +63,7 @@ export async function deleteSkillChallenge(req: Request, res: Response) {
     await prisma.skillChallenge.delete({ where: { id } });
     res.status(204).end();
   } catch (error) {
-    console.error('Error deleting skill challenge:', error);
+    logger.error('Error deleting skill challenge:', error);
     res.status(500).json({ error: 'Failed to delete skill challenge' });
   }
 }
