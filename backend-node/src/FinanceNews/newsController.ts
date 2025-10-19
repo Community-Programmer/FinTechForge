@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { prisma } from '../../prisma/client';
-import createHttpError from 'http-errors';
 import axios from 'axios';
 import { logger } from '../utils/logger';
+import { InternalServerError } from '../errors/errorTypes';
 
 const getAllNews = async (req: Request, res: Response, next: NextFunction) => {
   const options = {
@@ -22,8 +21,8 @@ const getAllNews = async (req: Request, res: Response, next: NextFunction) => {
       data: response.data,
     });
   } catch (err) {
-    logger.error(err);
-    return next(createHttpError(500, 'Error while processing your request'));
+    logger.error('Failed to fetch finance news', { error: err });
+    return next(new InternalServerError('Error while processing your request'));
   }
 };
 
@@ -33,7 +32,7 @@ const getNewsSentiment = async (
   next: NextFunction
 ) => {
   const { url } = req.query;
-  logger.error(url);
+  logger.debug('Fetching news sentiment', { url });
 
   try {
     const response = await axios.get(
@@ -48,8 +47,8 @@ const getNewsSentiment = async (
       data: response.data,
     });
   } catch (err) {
-    logger.error(err);
-    return next(createHttpError(500, 'Error while processing your request'));
+    logger.error('Failed to fetch new sentiment', { error: err });
+    return next(new InternalServerError('Error while processing your request'));
   }
 };
 

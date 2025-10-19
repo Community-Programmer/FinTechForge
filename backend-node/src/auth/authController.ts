@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import { prisma } from '../../prisma/client';
-import createHttpError from 'http-errors';
 import {
   getEmailVerificationToken,
   getEmailVerificationTokenById,
@@ -18,8 +17,15 @@ import {
 } from '../utils/sendEmail';
 import pkg from 'jsonwebtoken';
 import { logger } from '../utils/logger';
+import {
+  BadRequestError,
+  ConflictError,
+  ForbiddenError,
+  InternalServerError,
+  NotFoundError,
+} from '../errors/errorTypes';
 
-const { verify, sign } = pkg;
+const { verify } = pkg;
 
 //TODO : Add Data Validation (Zod etc.)
 
@@ -34,8 +40,7 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
     });
 
     if (existingUser) {
-      const error = createHttpError(400, 'User already exists with this email');
-      return next(error);
+      return next(new ConflictError('User already exists with this email'));
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -72,11 +77,11 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     return next(
-      createHttpError(500, 'Unexpected error occurred while creating user')
+      new InternalServerError('Unexpected error occurred while creating user')
     );
   } catch (err) {
-    logger.error(err);
-    return next(createHttpError(500, 'Error while processing your request'));
+    logger.error('Failed to sign up user', { error: err });
+    return next(new InternalServerError('Error while processing your request'));
   }
 };
 
@@ -87,8 +92,7 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
     const user = await getUserByEmail(email);
 
     if (!user) {
-      res.status(404).json({ message: 'User with email not found' });
-      return;
+      return next(new NotFoundError('User with email not found'));
     }
 
     if (!user.emailVerified) {
@@ -123,13 +127,13 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (!user.password) {
-      return next(createHttpError(400, 'Invalid credentials'));
+      return next(new BadRequestError('Invalid credentials'));
     }
 
     const isMatch = await bcrypt.compare(password, user.password as string);
 
     if (!isMatch) {
-      return next(createHttpError(400, 'Invalid credentials'));
+      return next(new BadRequestError('Invalid credentials'));
     }
 
     const { accessToken, refreshToken } = generateTokens(user.id);
@@ -142,8 +146,8 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
 
     res.json({ accessToken, isVerified: true, success: true });
   } catch (error) {
-    logger.error(error);
-    return next(createHttpError(500, 'Error while processing your request'));
+    logger.error('Failed to sign in user', { error });
+    return next(new InternalServerError('Error while processing your request'));
   }
 };
 
@@ -168,8 +172,7 @@ const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
       const now = new Date();
       if (now > verificationToken.expireAt) {
         return next(
-          createHttpError(
-            400,
+          new BadRequestError(
             "We couldn't verify your email. The link may have expired or is invalid."
           )
         );
@@ -190,17 +193,16 @@ const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
       });
     } else {
       return next(
-        createHttpError(
-          400,
+        new BadRequestError(
           "We couldn't verify your email. The link may have expired or is invalid."
         )
       );
     }
   } catch (err) {
-    logger.error(err);
+    logger.error('Failed to verify email token', { error: err });
 
     return next(
-      createHttpError(400, 'Unknown error occurred during token verification.')
+      new BadRequestError('Unknown error occurred during token verification.')
     );
   }
 };
@@ -214,7 +216,7 @@ const generateResetToken = async (
 
   try {
     const user = await getUserByEmail(email);
-    logger.error(email);
+    logger.debug('Password required requested', { email });
     if (!user) {
       res.status(200).json({ message: 'Email not registered' });
       return;
@@ -247,9 +249,9 @@ const generateResetToken = async (
       .status(200)
       .json({ message: 'Sent Password reset link to registered email.' });
   } catch (error) {
-    logger.error(error);
+    logger.error('Failed to generate password reset token', { error });
     return next(
-      createHttpError(400, 'An Unknown error occurred during password reset')
+      new InternalServerError('An Unknown error occurred during password reset')
     );
   }
 };
@@ -270,11 +272,11 @@ const resetPassword = async (
     });
 
     if (!resetToken) {
-      return next(createHttpError(400, 'Invalid reset token'));
+      return next(new BadRequestError('Invalid reset token'));
     }
 
     if (password !== confirmPassword) {
-      return next(createHttpError(400, 'Password does not match'));
+      return next(new BadRequestError('Password does not match'));
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -299,9 +301,11 @@ const resetPassword = async (
 
     res.status(200).json({ Code: 'RESET_SUCCESSFUL', success: true });
   } catch (error) {
-    logger.error(error);
+    logger.error('Failed to reset password', { error });
     return next(
-      createHttpError(400, 'An Unknown error occurred during password reset.')
+      new InternalServerError(
+        'An Unknown error occurred during password reset.'
+      )
     );
   }
 };
@@ -329,11 +333,10 @@ const verifyResetToken = async (
 
     res.status(200).json({ Code: 'VALID_TOKEN', success: true });
   } catch (error) {
-    logger.error(error);
+    logger.error('Failed to verify reset token', { error });
     return next(
-      createHttpError(
-        400,
-        'An Unknown error occurred during token verification.'
+      new InternalServerError(
+        'An Unknown error occurred during token verification'
       )
     );
   }
@@ -348,20 +351,25 @@ const refreshToken = async (
     const { refreshToken } = req.cookies;
 
     if (!refreshToken) {
-      return next(createHttpError(403, 'No refresh token provided'));
+      return next(new ForbiddenError('No refresh token provided'));
     }
 
     verify(
       refreshToken,
       process.env.REFRESH_JWT_SECRET!,
-      async (err: Error | null, decoded: any) => {
-        if (err || !decoded) {
-          return next(createHttpError(403, 'Invalid or expired refresh token'));
+      async (err: Error | null, decoded: unknown) => {
+        if (err || !decoded || typeof decoded === 'string') {
+          return next(new ForbiddenError('Invalid or expired refresh token'));
         }
 
-        const user = await getUserById(decoded.id);
+        const payload = decoded as { id?: string };
+        if (!payload.id) {
+          return next(new ForbiddenError('Invalid or expired refresh token'));
+        }
+
+        const user = await getUserById(payload.id);
         if (!user) {
-          return next(createHttpError(403, 'User not found'));
+          return next(new ForbiddenError('User not found'));
         }
 
         const { accessToken } = generateTokens(user.id);
@@ -370,8 +378,8 @@ const refreshToken = async (
       }
     );
   } catch (error) {
-    logger.error(error);
-    return next(createHttpError(500, 'Error refreshing token'));
+    logger.error('Failed to refresh token', { error });
+    return next(new InternalServerError('Error refreshing token'));
   }
 };
 
