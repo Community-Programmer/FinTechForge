@@ -1,5 +1,6 @@
 import * as React from "react";
-import { AArrowUp, BarChart3, BarChart3Icon, CircleDollarSign, Coins, CreditCard, LayoutDashboard, MessageSquare, Newspaper, TrendingUp } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { AArrowUp, BarChart3Icon, CircleDollarSign, Coins, CreditCard, LayoutDashboard, MessageSquare, Newspaper, TrendingUp } from "lucide-react";
 import fintechForgeLogo from '../../assets/fintechforge-logo.png';
 
 import {
@@ -13,6 +14,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 const data = {
@@ -79,12 +81,42 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const navigate = useNavigate();
+  const { setOpenMobile, isMobile } = useSidebar();
+
+  // Function to handle navigation and close sidebar on mobile
+  const handleNavigation = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
+
+  // Function to handle logo click - navigate to homepage
+  const handleLogoClick = () => {
+    navigate('/');
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
+
   return (
     <Sidebar {...props}>
       <SidebarHeader className="flex items-center justify-between p-4">
-      <div className="flex items-center space-x-2">
-             <img src= {fintechForgeLogo} alt="fintechforge- Logo"/>
-            </div>
+        <div 
+          className="flex items-center space-x-2 cursor-pointer transition-opacity hover:opacity-80" 
+          onClick={handleLogoClick}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleLogoClick();
+            }
+          }}
+          aria-label="Go to homepage"
+        >
+          <img src={fintechForgeLogo} alt="FinTechForge Logo"/>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         {data.navMain.map((group) => (
@@ -95,10 +127,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 {group.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
-                      <a href={item.url} className="flex items-center">
+                      <Link 
+                        to={item.url} 
+                        className="flex items-center"
+                        onClick={handleNavigation}
+                      >
                         {item.icon && <item.icon className="h-5 w-5" />}
                         <span>{item.title}</span>
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}

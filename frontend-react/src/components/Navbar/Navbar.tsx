@@ -20,6 +20,17 @@ const Navbar: React.FC = () => {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const user = useSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
+  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
+
+  // Function to close the mobile sheet when navigating
+  const handleMobileNavigation = () => {
+    setIsSheetOpen(false);
+  };
+
+  // Function to handle logo click - navigate to homepage
+  const handleLogoClick = () => {
+    navigate('/');
+  };
 
   const getUserName = () => {
     if (!user) return "Unknown User";
@@ -45,9 +56,21 @@ const Navbar: React.FC = () => {
     <div className="flex flex-col justify-center items-center">
       <nav className="bg-white dark:bg-black shadow-md w-full">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center space-x-4">
-            <img src={fintechforgeLogo} alt="fintechForgeLogo" className="h-10 w-auto" />
+          {/* Logo - Clickable and navigates to homepage */}
+          <div 
+            className="flex items-center space-x-4 cursor-pointer transition-opacity hover:opacity-80"
+            onClick={handleLogoClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleLogoClick();
+              }
+            }}
+            aria-label="Go to homepage"
+          >
+            <img src={fintechforgeLogo} alt="FinTechForge Logo" className="h-10 w-auto" />
           </div>
 
           {/* Desktop navigation with standardized hover */}
@@ -89,10 +112,10 @@ const Navbar: React.FC = () => {
             </div>
           )}
 
-          {/* Mobile: Sheet-trigger and user menu remain unchanged */}
+          {/* Mobile: Sheet-trigger and user menu */}
           <div className="md:hidden flex items-center">
             {!isLoggedIn && (
-              <Sheet>
+              <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetTrigger asChild>
                   <Button variant="outline" size="icon">
                     <Menu className="h-6 w-6" />
@@ -100,28 +123,48 @@ const Navbar: React.FC = () => {
                   </Button>
                 </SheetTrigger>
 
-                {/* Keep right-side menu; menu link styles unchanged as requested */}
+                {/* Keep right-side menu; add onClick handlers to close sheet */}
                 <SheetContent side="right">
                   <div className="flex flex-col space-y-4 mt-4">
-                    <Link to="/" className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                    <Link 
+                      to="/" 
+                      className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                      onClick={handleMobileNavigation}
+                    >
                       Home
                     </Link>
-                    <Link to="/Features" className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                    <Link 
+                      to="/Features" 
+                      className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                      onClick={handleMobileNavigation}
+                    >
                       Features
                     </Link>
-                    <Link to="/About" className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                    <Link 
+                      to="/About" 
+                      className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                      onClick={handleMobileNavigation}
+                    >
                       About
                     </Link>
-                    <Link to="/Premium" className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center">
+                    <Link 
+                      to="/Premium" 
+                      className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center"
+                      onClick={handleMobileNavigation}
+                    >
                       Premium <Crown className="ml-1 h-4 w-4 text-yellow-500" />
                     </Link>
-                    <Link to="/Pricing" className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center">
+                    <Link 
+                      to="/Pricing" 
+                      className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center"
+                      onClick={handleMobileNavigation}
+                    >
                       Pricing
                     </Link>
-                    <Link to="/Login">
+                    <Link to="/Login" onClick={handleMobileNavigation}>
                       <Button variant="outline">Log In</Button>
                     </Link>
-                    <Link to="/SignUp">
+                    <Link to="/SignUp" onClick={handleMobileNavigation}>
                       <Button>Sign Up</Button>
                     </Link>
                     <ModeToggle />

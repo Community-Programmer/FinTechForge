@@ -22,6 +22,7 @@
     "@types/passport-github2": "^1.2.9",
     "@types/passport-google-oauth20": "^2.0.16",
     "@types/passport-jwt": "^4.0.1",
+    "@types/swagger-jsdoc": "^6.0.4",
     "@types/winston": "^2.4.4",
     "eslint": "^9.13.0",
     "globals": "^15.11.0",
@@ -33,6 +34,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "@types/swagger-ui-express": "^4.1.8",
     "axios": "^1.8.4",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
@@ -50,6 +52,8 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "socket.io": "^4.8.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "winston": "^3.18.3",
     "zod": "^3.25.61"
   }
