@@ -9,9 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { loginSchema, loginUser } from "@/validation/userSchema.ts";
 import SocialButtons from "@/components/Auth/SocialButtons";
-import { AxiosError } from "axios";
-import { ErrorResponse } from "@/types/auth";
 import { signIn } from "@/api/authService";
+import { parseApiError } from "@/lib/apiError";
 
 type loginFields = loginUser;
 
@@ -34,12 +33,12 @@ const LoginForm: React.FC = () => {
         navigate("/");
       }
     } catch (error) {
-      const axiosError = error as AxiosError<ErrorResponse>;
-      if (axiosError.response && axiosError.response.data) {
-        const backendError = axiosError.response.data.message;
-        console.error("Error:", backendError);
-        setError("root", { message: backendError });
-      }
+      const apiError = parseApiError(
+        error,
+        "Unable to sign in. Please try again."
+      );
+      console.error("Sign in failed", apiError);
+      setError("root", { message: apiError.message });
     }
   };
 
@@ -85,9 +84,16 @@ const LoginForm: React.FC = () => {
                 </div>
               )}
             </div>
-            <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+            <form
+              className="space-y-4"
+              onSubmit={handleSubmit(onSubmit)}
+              noValidate
+            >
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                <Label
+                  htmlFor="email"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-200"
+                >
                   Email
                 </Label>
                 <Input
@@ -98,11 +104,16 @@ const LoginForm: React.FC = () => {
                   required
                   className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-700"
                 />
-                {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+                {errors.email && (
+                  <p className="text-red-500">{errors.email.message}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                  <Label
+                    htmlFor="password"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-200"
+                  >
                     Password
                   </Label>
                   <Link
@@ -126,12 +137,20 @@ const LoginForm: React.FC = () => {
                       type="button"
                       onClick={togglePasswordVisibility}
                       className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
                     >
-                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
                     </button>
                   </div>
-                  {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+                  {errors.password && (
+                    <p className="text-red-500">{errors.password.message}</p>
+                  )}
                 </div>
               </div>
               <Button
@@ -139,7 +158,8 @@ const LoginForm: React.FC = () => {
                 type="submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />} Sign In
+                {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}{" "}
+                Sign In
               </Button>
             </form>
             <div className="relative">
@@ -157,7 +177,10 @@ const LoginForm: React.FC = () => {
             </div>
             <div className="text-center text-sm text-gray-600 dark:text-gray-400">
               Don't have an account?{" "}
-              <Link to="/SignUp" className="font-medium text-blue-600 hover:text-blue-800 hover:underline">
+              <Link
+                to="/SignUp"
+                className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
+              >
                 Create an account
               </Link>
             </div>

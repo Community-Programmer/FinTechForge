@@ -21,6 +21,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import BarLoader from "react-spinners/BarLoader";
+import { parseApiError } from "@/lib/apiError";
 
 const PasswordResetForm = () => {
   const { resetToken } = useParams();
@@ -35,27 +36,34 @@ const PasswordResetForm = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [status, setStatus] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   useEffect(() => {
-    const resetPassword = async () => {
+    const validateResetToken = async () => {
       setStatus("LOADING");
       try {
         const response = await verifyResetToken(resetToken);
 
         if (response.data.success) {
+          setErrorMessage(null);
           if (response.data.Code === "INVALID_TOKEN")
             setStatus("INVALID_TOKEN");
           else setStatus("VALID_TOKEN");
         }
       } catch (error) {
-        console.log(error);
+        const apiError = parseApiError(
+          error,
+          "We could not verify your reset link. Please request a new one."
+        );
+        setErrorMessage(apiError.message);
+        setStatus("ERROR");
       }
     };
-    resetPassword();
+    validateResetToken();
   }, [resetToken]);
 
   const onSubmit = async (data: ResetPasswordFormData) => {
@@ -64,8 +72,14 @@ const PasswordResetForm = () => {
 
       if (response.data.success && response.data.Code === "RESET_SUCCESSFUL")
         setStatus("RESET_SUCCESSFUL");
+      setErrorMessage(null);
     } catch (error) {
-      console.log(error);
+      const apiError = parseApiError(
+        error,
+        "We could not reset your password. Please try again."
+      );
+      setErrorMessage(apiError.message);
+      setStatus("ERROR");
     }
   };
 
@@ -91,6 +105,26 @@ const PasswordResetForm = () => {
               </span>
             </div>
           </>
+        )}
+
+        {status === "ERROR" && (
+          <div className="text-center space-y-4">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100">
+              <XCircle className="h-8 w-8 text-red-500" />
+            </div>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Something went wrong
+            </h2>
+            <p className="text-sm text-gray-600">
+              {errorMessage ?? "Please try again later."}
+            </p>
+            <div className="flex flex-col gap-3">
+              <Button className="bg-blue-500 hover:bg-blue-600 text-white" asChild>
+                <Link to="/forgot-password">Request New Reset Link</Link>
+              </Button>
+              <Button variant="outline" onClick={() => setStatus("VALID_TOKEN")}>Try Again</Button>
+            </div>
+          </div>
         )}
 
         {status === "INVALID_TOKEN" && (

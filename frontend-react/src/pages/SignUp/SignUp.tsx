@@ -10,8 +10,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SocialButtons from "@/components/Auth/SocialButtons";
 import { signUp } from "@/api/authService";
-import { ErrorResponse } from "@/types/auth";
-import { AxiosError } from "axios";
+import { parseApiError } from "@/lib/apiError";
 
 type signupFields = signupUser;
 
@@ -32,12 +31,12 @@ const SignUpForm: React.FC = () => {
         navigate(`/verifymail?email=${data.email}`);
       }
     } catch (error) {
-      const axiosError = error as AxiosError<ErrorResponse>;
-      if (axiosError.response && axiosError.response.data) {
-        const backendError = axiosError.response.data.message;
-        console.error("Error:", backendError);
-        setError("root", { message: backendError });
-      }
+      const apiError = parseApiError(
+        error,
+        "Unable to sign up. Pleasy try again"
+      );
+      console.error("Sign up failed", apiError);
+      setError("root", { message: apiError.message });
     }
   };
 
@@ -85,7 +84,10 @@ const SignUpForm: React.FC = () => {
             </div>
             <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
               <div className="space-y-2">
-                <Label htmlFor="username" className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                <Label
+                  htmlFor="username"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-200"
+                >
                   Username
                 </Label>
                 <Input
@@ -95,10 +97,15 @@ const SignUpForm: React.FC = () => {
                   required
                   className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-700"
                 />
-                {errors.username && <p className="text-red-500">{errors.username.message}</p>}
+                {errors.username && (
+                  <p className="text-red-500">{errors.username.message}</p>
+                )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                <Label
+                  htmlFor="email"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-200"
+                >
                   Email
                 </Label>
                 <Input
@@ -109,10 +116,15 @@ const SignUpForm: React.FC = () => {
                   required
                   className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-700"
                 />
-                {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+                {errors.email && (
+                  <p className="text-red-500">{errors.email.message}</p>
+                )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                <Label
+                  htmlFor="password"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-200"
+                >
                   Password
                 </Label>
                 <div className="space-y-2">
@@ -129,12 +141,20 @@ const SignUpForm: React.FC = () => {
                       type="button"
                       onClick={togglePasswordVisibility}
                       className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
                     >
-                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
                     </button>
                   </div>
-                  {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+                  {errors.password && (
+                    <p className="text-red-500">{errors.password.message}</p>
+                  )}
                 </div>
               </div>
               <Button
@@ -142,7 +162,8 @@ const SignUpForm: React.FC = () => {
                 className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg transition-all duration-200 hover:shadow-xl"
                 type="submit"
               >
-                {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />} Sign Up
+                {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}{" "}
+                Sign Up
               </Button>
             </form>
             <div className="relative">
