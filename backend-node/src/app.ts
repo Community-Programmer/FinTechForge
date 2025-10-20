@@ -4,22 +4,20 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import http from 'http';
 import { Server } from 'socket.io';
-import swaggerUi from 'swagger-ui-express';
-import { swaggerSpec } from './config/swagger';
 import globalErrorHandler from './middleware/globalErrorHandler';
 import passport from 'passport';
 import passportConfig from './config/passport';
-import { 
-  helmetConfig, 
-  generalRateLimit, 
-  authRateLimit, 
-  getCorsConfig, 
-  additionalSecurityHeaders 
+import {
+  helmetConfig,
+  generalRateLimit,
+  authRateLimit,
+  getCorsConfig,
+  additionalSecurityHeaders,
 } from './config/security';
 import authRouter from './auth/authRoute';
 import newsRouter from './FinanceNews/newsRoute';
-import currencyRouter from './CurrecncyConvertor/currencyRoutes';
-import financeRouter from './FinanceChatbot/financeRoute';
+import currencyRouter from './CurrencyConvertor/currencyRoutes';
+import { getChatbotResponse } from './FinanceChatbot/financeController';
 import gamificationRoute from './FinanceEducation/gamificationRoute';
 import lessonRoute from './FinanceEducation/lessonRoute';
 import quizRoute from './FinanceEducation/quizRoute';
@@ -41,7 +39,6 @@ const io = new Server(server, {
   },
 });
 
-
 app.use(helmetConfig);
 app.use(additionalSecurityHeaders);
 app.use(generalRateLimit);
@@ -57,26 +54,13 @@ passportConfig(passport);
 app.get('/', (req: Request, res: Response) => {
   res.json({
     message: 'Welcome to Finance App Express Backend',
-    documentation: '/api-docs',
   });
 });
-
-// Swagger API Documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-  customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: 'FinTechForge API Documentation',
-  customfavIcon: '/favicon.ico',
-  swaggerOptions: {
-    persistAuthorization: true,
-    displayRequestDuration: true,
-    filter: true,
-  },
-}));
 
 app.use('/api/v1/auth', authRateLimit, authRouter);
 app.use('/api/v1/news', newsRouter);
 app.use('/api/v1/currency', currencyRouter);
-app.use('/api/v1/financechatbot', financeRouter);
+app.use('/api/v1/financechatbot', getChatbotResponse);
 
 app.use('/api/v1/education/lesson', lessonRoute);
 app.use('/api/v1/education/quiz', quizRoute);
