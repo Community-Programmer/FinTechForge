@@ -1,6 +1,5 @@
 
 services:
- 
   mongodb:
     image: mongo:5
     container_name: fintechforge_mongodb
@@ -12,11 +11,10 @@ services:
       MONGO_INITDB_ROOT_USERNAME: "${MONGO_INITDB_ROOT_USERNAME:-root}"
       MONGO_INITDB_ROOT_PASSWORD: "${MONGO_INITDB_ROOT_PASSWORD:-example}"
     healthcheck:
-      test: ["CMD-SHELL", "mongo --quiet --eval \"db.runCommand({ ping: 1 }).ok\" mongodb:27017/test || exit 1"]
+      test: ["CMD-SHELL", "mongosh --quiet --eval \"db.adminCommand({ ping: 1 }).ok\" mongodb:27017/test || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
-
   # Node.js backend (backend-node)
   backend-node:
     build:
@@ -35,8 +33,6 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
-    
-
   # Python backend (backend-python)
   backend-python:
     build:
@@ -54,8 +50,6 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
-    
-
   # Frontend (React/Vite)
   frontend-react:
     build:
@@ -73,5 +67,3 @@ services:
     depends_on:
       - backend-node
       - backend-python
-
-
