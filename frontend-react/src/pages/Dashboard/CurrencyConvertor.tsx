@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import {
   Card,
@@ -19,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeftRight } from "lucide-react";
 import { ChartArea } from "@/components/ui/chart";
 import { getAllCurrency, currencyConvert } from "@/api/currencyService";
+import { parseApiError } from "@/lib/apiError";
 
 type Currency = {
   currencyCode: string;
@@ -26,6 +26,11 @@ type Currency = {
   flag: string;
   id: string;
 };
+
+interface HistoricalDataPoint {
+  date: string;
+  value: number;
+}
 
 export function CurrencyConverter() {
   const [currencies, setCurrencies] = useState<Currency[]>([]);
@@ -36,7 +41,9 @@ export function CurrencyConverter() {
   const [conversionRate, setConversionRate] = useState(0);
   const [isLoadingCurrencies, setIsLoadingCurrencies] = useState(true);
   const [isConverting, setIsConverting] = useState(false);
-  const [historicalData, setHistoricalData] = useState<any[]>([]);
+  const [historicalData, setHistoricalData] = useState<HistoricalDataPoint[]>(
+    []
+  );
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -48,7 +55,7 @@ export function CurrencyConverter() {
       const debouncedConversion = setTimeout(() => {
         convertCurrency();
       }, 500); // 500ms delay
-  
+
       return () => clearTimeout(debouncedConversion); // Cleanup function
     }
   }, [fromCurrency, toCurrency, amount]);
@@ -61,8 +68,12 @@ export function CurrencyConverter() {
       const response = await getAllCurrency();
       setCurrencies(response.data.data);
     } catch (err) {
-      console.error("Error fetching currencies:", err);
-      setError("Failed to load currencies. Please try again later.");
+      const apiError = parseApiError(
+        err,
+        "Failed to load currencies. Please try again later."
+      );
+      console.error("Error fetching currencies", apiError);
+      setError(apiError.message);
     } finally {
       setIsLoadingCurrencies(false);
     }
@@ -80,18 +91,19 @@ export function CurrencyConverter() {
 
       const parsedAmount = parseFloat(data.amount);
       const parsedRate = parseFloat(data.rate.replace(/,/g, ""));
-  
-      const rate = parsedAmount === 1 ? parsedRate : parsedRate / parsedAmount;
 
-      console.log("Conversion Rate:", rate);
-      console.log("data:", data);
+      const rate = parsedAmount === 1 ? parsedRate : parsedRate / parsedAmount;
 
       setConversionRate(rate);
       setConvertedAmount(amount * rate);
       generateHistoricalData(rate);
     } catch (err) {
-      console.error("Error converting currency:", err);
-      setError("Failed to convert currency. Please try again later.");
+      const apiError = parseApiError(
+        err,
+        "Failed to convert currency. Please try again later."
+      );
+      console.error("Error converting currency:", apiError);
+      setError(apiError.message);
     } finally {
       setIsConverting(false);
     }
@@ -103,7 +115,7 @@ export function CurrencyConverter() {
   };
 
   const generateHistoricalData = (currentRate: number) => {
-    const data = [];
+    const data: HistoricalDataPoint[] = [];
     const today = new Date();
 
     for (let i = 30; i >= 0; i--) {
@@ -137,7 +149,9 @@ export function CurrencyConverter() {
       <Card>
         <CardHeader>
           <CardTitle>Convert Currency</CardTitle>
-          <CardDescription>Enter an amount and select currencies</CardDescription>
+          <CardDescription>
+            Enter an amount and select currencies
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-6">
@@ -159,7 +173,7 @@ export function CurrencyConverter() {
                   >
                     <SelectTrigger className="w-32">
                       <SelectValue placeholder="Currency">
-                      <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2">
                           {getCurrencyDetails(fromCurrency)?.flag && (
                             <img
                               src={getCurrencyDetails(fromCurrency)?.flag}
@@ -169,14 +183,23 @@ export function CurrencyConverter() {
                           )}
                           <span>{fromCurrency}</span>
                         </div>
-                        </SelectValue>
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {currencies.map((currency) => (
-                        <SelectItem key={currency.id} value={currency.currencyCode}>
-                            <div className="flex items-center space-x-2">
-                            <img src={currency.flag} alt={currency.currencyCode} className="w-5 h-5" />
-                            <span>{currency.currencyCode} - {currency.currencyName}</span>
+                        <SelectItem
+                          key={currency.id}
+                          value={currency.currencyCode}
+                        >
+                          <div className="flex items-center space-x-2">
+                            <img
+                              src={currency.flag}
+                              alt={currency.currencyCode}
+                              className="w-5 h-5"
+                            />
+                            <span>
+                              {currency.currencyCode} - {currency.currencyName}
+                            </span>
                           </div>
                         </SelectItem>
                       ))}
@@ -201,7 +224,11 @@ export function CurrencyConverter() {
                 <div className="flex space-x-2">
                   <Input
                     type="number"
-                    value={isConverting ? "Converting..." : convertedAmount.toFixed(2)}
+                    value={
+                      isConverting
+                        ? "Converting..."
+                        : convertedAmount.toFixed(2)
+                    }
                     readOnly
                     className="flex-1"
                   />
@@ -212,7 +239,7 @@ export function CurrencyConverter() {
                   >
                     <SelectTrigger className="w-32">
                       <SelectValue placeholder="Currency">
-                      <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2">
                           {getCurrencyDetails(toCurrency)?.flag && (
                             <img
                               src={getCurrencyDetails(toCurrency)?.flag}
@@ -222,11 +249,14 @@ export function CurrencyConverter() {
                           )}
                           <span>{toCurrency}</span>
                         </div>
-                        </SelectValue>
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {currencies.map((currency) => (
-                        <SelectItem key={currency.id} value={currency.currencyCode}>
+                        <SelectItem
+                          key={currency.id}
+                          value={currency.currencyCode}
+                        >
                           {currency.currencyCode} - {currency.currencyName}
                         </SelectItem>
                       ))}
@@ -242,7 +272,8 @@ export function CurrencyConverter() {
               ) : (
                 <>
                   <p>
-                    {amount} {fromCurrency} = {convertedAmount.toFixed(2)} {toCurrency}
+                    {amount} {fromCurrency} = {convertedAmount.toFixed(2)}{" "}
+                    {toCurrency}
                   </p>
                   <p className="mt-1">
                     1 {fromCurrency} = {conversionRate.toFixed(4)} {toCurrency}

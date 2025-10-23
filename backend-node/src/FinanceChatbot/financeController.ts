@@ -1,8 +1,7 @@
-import e, { NextFunction, Request, Response } from 'express';
-import { prisma } from '../../prisma/client';
-import createHttpError from 'http-errors';
+import { NextFunction, Request, Response } from 'express';
 import axios from 'axios';
 import { logger } from '../utils/logger';
+import { InternalServerError } from '../errors/errorTypes';
 
 const getChatbotResponse = async (
   req: Request,
@@ -10,7 +9,7 @@ const getChatbotResponse = async (
   next: NextFunction
 ) => {
   const { query } = req.query;
-  logger.error(query);
+  logger.debug('Finance chatbot request', { query });
 
   try {
     const response = await axios.get(
@@ -25,8 +24,8 @@ const getChatbotResponse = async (
       message: response.data,
     });
   } catch (err) {
-    logger.error(err);
-    return next(createHttpError(500, 'Error while processing your request'));
+    logger.error('Failed to fetch chatbot response', { error: err });
+    return next(new InternalServerError('Error while processing your request'));
   }
 };
 

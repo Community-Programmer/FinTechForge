@@ -7,9 +7,11 @@ import { forgotPassword } from "@/api/authService";
 import { useForm } from "react-hook-form";
 import { emailFormData, emailSchema } from "@/validation/userSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { parseApiError } from "@/lib/apiError";
 
 const ForgotPassword = () => {
   const [status, setStatus] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const {
     register,
@@ -24,8 +26,13 @@ const ForgotPassword = () => {
     try {
       await forgotPassword(data);
       setStatus(true);
+      setErrorMessage(null);
     } catch (error) {
-      console.error(error);
+      const apiError = parseApiError(
+        error,
+        "We could not send the reset email. Please try again."
+      );
+      setErrorMessage(apiError.message);
     }
   };
 
@@ -47,6 +54,9 @@ const ForgotPassword = () => {
               ? "If an account exists for the email provided, you will receive password reset instructions."
               : "No problem! Enter your email address and we'll send you instructions to reset your password."}
           </p>
+          {errorMessage && !status && (
+            <p className="mt-2 text-sm text-red-600">{errorMessage}</p>
+          )}
         </div>
 
         <div className="space-y-6">

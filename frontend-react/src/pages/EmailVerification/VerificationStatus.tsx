@@ -9,10 +9,9 @@ import {
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { AxiosError } from "axios";
 import BarLoader from "react-spinners/BarLoader";
-import { ErrorResponse } from "@/types/auth";
 import { verifyUserEmail } from "@/api/authService";
+import { parseApiError } from "@/lib/apiError";
 
 const VerificationStatus = () => {
   const { verificationToken } = useParams();
@@ -26,19 +25,21 @@ const VerificationStatus = () => {
       try {
         const response = await verifyUserEmail(verificationToken);
         if (response.data.success) {
-          if (response.data.code === "ALREADY_VERIFIED" || "VERIFIED") {
+          if (
+            response.data.code === "ALREADY_VERIFIED" ||
+            response.data.code === "VERIFIED"
+          ) {
             setStatus("VERIFIED");
             setMessage(response.data.message);
           }
         }
       } catch (error) {
-        const axiosError = error as AxiosError<ErrorResponse>;
-        if (axiosError.response && axiosError.response.data) {
-          const backendError = axiosError.response.data.message;
-          setStatus("VERIFICATION_ERROR");
-          setMessage(backendError);
-        }
+        const apiError = parseApiError(
+          error,
+          "We could not verify your email. Please request a new link."
+        );
         setStatus("VERIFICATION_ERROR");
+        setMessage(apiError.message);
       }
     };
 

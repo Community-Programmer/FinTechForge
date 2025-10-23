@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { NextFunction, Request, Response } from 'express';
-import createHttpError from 'http-errors';
 import { logger } from '../utils/logger';
+import { InternalServerError } from '../errors/errorTypes';
 
 const getAllCurrency = async (
   req: Request,
@@ -25,8 +25,8 @@ const getAllCurrency = async (
       data: response.data,
     });
   } catch (err) {
-    logger.error(err);
-    return next(createHttpError(500, 'Error while processing your request'));
+    logger.error('Failed to fetch currency list', { error: err });
+    return next(new InternalServerError('Error while processing your request'));
   }
 };
 
@@ -54,8 +54,8 @@ const convertCurrency = async (
       data: response.data,
     });
   } catch (err) {
-    logger.error(err);
-    return next(createHttpError(500, 'Error while processing your request'));
+    logger.error('Failed to convert currency', { error: err });
+    return next(new InternalServerError('Error while processing your request'));
   }
 };
 

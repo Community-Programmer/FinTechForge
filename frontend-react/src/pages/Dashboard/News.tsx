@@ -1,97 +1,125 @@
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { ArrowUpIcon, ArrowDownIcon, MinusIcon, Search, ExternalLink, BrainCircuit } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { getNews, getNewsSentiment } from "@/api/newsService"
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowUpIcon,
+  ArrowDownIcon,
+  MinusIcon,
+  Search,
+  ExternalLink,
+  BrainCircuit,
+} from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { getNews, getNewsSentiment } from "@/api/newsService";
+import { parseApiError } from "@/lib/apiError";
 
 type NewsItem = {
-  url: string
-  img: string
-  title: string
-  text: string
-  source: string
-  type: string
-  tickers: string[]
-  time: string
-  ago: string
-  sentiment?: "bullish" | "bearish" | "neutral"
-}
+  url: string;
+  img: string;
+  title: string;
+  text: string;
+  source: string;
+  type: string;
+  tickers: string[];
+  time: string;
+  ago: string;
+  sentiment?: "bullish" | "bearish" | "neutral";
+};
 
 export function MarketNews() {
-  const [newsData, setNewsData] = useState<NewsItem[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedTab, setSelectedTab] = useState("all")
+  const [newsData, setNewsData] = useState<NewsItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTab, setSelectedTab] = useState("all");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     // Simulate fetching data from API
     const fetchNewsData = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
+      setErrorMessage(null);
       try {
         // In a real app, this would be an API call
         // For now, we'll use the mock data
         const mockData = await getNews();
         // const mockData = getMockNewsData()
-        setNewsData(mockData.data.data.body)
+        setNewsData(mockData.data.data.body);
       } catch (error) {
-        console.error("Error fetching news data:", error)
+        const apiError = parseApiError(
+          error,
+          "Failed to load market news. Please try again later."
+        );
+        console.error("Error fetching new data", apiError);
+        setErrorMessage(apiError.message);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    fetchNewsData()
-  }, [])
+    fetchNewsData();
+  }, []);
 
   const filteredNews = newsData.filter(
     (news) =>
       news.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       news.source.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (news.tickers && news.tickers.some((ticker) => ticker.toLowerCase().includes(searchTerm.toLowerCase()))),
-  )
+      (news.tickers &&
+        news.tickers.some((ticker) =>
+          ticker.toLowerCase().includes(searchTerm.toLowerCase())
+        ))
+  );
 
   const getSentimentIcon = (sentiment: string) => {
     switch (sentiment) {
       case "bullish":
-        return <ArrowUpIcon className="h-4 w-4 text-green-500" />
+        return <ArrowUpIcon className="h-4 w-4 text-green-500" />;
       case "bearish":
-        return <ArrowDownIcon className="h-4 w-4 text-red-500" />
+        return <ArrowDownIcon className="h-4 w-4 text-red-500" />;
       default:
-        return <MinusIcon className="h-4 w-4 text-gray-500" />
+        return <MinusIcon className="h-4 w-4 text-gray-500" />;
     }
-  }
+  };
 
   const getSentimentColor = (sentiment: string) => {
     switch (sentiment) {
       case "bullish":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
       case "bearish":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300";
     }
-  }
+  };
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Market News & Sentiment</h2>
-          <p className="text-muted-foreground">Latest financial news with AI-powered sentiment analysis</p>
+          <h2 className="text-3xl font-bold tracking-tight">
+            Market News & Sentiment
+          </h2>
+          <p className="text-muted-foreground">
+            Latest financial news with AI-powered sentiment analysis
+          </p>
         </div>
         <div className="w-full md:w-64">
           <div className="relative">
@@ -105,8 +133,18 @@ export function MarketNews() {
           </div>
         </div>
       </div>
+      {errorMessage && (
+        <div className="rounded-md bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-200 p-4">
+          {errorMessage}
+        </div>
+      )}
 
-      <Tabs defaultValue="all" className="space-y-4" value={selectedTab} onValueChange={setSelectedTab}>
+      <Tabs
+        defaultValue="all"
+        className="space-y-4"
+        value={selectedTab}
+        onValueChange={setSelectedTab}
+      >
         <TabsList>
           <TabsTrigger value="all">All News</TabsTrigger>
           <TabsTrigger value="bullish">Bullish</TabsTrigger>
@@ -165,7 +203,7 @@ export function MarketNews() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
 
 function NewsCard({
@@ -173,27 +211,37 @@ function NewsCard({
   getSentimentIcon,
   getSentimentColor,
 }: {
-  news: NewsItem
-  getSentimentIcon: (sentiment: string) => React.ReactNode
-  getSentimentColor: (sentiment: string) => string
+  news: NewsItem;
+  getSentimentIcon: (sentiment: string) => React.ReactNode;
+  getSentimentColor: (sentiment: string) => string;
 }) {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
-  const [aiSentiment, setAiSentiment] = useState<string | null>(null)
-  const [aiAnalysis, setAiAnalysis] = useState<string | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [aiSentiment, setAiSentiment] = useState<string | null>(null);
+  const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
 
-  const analyzeSentiment = async(newsUrl: string) => {
-    setIsModalOpen(true)
-    setIsAnalyzing(true)
-    setAiSentiment(null)
-    setAiAnalysis(null)
+  const analyzeSentiment = async (newsUrl: string) => {
+    setIsModalOpen(true);
+    setIsAnalyzing(true);
+    setAiSentiment(null);
+    setAiAnalysis(null);
 
-    const response = await getNewsSentiment(newsUrl);
-    console.log(response.data);
+    setAnalysisError(null);
 
-    setAiSentiment(response.data.data.sentiment.toLowerCase())
-    setAiAnalysis(response.data.data.reason)
-    setIsAnalyzing(false)
+    try {
+      const response = await getNewsSentiment(newsUrl);
+      setAiSentiment(response.data.data.sentiment.toLowerCase());
+      setAiAnalysis(response.data.data.reason);
+    } catch (error) {
+      const apiError = parseApiError(
+        error,
+        "We could not analyze this article right now. Please try again later."
+      );
+      setAnalysisError(apiError.message);
+    } finally {
+      setIsAnalyzing(false);
+    }
 
     // // Simulate AI analysis with a delay
     // setTimeout(() => {
@@ -218,9 +266,7 @@ function NewsCard({
     //   setAiAnalysis(analysis)
     //   setIsAnalyzing(false)
     // }, 2000)
-
-
-  }
+  };
 
   return (
     <>
@@ -238,15 +284,25 @@ function NewsCard({
             )}
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-2 mb-2">
-                <span className="text-sm text-muted-foreground">{news.source}</span>
+                <span className="text-sm text-muted-foreground">
+                  {news.source}
+                </span>
                 <span className="text-sm text-muted-foreground">•</span>
-                <span className="text-sm text-muted-foreground">{news.time}</span>
-                <span className="text-sm text-muted-foreground">({news.ago})</span>
+                <span className="text-sm text-muted-foreground">
+                  {news.time}
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  ({news.ago})
+                </span>
 
                 {news.tickers && news.tickers.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-1">
                     {news.tickers.slice(0, 5).map((ticker, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
+                      <Badge
+                        key={index}
+                        variant="secondary"
+                        className="text-xs"
+                      >
                         {ticker}
                       </Badge>
                     ))}
@@ -262,11 +318,21 @@ function NewsCard({
               <p className="text-muted-foreground mb-3">{news.text}</p>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" asChild>
-                  <a href={news.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                  <a
+                    href={news.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1"
+                  >
                     Read More <ExternalLink className="h-3 w-3" />
                   </a>
                 </Button>
-                <Button variant="secondary" size="sm" onClick={()=>analyzeSentiment(news.url)} className="flex items-center gap-1">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => analyzeSentiment(news.url)}
+                  className="flex items-center gap-1"
+                >
                   <BrainCircuit className="h-4 w-4" /> Sentiment AI
                 </Button>
               </div>
@@ -279,7 +345,9 @@ function NewsCard({
         <DialogContent className="sm:max-w-[500px] h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>AI Sentiment Analysis</DialogTitle>
-            <DialogDescription>Analyzing market sentiment for this news article</DialogDescription>
+            <DialogDescription>
+              Analyzing market sentiment for this news article
+            </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
@@ -297,7 +365,9 @@ function NewsCard({
 
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium">Source:</span>
-                <span className="text-sm text-muted-foreground">{news.source}</span>
+                <span className="text-sm text-muted-foreground">
+                  {news.source}
+                </span>
               </div>
 
               <div className="flex items-center gap-2">
@@ -312,7 +382,11 @@ function NewsCard({
                   <span className="text-sm font-medium">Related tickers:</span>
                   <div className="flex flex-wrap gap-1">
                     {news.tickers.map((ticker, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
+                      <Badge
+                        key={index}
+                        variant="secondary"
+                        className="text-xs"
+                      >
                         {ticker}
                       </Badge>
                     ))}
@@ -330,21 +404,30 @@ function NewsCard({
                     <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-primary"></div>
                     <span>Analyzing sentiment...</span>
                   </div>
+                ) : analysisError ? (
+                  <div className="rounded-md bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-200 p-4">
+                    {analysisError}
+                  </div>
                 ) : aiSentiment ? (
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">Market Sentiment:</span>
+                      <span className="text-sm font-medium">
+                        Market Sentiment:
+                      </span>
                       <Badge className={getSentimentColor(aiSentiment)}>
                         <span className="flex items-center gap-1">
                           {getSentimentIcon(aiSentiment)}
-                          {aiSentiment.charAt(0).toUpperCase() + aiSentiment.slice(1)}
+                          {aiSentiment.charAt(0).toUpperCase() +
+                            aiSentiment.slice(1)}
                         </span>
                       </Badge>
                     </div>
 
                     <div>
                       <span className="text-sm font-medium">Analysis:</span>
-                      <p className="text-sm mt-1 text-muted-foreground">{aiAnalysis}</p>
+                      <p className="text-sm mt-1 text-muted-foreground">
+                        {aiAnalysis}
+                      </p>
                     </div>
                   </div>
                 ) : null}
@@ -354,7 +437,7 @@ function NewsCard({
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }
 
 // Fix: Comment out function to preserve it while avoiding TypeScript error
