@@ -58,7 +58,7 @@ export function MarketNews() {
       } catch (error) {
         const apiError = parseApiError(
           error,
-          "Failed to laod market news. Please try again later."
+          "Failed to load market news. Please try again later."
         );
         console.error("Error fetching new data", apiError);
         setErrorMessage(apiError.message);

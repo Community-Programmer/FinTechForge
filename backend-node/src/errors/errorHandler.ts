@@ -7,7 +7,7 @@ interface ErrorResponse {
   statusCode: number;
   message: string;
   errorCode?: string;
-  datails?: ErrorDetails;
+  details?: ErrorDetails;
   stack?: string;
 }
 

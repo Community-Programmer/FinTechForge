@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import createHttpError from 'http-errors';
 
 /**
- * Tranform Zod errors into ValidationError
+ * Transform Zod errors into ValidationError
  * @param error - Zod error
  * @returns AppError with validation details
  */

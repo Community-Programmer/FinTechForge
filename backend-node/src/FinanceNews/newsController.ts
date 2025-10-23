@@ -47,7 +47,7 @@ const getNewsSentiment = async (
       data: response.data,
     });
   } catch (err) {
-    logger.error('Failed to fetch new sentiment', { error: err });
+    logger.error('Failed to fetch news sentiment', { error: err });
     return next(new InternalServerError('Error while processing your request'));
   }
 };

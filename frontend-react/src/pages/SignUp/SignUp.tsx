@@ -33,7 +33,7 @@ const SignUpForm: React.FC = () => {
     } catch (error) {
       const apiError = parseApiError(
         error,
-        "Unable to sign up. Pleasy try again"
+        "Unable to sign up. Please try again"
       );
       console.error("Sign up failed", apiError);
       setError("root", { message: apiError.message });
