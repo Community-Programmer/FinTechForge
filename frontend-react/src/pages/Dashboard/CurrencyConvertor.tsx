@@ -100,7 +100,7 @@ export function CurrencyConverter() {
     } catch (err) {
       const apiError = parseApiError(
         err,
-        "Failed to convert currency. Please try again later"
+        "Failed to convert currency. Please try again later."
       );
       console.error("Error converting currency:", apiError);
       setError(apiError.message);
