@@ -34,6 +34,8 @@ import EducationHub from "./pages/Education/EducationHub";
 import LoginForm from "./pages/Login/Login";
 import SignUpForm from "./pages/SignUp/SignUp";
 import NotFound from "./pages/NotFound/NotFound";
+import PasswordResetForm from "./pages/ForgotPassword/PasswordResetForm";
+import NearServices from "./pages/NearbyATM/NearServices";
 
 
 const mainLayoutRoutes = [
@@ -48,13 +50,11 @@ const mainLayoutRoutes = [
     index : true,
     element : <News/>
   },
-  /*
   {
     path: "/map",
     index: true,
     element: <NearServices />,
   },
-  */
 
   {
     path: "/About",
@@ -189,10 +189,10 @@ const router = createBrowserRouter([
         path: "/forgot-password",
         element: <ForgotPassword />,
       },
-      /*{
+      {
         path: "/reset-password/:resetToken",
         element: <PasswordResetForm />,
-      }*/
+      },
       {
         path: "*",
         element: <NotFound />,

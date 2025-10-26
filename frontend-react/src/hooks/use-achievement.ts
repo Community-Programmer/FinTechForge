@@ -82,7 +82,7 @@ export function useAchievement() {
     try {
       setLoading(true);
       const response = await axios.get(
-        "/api/v1/education/gamification/achievements",
+        `${import.meta.env.VITE_API_BASE_URL}/education/gamification/achievements`,
         {
           withCredentials: true,
         }
@@ -117,7 +117,7 @@ export function useAchievement() {
   const unlockAchievement = async (achievementType: string) => {
     try {
       const response = await axios.post(
-        "/api/v1/education/gamification/achievement",
+        `${import.meta.env.VITE_API_BASE_URL}/education/gamification/achievement`,
         { type: achievementType },
         { withCredentials: true }
       );

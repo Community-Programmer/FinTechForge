@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Crown, Diamond, Rocket, LifeBuoy, Zap, TrendingUp } from "lucide-react";
+import { CheckCircle, Crown, Diamond, Rocket, LifeBuoy, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Premium: React.FC = () => {
