@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { UserStats } from "./use-user-stats";
 
 // Define achievement interface
 export interface Achievement {
@@ -132,7 +133,7 @@ export function useAchievement() {
   };
 
   // Check if user meets achievement criteria
-  const checkAchievementEligibility = async (userStats: any) => {
+  const checkAchievementEligibility = async (userStats: UserStats) => {
     if (userStats.level >= 5) {
       try {
         const existingAchievement = achievements.find(

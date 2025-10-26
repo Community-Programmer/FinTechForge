@@ -10,7 +10,10 @@ const RootWrapper = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(silentRefresh());
+    // Try to refresh authentication silently on app startup
+    dispatch(silentRefresh()).catch(() => {
+      // Silently handle refresh failures - user will need to login manually
+    });
   }, [dispatch]);
 
    return (

@@ -1,13 +1,17 @@
 import { useEffect } from "react";
 
-// Fix: Add interface for component props
+// Fixed: Add proper interfaces
 interface TradingWidgetsProps {
   symbol: string;
 }
 
+interface TradingViewConfig {
+  [key: string]: string | number | boolean | string[] | object;
+}
+
 const TradingWidgets = ({ symbol }: TradingWidgetsProps) => {
-  // Fix: Add types for function parameters
-  const loadWidget = (id: string, scriptUrl: string, config: Record<string, any>) => {
+  // Fixed: Use proper TypeScript interface instead of any
+  const loadWidget = (id: string, scriptUrl: string, config: TradingViewConfig) => {
     const container = document.getElementById(id);
     if (container) {
       container.innerHTML = ""; // Clear previous script
