@@ -20,13 +20,17 @@ async def get_stock_quote(symbol: str):
         ticker = yf.Ticker(symbol)
         info = ticker.info
         
-        # Get current price data
-        hist = ticker.history(period="1d", interval="1m")
+        # Get current price data - use fast_info for better performance
+        try:
+            fast_info = ticker.fast_info
+            current_price = fast_info.get('lastPrice', 0)
+        except:
+            # Fallback to daily interval if fast_info fails
+            hist = ticker.history(period="1d", interval="1d")
+            if hist.empty:
+                raise HTTPException(status_code=404, detail=f"No data found for symbol: {symbol}")
+            current_price = hist['Close'].iloc[-1]
         
-        if hist.empty:
-            raise HTTPException(status_code=404, detail=f"No data found for symbol: {symbol}")
-        
-        current_price = hist['Close'].iloc[-1]
         previous_close = info.get('previousClose', current_price)
         change = current_price - previous_close
         change_percent = (change / previous_close) * 100 if previous_close else 0
@@ -67,46 +71,113 @@ async def get_multiple_stock_quotes(symbols: str):
     """
     try:
         symbol_list = [s.strip().upper() for s in symbols.split(',')]
-        results = []
         
-        for symbol in symbol_list:
-            try:
-                ticker = yf.Ticker(symbol)
-                info = ticker.info
-                
-                # Get current price data
-                hist = ticker.history(period="1d", interval="1m")
-                
-                if hist.empty:
+        # Use batch download for better performance
+        try:
+            # Download all stocks in parallel
+            data = yf.download(tickers=symbol_list, period="1d", interval="1d", group_by='ticker', progress=False)
+            
+            results = []
+            for symbol in symbol_list:
+                try:
+                    ticker = yf.Ticker(symbol)
+                    info = ticker.info
+                    
+                    # Get current price from batch data or fast_info
+                    try:
+                        # Try to get from batch download data
+                        if hasattr(data.columns, 'levels') and symbol in data.columns.levels[0]:
+                            current_price = data[symbol]['Close'].iloc[-1]
+                        elif not data.empty:
+                            # Single column dataframe - get last close price
+                            current_price = data['Close'].iloc[-1] if 'Close' in data.columns else None
+                        else:
+                            current_price = None
+                        
+                        # Fallback to fast_info if batch data fails
+                        if current_price is None or current_price == 0:
+                            fast_info = ticker.fast_info
+                            current_price = fast_info.get('lastPrice', 0)
+                    except:
+                        # Final fallback to fast_info
+                        try:
+                            fast_info = ticker.fast_info
+                            current_price = fast_info.get('lastPrice', 0)
+                        except:
+                            current_price = 0
+                    
+                    if current_price == 0 or current_price is None:
+                        results.append({
+                            "symbol": symbol,
+                            "error": "No data available"
+                        })
+                        continue
+                    
+                    previous_close = info.get('previousClose', current_price)
+                    change = current_price - previous_close
+                    change_percent = (change / previous_close) * 100 if previous_close else 0
+                    
                     results.append({
                         "symbol": symbol,
-                        "error": "No data available"
+                        "companyName": info.get('longName', symbol),
+                        "currentPrice": round(current_price, 2),
+                        "previousClose": round(previous_close, 2),
+                        "change": round(change, 2),
+                        "changePercent": round(change_percent, 2),
+                        "volume": info.get('volume', 0),
+                        "marketCap": info.get('marketCap', 0),
+                        "currency": info.get('currency', 'USD'),
+                        "logo": info.get('logo_url', ''),
+                        "timestamp": datetime.now().isoformat()
                     })
-                    continue
-                
-                current_price = hist['Close'].iloc[-1]
-                previous_close = info.get('previousClose', current_price)
-                change = current_price - previous_close
-                change_percent = (change / previous_close) * 100 if previous_close else 0
-                
-                results.append({
-                    "symbol": symbol,
-                    "companyName": info.get('longName', symbol),
-                    "currentPrice": round(current_price, 2),
-                    "previousClose": round(previous_close, 2),
-                    "change": round(change, 2),
-                    "changePercent": round(change_percent, 2),
-                    "volume": info.get('volume', 0),
-                    "marketCap": info.get('marketCap', 0),
-                    "currency": info.get('currency', 'USD'),
-                    "logo": info.get('logo_url', ''),
-                    "timestamp": datetime.now().isoformat()
-                })
-            except Exception as e:
-                results.append({
-                    "symbol": symbol,
-                    "error": str(e)
-                })
+                except Exception as e:
+                    results.append({
+                        "symbol": symbol,
+                        "error": str(e)
+                    })
+        except:
+            # Fallback to sequential fetching if batch fails
+            results = []
+            for symbol in symbol_list:
+                try:
+                    ticker = yf.Ticker(symbol)
+                    info = ticker.info
+                    
+                    try:
+                        fast_info = ticker.fast_info
+                        current_price = fast_info.get('lastPrice', 0)
+                    except:
+                        hist = ticker.history(period="1d", interval="1d")
+                        if hist.empty:
+                            results.append({
+                                "symbol": symbol,
+                                "error": "No data available"
+                            })
+                            continue
+                        current_price = hist['Close'].iloc[-1]
+                    
+                    previous_close = info.get('previousClose', current_price)
+                    change = current_price - previous_close
+                    change_percent = (change / previous_close) * 100 if previous_close else 0
+                    
+                    results.append({
+                        "symbol": symbol,
+                        "companyName": info.get('longName', symbol),
+                        "currentPrice": round(current_price, 2),
+                        "previousClose": round(previous_close, 2),
+                        "change": round(change, 2),
+                        "changePercent": round(change_percent, 2),
+                        "volume": info.get('volume', 0),
+                        "marketCap": info.get('marketCap', 0),
+                        "currency": info.get('currency', 'USD'),
+                        "logo": info.get('logo_url', ''),
+                        "timestamp": datetime.now().isoformat()
+                    })
+                except Exception as e:
+                    results.append({
+                        "symbol": symbol,
+                        "error": str(e)
+                    })
         
         return {"data": results}
     except Exception as e:

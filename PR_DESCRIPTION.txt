@@ -1,0 +1,11 @@
+## 📝 Description
+This PR adds a real-time stock watchlist feature that replaces the static TradingView ticker on the Dashboard. Users can now add their favorite stocks, see live prices with change percentages, and click through to detailed analysis. The feature uses Yahoo Finance API via yfinance library and includes persistent storage.
+
+## 🛠 Changes
+- Added Python API endpoints for stock data (quote, multiple quotes, search, history)
+- Created StockWatchlist component with add/remove functionality
+- Replaced TradingView ticker with interactive watchlist on Dashboard Home
+- Updated Stock Analysis page to accept symbol from URL query params
+- Added stockService for API calls with TypeScript interfaces
+- Created test script for API validation
+- Watchlist persists in localStorage with default stocks (AAPL, MSFT, GOOGL)

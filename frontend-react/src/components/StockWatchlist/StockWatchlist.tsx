@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Card,
   CardContent,
@@ -51,14 +51,9 @@ const StockWatchlist = () => {
     }
   }, []);
 
-  // Fetch stock data whenever watchlist changes
-  useEffect(() => {
-    if (watchlist.length > 0) {
-      fetchStockData();
-    }
-  }, [watchlist]);
+  const fetchStockData = useCallback(async () => {
+    if (watchlist.length === 0) return;
 
-  const fetchStockData = async () => {
     setLoading(true);
     try {
       const data = await getMultipleStockQuotes(watchlist);
@@ -68,7 +63,12 @@ const StockWatchlist = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [watchlist]);
+
+  // Fetch stock data whenever watchlist changes
+  useEffect(() => {
+    fetchStockData();
+  }, [fetchStockData]);
 
   const addStock = () => {
     const symbol = newSymbol.trim().toUpperCase();

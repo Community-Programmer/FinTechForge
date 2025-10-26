@@ -8,14 +8,16 @@ type ProtectedRouteProps = {
 };
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  // const { isLoggedIn, accessToken, loading } = useSelector((state: RootState) => state.auth);
-  // const location = useLocation();
+  const { isLoggedIn, accessToken, loading } = useSelector(
+    (state: RootState) => state.auth
+  );
+  const location = useLocation();
 
-  // if (loading) return <div>Loading...</div>;
+  if (loading) return <div>Loading...</div>;
 
-  // if (!isLoggedIn || !accessToken) {
-  //   return <Navigate to="/login" state={{ from: location }} replace />;
-  // }
+  if (!isLoggedIn || !accessToken) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 
   return <>{children ? children : <Outlet />}</>;
 };
