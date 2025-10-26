@@ -24,10 +24,10 @@ async def get_stock_quote(symbol: str):
         try:
             fast_info = ticker.fast_info
             current_price = fast_info.get('lastPrice', 0)
-        except:
+        except Exception:
             # Fallback to daily interval if fast_info fails
             hist = ticker.history(period="1d", interval="1d")
-            if hist.empty:
+            if hist.empty or len(hist) == 0:
                 raise HTTPException(status_code=404, detail=f"No data found for symbol: {symbol}")
             current_price = hist['Close'].iloc[-1]
         
@@ -87,10 +87,12 @@ async def get_multiple_stock_quotes(symbols: str):
                     try:
                         # Try to get from batch download data
                         if hasattr(data.columns, 'levels') and symbol in data.columns.levels[0]:
-                            current_price = data[symbol]['Close'].iloc[-1]
-                        elif not data.empty:
+                            close_series = data[symbol]['Close']
+                            current_price = close_series.iloc[-1] if not close_series.empty and len(close_series) > 0 else None
+                        elif not data.empty and 'Close' in data.columns:
                             # Single column dataframe - get last close price
-                            current_price = data['Close'].iloc[-1] if 'Close' in data.columns else None
+                            close_series = data['Close']
+                            current_price = close_series.iloc[-1] if not close_series.empty and len(close_series) > 0 else None
                         else:
                             current_price = None
                         
@@ -98,12 +100,12 @@ async def get_multiple_stock_quotes(symbols: str):
                         if current_price is None or current_price == 0:
                             fast_info = ticker.fast_info
                             current_price = fast_info.get('lastPrice', 0)
-                    except:
+                    except Exception:
                         # Final fallback to fast_info
                         try:
                             fast_info = ticker.fast_info
                             current_price = fast_info.get('lastPrice', 0)
-                        except:
+                        except Exception:
                             current_price = 0
                     
                     if current_price == 0 or current_price is None:
@@ -135,7 +137,7 @@ async def get_multiple_stock_quotes(symbols: str):
                         "symbol": symbol,
                         "error": str(e)
                     })
-        except:
+        except Exception:
             # Fallback to sequential fetching if batch fails
             results = []
             for symbol in symbol_list:
@@ -146,9 +148,9 @@ async def get_multiple_stock_quotes(symbols: str):
                     try:
                         fast_info = ticker.fast_info
                         current_price = fast_info.get('lastPrice', 0)
-                    except:
+                    except Exception:
                         hist = ticker.history(period="1d", interval="1d")
-                        if hist.empty:
+                        if hist.empty or len(hist) == 0:
                             results.append({
                                 "symbol": symbol,
                                 "error": "No data available"
