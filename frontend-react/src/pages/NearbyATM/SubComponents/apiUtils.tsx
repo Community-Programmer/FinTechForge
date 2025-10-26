@@ -1,4 +1,5 @@
 import { serviceTypes } from "./markerUtils";
+import L from "leaflet";
 
 // Fix: Add interface for Place type
 interface Place {
@@ -12,10 +13,10 @@ interface Place {
   opening_hours: string;
 }
 
-// Fixed: Add proper interface for service types
+// Fixed: Add proper interface for service types matching markerUtils structure
 interface ServiceType {
   name: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: L.Icon;
   color: string;
   query: string;
   alternativeQueries?: string[];

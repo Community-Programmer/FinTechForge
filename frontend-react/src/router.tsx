@@ -26,8 +26,7 @@ import { AiChatbot } from "./pages/Dashboard/Chatbot";
 import EtfHeatmap from "./pages/Dashboard/MarketTrends/EtfHeatmap";
 import ForexHeatMap from "./pages/Dashboard/MarketTrends/ForexHeatmap";
 import StockPage from "./pages/Dashboard/StockPage";
-
-import NearServices from "./pages/NearbyATM/NearServices";
+import Portfolio from "./pages/Dashboard/Portfolio";
 import News from "./pages/News/News";
 
 import Profile from "./pages/Profile/Profile";
@@ -130,6 +129,11 @@ const dashboardLayoutRoutes = [
     path: "forex-heatmap",
     index: true,
     element: <ForexHeatMap />,
+  },
+  {
+    path: "portfolio",
+    index: true,
+    element: <Portfolio />,
   },
 ];
 

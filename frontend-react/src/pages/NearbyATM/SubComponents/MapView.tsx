@@ -18,8 +18,10 @@ interface Place {
 
 interface ServiceType {
   name: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: L.Icon;
   color: string;
+  query: string;
+  alternativeQueries?: string[];
 }
 
 interface MapViewProps {
