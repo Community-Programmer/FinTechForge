@@ -12,13 +12,33 @@ interface Place {
   opening_hours: string;
 }
 
-// Fix: Add interface for service types
+// Fixed: Add proper interface for service types
 interface ServiceType {
   name: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   color: string;
   query: string;
   alternativeQueries?: string[];
+}
+
+// Define proper types for Overpass API response
+interface OverpassElement {
+  type: string;
+  id: number;
+  lat: number;
+  lon: number;
+  tags?: {
+    name?: string;
+    'addr:housenumber'?: string;
+    'addr:street'?: string;
+    opening_hours?: string;
+    operator?: string;
+    [key: string]: string | undefined;
+  };
+}
+
+interface OverpassResponse {
+  elements: OverpassElement[];
 }
 
 // Utility function to add delay between requests
@@ -78,7 +98,7 @@ export const fetchServiceData = async (lat: number, lon: number, radius: number,
     const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
     const data = await safeOverpassFetch(url);
 
-    let results: Place[] = data.elements.map((el: any) => ({
+    let results: Place[] = (data as OverpassResponse).elements.map((el: OverpassElement) => ({
       id: `${serviceType}_${el.id}`,
       lat: el.lat,
       lon: el.lon,
@@ -108,7 +128,7 @@ export const fetchServiceData = async (lat: number, lon: number, radius: number,
         try {
           const altData = await safeOverpassFetch(altUrl);
           
-          const altResults: Place[] = altData.elements.map((el: any) => ({
+          const altResults: Place[] = (altData as OverpassResponse).elements.map((el: OverpassElement) => ({
             id: `${serviceType}_alt_${el.id}`,
             lat: el.lat,
             lon: el.lon,

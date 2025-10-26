@@ -1,9 +1,10 @@
 import axios from "axios";
 import { store } from "@/store/store";
 import type { AxiosInstance } from "axios";
+import { API_BASE_URL } from "@/config/env";
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: API_BASE_URL,
   withCredentials: true,
 });
 

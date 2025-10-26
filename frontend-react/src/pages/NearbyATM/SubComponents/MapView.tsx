@@ -18,7 +18,7 @@ interface Place {
 
 interface ServiceType {
   name: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   color: string;
 }
 

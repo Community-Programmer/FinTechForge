@@ -14,16 +14,20 @@ import { RootState } from '../store';
   accessToken: null,
   loading: true,
 };
-  export const silentRefresh = createAsyncThunk('auth/silentRefresh', async (_, { dispatch, getState }) => {
+  export const silentRefresh = createAsyncThunk('auth/silentRefresh', async (_, { dispatch, getState, rejectWithValue }) => {
     const { isLoggedIn, accessToken } = (getState() as RootState).auth;
 
-  if (!accessToken && isLoggedIn) return;
+    // Only attempt refresh if user is logged in or we have no token
+    if (!isLoggedIn && !accessToken) {
+      return rejectWithValue('No authentication state to refresh');
+    }
+    
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/refresh`, {}, { withCredentials: true });
       return response.data;
     } catch (error) {
       dispatch(logout());
-      throw error;
+      return rejectWithValue('Refresh failed');
     }
   });
 
@@ -51,10 +55,12 @@ import { RootState } from '../store';
         state.loading = true;
       });
       builder.addCase(silentRefresh.fulfilled, (state, action) => {
-        state.isLoggedIn = true;
-        state.accessToken = action.payload.accessToken;
+        if (action.payload) {
+          state.isLoggedIn = true;
+          state.accessToken = action.payload.accessToken;
+          state.user = action.payload.user;
+        }
         state.loading = false;
-        state.user = action.payload.user;
       });
       builder.addCase(silentRefresh.rejected, (state) => {
         state.loading = false;

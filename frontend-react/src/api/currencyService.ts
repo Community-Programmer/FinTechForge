@@ -1,23 +1,11 @@
-import axios from "axios";
-
-const BASE_URL =  import.meta.env.VITE_API_BASE_URL;
-
-const apiClient = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true
-});
-
-
+import axiosInstance from "./axios";
 
 export const getAllCurrency = async () => {
-  return apiClient.get('/currency/getallcurrency');
+  return axiosInstance.get('/currency/getallcurrency');
 }
 
-export const currencyConvert = async (amount: Number, from: String, to: String) => {
-  return apiClient.get('/currency/convertcurrency',{params: { amount, from, to }});
+export const currencyConvert = async (amount: number, from: string, to: string) => {
+  return axiosInstance.get('/currency/convertcurrency', { params: { amount, from, to } });
 }
 
 

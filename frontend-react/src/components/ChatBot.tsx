@@ -8,19 +8,18 @@ import { Bot, Send, X, Minimize2, Maximize2, MessageSquare, Trash2, Sparkles, Tr
 import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
 import { useChatStore } from '@/store/useChatStore';
+import { GEMINI_API_KEY, DATABASE_URL, isGeminiEnabled, isDatabaseEnabled } from '@/config/env';
 
+// Initialize Gemini API with validation
+let genAI: GoogleGenerativeAI | null = null;
+let model: ReturnType<GoogleGenerativeAI['getGenerativeModel']> | null = null;
 
-
-// Initialize Gemini API (keeping your existing configuration)
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-if (!GEMINI_API_KEY) {
-  console.error('Gemini API key is missing. Please add VITE_GEMINI_API_KEY to your .env file');
+if (isGeminiEnabled()) {
+  genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+  model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 }
 
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY || '');
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-// Your existing system prompt (unchanged)
+// System prompt for the financial AI assistant
 const SYSTEM_PROMPT = `You are a helpful financial AI assistant for FinTechForge, a comprehensive financial platform. Your role is to:
 1. Help users navigate the website and understand features
 2. Provide information about financial tools and services
@@ -35,6 +34,16 @@ const SYSTEM_PROMPT = `You are a helpful financial AI assistant for FinTechForge
 5. Explain financial concepts in simple terms
 Keep responses concise, professional, and focused on financial topics. If asked about non-financial topics, politely redirect to financial matters.
 Always maintain a helpful and friendly tone while being professional.`;
+
+// Use the system prompt in chat initialization
+const createChatPrompt = (contextChunks: string[]) => `
+${SYSTEM_PROMPT}
+
+Context:
+${contextChunks.join('\n\n')}
+
+Respond professionally using only financial domain knowledge.
+If the topic is unclear or irrelevant, politely redirect the user.`;
 
 interface Message {
   role: 'user' | 'assistant';
@@ -91,8 +100,8 @@ export function ChatBot() {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    if (!GEMINI_API_KEY) {
-      toast.error('Gemini API key is missing. Please add VITE_GEMINI_API_KEY to your .env file');
+    if (!isGeminiEnabled()) {
+      toast.error('Gemini API key is missing. ChatBot functionality is not available.');
       return;
     }
 
@@ -108,24 +117,26 @@ export function ChatBot() {
 
     try {
       // 🧠 1. Fetch relevant context chunks from Chroma
-      const fetchContextChunks = async (query: string): Promise<string[]> => {
-        const res = await fetch(`${ import.meta.env.VITE_DATABASE_URL}/chroma-search?q=${encodeURIComponent(query)}`);
-        if (!res.ok) throw new Error("Chroma fetch failed");
-        const data = await res.json();
-        return data;
-      };
-
-      const contextChunks = await fetchContextChunks(userMessage);
+      let contextChunks: string[] = [];
+      
+      // Only try to fetch context if database is enabled
+      if (isDatabaseEnabled()) {
+        try {
+          const fetchContextChunks = async (query: string): Promise<string[]> => {
+            const res = await fetch(`${DATABASE_URL}/chroma-search?q=${encodeURIComponent(query)}`);
+            if (!res.ok) throw new Error("Chroma fetch failed");
+            const data = await res.json();
+            return data;
+          };
+          contextChunks = await fetchContextChunks(userMessage);
+        } catch (error) {
+          console.warn('Failed to fetch context chunks:', error);
+          // Continue without context chunks
+        }
+      }
 
       // 🧠 2. Create a dynamic prompt using the context
-      const dynamicPrompt = `
-  You are a helpful financial AI assistant for FinTechForge.
-
-  Context:
-  ${contextChunks.join('\n\n')}
-
-  Respond professionally using only financial domain knowledge.
-  If the topic is unclear or irrelevant, politely redirect the user.`;
+      const dynamicPrompt = createChatPrompt(contextChunks);
 
       // 🧠 3. Convert message history to Gemini-compatible format
       const conversationHistory = messages.map(msg => ({
@@ -134,6 +145,10 @@ export function ChatBot() {
       }));
 
       // 🧠 4. Start Gemini chat with context-aware prompt
+      if (!model) {
+        throw new Error('Gemini model is not initialized');
+      }
+      
       const chat = model.startChat({
         history: [
           { role: 'user', parts: [{ text: dynamicPrompt }] },
@@ -195,7 +210,8 @@ export function ChatBot() {
   return (
     <div className="fixed bottom-4 right-4 z-50">
       {/* Enhanced Backdrop Blur Effect */}
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .glassmorphism {
           background: rgba(255, 255, 255, 0.25);
           backdrop-filter: blur(20px);
@@ -261,7 +277,8 @@ export function ChatBot() {
         .message-bubble:hover::before {
           left: 100%;
         }
-      `}</style>
+        `
+      }} />
       
       <AnimatePresence>
   {isOpen && (
@@ -276,7 +293,7 @@ export function ChatBot() {
         damping: 24,
       }}
       className={cn(
-        "fixed bottom-6 right-4 z-[10000]",
+        "fixed bottom-6 right-4 z-10000",
         "w-[90vw] sm:w-[400px] rounded-2xl overflow-hidden shadow-xl",
         "glassmorphism dark:glassmorphism-dark",
         isMinimized ? "h-[60px]" : "h-[70vh]"
@@ -294,8 +311,8 @@ export function ChatBot() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700" />
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/90 via-purple-500/90 to-indigo-600/90 backdrop-blur-sm" />
+              <div className="absolute inset-0 bg-linear-to-r from-blue-600 via-purple-600 to-indigo-700" />
+              <div className="absolute inset-0 bg-linear-to-r from-blue-500/90 via-purple-500/90 to-indigo-600/90 backdrop-blur-sm" />
               
               <div className="relative flex items-center justify-between p-4 text-white">
                 <motion.div 
@@ -307,7 +324,7 @@ export function ChatBot() {
                     <motion.div
                       animate={{ rotate: 360 }}
                       transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                      className="absolute inset-0 rounded-full bg-gradient-to-r from-white/20 to-transparent"
+                      className="absolute inset-0 rounded-full bg-linear-to-r from-white/20 to-transparent"
                     />
                     <div className="relative p-2 rounded-full bg-white/20 backdrop-blur-sm">
                       <Bot className="w-4 h-4" />
@@ -392,7 +409,7 @@ export function ChatBot() {
                           className={cn(
                             "max-w-[85%] rounded-xl p-3 message-bubble transition-all duration-300 text-sm",
                             message.role === 'user'
-                              ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
+                              ? "bg-linear-to-r from-blue-500 to-purple-600 text-white shadow-lg"
                               : "bg-white/80 dark:bg-gray-800/80 text-gray-900 dark:text-gray-100 backdrop-blur-sm border border-white/20 shadow-md"
                           )}
                           style={{
@@ -403,8 +420,8 @@ export function ChatBot() {
                         >
                           <div className="flex items-start gap-2">
                             {message.role === 'assistant' && (
-                              <div className="flex-shrink-0 mt-0.5">
-                                <div className="w-5 h-5 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                              <div className="shrink-0 mt-0.5">
+                                <div className="w-5 h-5 rounded-full bg-linear-to-r from-blue-500 to-purple-600 flex items-center justify-center">
                                   <TrendingUp className="w-2.5 h-2.5 text-white" />
                                 </div>
                               </div>
@@ -435,7 +452,7 @@ export function ChatBot() {
                       >
                         <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl p-3 border border-white/20 shadow-md">
                           <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                            <div className="w-5 h-5 rounded-full bg-linear-to-r from-blue-500 to-purple-600 flex items-center justify-center">
                               <TrendingUp className="w-2.5 h-2.5 text-white" />
                             </div>
                             <div className="typing-indicator">
@@ -475,7 +492,7 @@ export function ChatBot() {
                         <Button 
                           type="submit" 
                           disabled={isLoading || !input.trim()}
-                          className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0 shadow-lg transition-all duration-200 h-8 w-8"
+                          className="rounded-lg bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0 shadow-lg transition-all duration-200 h-8 w-8"
                           size="icon"
                         >
                           <Send className="w-3 h-3" />
@@ -501,13 +518,13 @@ export function ChatBot() {
         >
           <Button
             onClick={toggleChat}
-            className="relative rounded-full w-14 h-14 bg-gradient-to-r from-blue-500 via-purple-600 to-indigo-600 hover:from-blue-600 hover:via-purple-700 hover:to-indigo-700 text-white shadow-2xl border-2 border-white/20 overflow-hidden group"
+            className="relative rounded-full w-14 h-14 bg-linear-to-r from-blue-500 via-purple-600 to-indigo-600 hover:from-blue-600 hover:via-purple-700 hover:to-indigo-700 text-white shadow-2xl border-2 border-white/20 overflow-hidden group"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute inset-0 bg-linear-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+              className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent"
             />
             <MessageSquare className="w-6 h-6 relative z-10" />
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse border-2 border-white" />
