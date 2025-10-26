@@ -15,6 +15,7 @@ import {
   TrendingDown,
   DollarSign,
   Loader2,
+  Download,
 } from "lucide-react";
 import { getMultipleStockQuotes, StockQuote, MultipleStockQuotesResponse } from "@/api/stockService";
 import {
@@ -27,6 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import Papa from 'papaparse';
 
 const STORAGE_KEY = "stock_watchlist";
 
@@ -43,7 +45,15 @@ const StockWatchlist = () => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const symbols = JSON.parse(saved);
-      setWatchlist(symbols);
+      // Only set watchlist if it has items, otherwise add defaults
+      if (symbols && symbols.length > 0) {
+        setWatchlist(symbols);
+      } else {
+        // Default watchlist
+        const defaultSymbols = ["AAPL", "MSFT", "GOOGL"];
+        setWatchlist(defaultSymbols);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultSymbols));
+      }
     } else {
       // Default watchlist
       const defaultSymbols = ["AAPL", "MSFT", "GOOGL"];
@@ -127,6 +137,70 @@ const StockWatchlist = () => {
     navigate(`/dashboard/analysis?symbol=${symbol}`);
   };
 
+  const exportToCSV = () => {
+    if (stocks.length === 0) {
+      toast.error('No stock data available to export.');
+      return;
+    }
+
+    // Prepare CSV data with headers
+    const csvHeaders = [
+      'Symbol',
+      'Company Name', 
+      'Current Price',
+      'Previous Close',
+      'Change',
+      'Change %',
+      'Volume',
+      'Market Cap',
+      'Currency',
+      'Exchange',
+      'Sector',
+      'Industry',
+      'Website',
+      '52 Week High',
+      '52 Week Low'
+    ];
+
+    // Prepare the data rows
+    const csvData = stocks.map(stock => [
+      stock.symbol,
+      stock.companyName,
+      stock.currentPrice,
+      stock.previousClose,
+      stock.change,
+      stock.changePercent,
+      stock.volume,
+      stock.marketCap,
+      stock.currency,
+      stock.exchange,
+      stock.sector,
+      stock.industry,
+      stock.website,
+      stock.fiftyTwoWeekHigh,
+      stock.fiftyTwoWeekLow
+    ]);
+
+    // Convert to CSV format
+    const csv = Papa.unparse({
+      fields: csvHeaders,
+      data: csvData
+    });
+
+    // Create a Blob and download
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `stock-watchlist-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast.success('Watchlist exported to CSV successfully!');
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -140,31 +214,42 @@ const StockWatchlist = () => {
               Track your favorite stocks in real-time
             </CardDescription>
           </div>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm" className="gap-2">
-                <Plus className="h-4 w-4" />
-                Add Stock
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add Stock to Watchlist</DialogTitle>
-                <DialogDescription>
-                  Enter a stock symbol (e.g., AAPL, TSLA, MSFT)
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Stock symbol"
-                  value={newSymbol}
-                  onChange={(e) => setNewSymbol(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && addStock()}
-                />
-                <Button onClick={addStock}>Add</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+          <div className="flex gap-2">
+            <Button 
+              size="sm" 
+              className="gap-2"
+              onClick={exportToCSV}
+              variant="outline"
+            >
+              <Download className="h-4 w-4" />
+              Export CSV
+            </Button>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm" className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  Add Stock
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add Stock to Watchlist</DialogTitle>
+                  <DialogDescription>
+                    Enter a stock symbol (e.g., AAPL, TSLA, MSFT)
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Stock symbol"
+                    value={newSymbol}
+                    onChange={(e) => setNewSymbol(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && addStock()}
+                  />
+                  <Button onClick={addStock}>Add</Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
