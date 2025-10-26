@@ -13,10 +13,18 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   );
   const location = useLocation();
 
-  if (loading) return <div>Loading...</div>;
+  // Show a better loading state
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
+  // Fixed: Use correct route case to match router.tsx (/Login not /login)
   if (!isLoggedIn || !accessToken) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/Login" state={{ from: location }} replace />;
   }
 
   return <>{children ? children : <Outlet />}</>;

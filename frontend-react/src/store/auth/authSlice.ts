@@ -27,6 +27,7 @@ import { RootState } from '../store';
       return response.data;
     } catch (error) {
       dispatch(logout());
+      console.error('Silent refresh failed:', error);
       return rejectWithValue('Refresh failed');
     }
   });

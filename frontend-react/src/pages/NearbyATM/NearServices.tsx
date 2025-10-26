@@ -29,7 +29,7 @@ export default function FinancialServicesMap() {
   const [searchLocation, setSearchLocation] = useState<[number, number] | null>(null);
   const [places, setPlaces] = useState<Place[]>([]);
   const [loading, setLoading] = useState(true);
-  const [_error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [radius, setRadius] = useState(1000);
   const [searchQuery, setSearchQuery] = useState("");
   
@@ -103,7 +103,7 @@ export default function FinancialServicesMap() {
         fetchAllServices(defaultLocation, radius, setPlaces, setLoading, setError);
       }
     );
-  }, []);
+  }, [radius]);
 
   // Handle filter changes
   const toggleFilter = (type: string) => {
@@ -143,6 +143,13 @@ export default function FinancialServicesMap() {
       {/* Header with search and filters */}
       <div className="bg-white p-4 shadow-md z-10">
         <h1 className="text-2xl font-bold text-center mb-4">Financial Services Finder</h1>
+        
+        {/* Error display */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
         
         <SearchBar 
           searchQuery={searchQuery}

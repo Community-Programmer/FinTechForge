@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AArrowUp, BarChart3Icon, CircleDollarSign, Coins, CreditCard, LayoutDashboard, MessageSquare, Newspaper, TrendingUp } from "lucide-react";
+import { AArrowUp, BarChart3Icon, CircleDollarSign, Coins, CreditCard, LayoutDashboard, MessageSquare, Newspaper, TrendingUp, Briefcase } from "lucide-react";
 import fintechForgeLogo from '../../assets/fintechforge-logo.png';
 
 import {
@@ -48,6 +48,11 @@ const data = {
           title: "Stock Analysis",
           url: "/dashboard/analysis",
           icon: AArrowUp
+        },
+        {
+          title: "Portfolio",
+          url: "/dashboard/portfolio",
+          icon: Briefcase
         },
       ],
     },

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { QuizContainer } from "@/components/Education/QuizContainer";
+import { QuizContainer, QuizQuestion } from "@/components/Education/QuizContainer";
 
 interface Quiz {
   title: string;
   description: string;
-  questions: object[];
+  questions: QuizQuestion[];
   xpReward: number;
 }
 
