@@ -1,22 +1,9 @@
-import axios from "axios";
-
-const BASE_URL =  import.meta.env.VITE_API_BASE_URL;
-
-const apiClient = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true
-});
-
-
+import axiosInstance from "./axios";
 
 export const getNews = async () => {
-  return apiClient.get('/news/getallnews');
+  return axiosInstance.get('/news/getallnews');
 }
 
-
 export const getNewsSentiment = async (url: string) => {
-  return apiClient.get('/news/getnewssentiment',{params: { url }});
+  return axiosInstance.get('/news/getnewssentiment', { params: { url } });
 }

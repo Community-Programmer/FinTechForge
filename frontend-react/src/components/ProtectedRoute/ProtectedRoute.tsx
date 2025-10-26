@@ -11,8 +11,6 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { isLoggedIn, accessToken, loading } = useSelector((state: RootState) => state.auth);
   const location = useLocation();
 
-    console.log("ProtectedRoute - isLoggedIn:", isLoggedIn, "accessToken:", accessToken, "loading:", loading);
-
   if (loading) return <div>Loading...</div>;
 
   if (!isLoggedIn || !accessToken) {

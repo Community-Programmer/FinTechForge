@@ -1,4 +1,3 @@
-import { PieChart } from 'lucide-react'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import fintechforgeLogo from '../../assets/fintechforge-logo.png';
