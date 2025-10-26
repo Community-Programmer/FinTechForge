@@ -6,6 +6,7 @@ agno
 duckduckgo-search
 groq
 yfinance
+ddgs
 firecrawl-py
 chromadb
 google-generativeai

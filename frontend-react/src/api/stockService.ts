@@ -1,4 +1,5 @@
 import axios from "axios";
+import NotificationService from '@/components/NotificationService';
 
 const PYTHON_BACKEND_URL =
   import.meta.env.VITE_PYTHON_BACKEND_URL || "http://localhost:8000";
@@ -47,13 +48,18 @@ export interface MultipleStockQuotesResponse {
  * Get stock quote for a single symbol\r
  */
 export const getStockQuote = async (symbol: string): Promise<StockQuote> => {
-  const response = await axios.get(
-    `${PYTHON_BACKEND_URL}/api/v1/stocks/quote`,
-    {
-      params: { symbol },
-    }
-  );
-  return response.data;
+  try {
+    const response = await axios.get(
+      `${PYTHON_BACKEND_URL}/api/v1/stocks/quote`,
+      {
+        params: { symbol },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    NotificationService.error(`Failed to load data for ${symbol}. Please check the symbol and try again.`);
+    throw error;
+  }
 };
 
 /**\r
@@ -65,26 +71,47 @@ export const getMultipleStockQuotes = async (
   if (symbols.length === 0) return { data: [] };
 
   const symbolsString = symbols.join(",");
-  const response = await axios.get(
-    `${PYTHON_BACKEND_URL}/api/v1/stocks/quotes`,
-    {
-      params: { symbols: symbolsString },
+  try {
+    const response = await axios.get(
+      `${PYTHON_BACKEND_URL}/api/v1/stocks/quotes`,
+      {
+        params: { symbols: symbolsString },
+      }
+    );
+    
+    // Count successful and failed requests
+    const successful = response.data.data.filter(item => !('error' in item)).length;
+    const failed = response.data.data.filter(item => 'error' in item).length;
+    
+    if (failed > 0) {
+      NotificationService.warning(`${failed} out of ${symbols.length} symbols failed to load.`);
+    } else if (successful > 0) {
+      NotificationService.success(`${successful} stock quotes loaded successfully.`);
     }
-  );
-  return response.data;
+    
+    return response.data;
+  } catch (error) {
+    NotificationService.error('Failed to load multiple stock quotes. Please try again later.');
+    throw error;
+  }
 };
 
 /**\r
  * Search for stocks\r
  */
 export const searchStocks = async (query: string) => {
-  const response = await axios.get(
-    `${PYTHON_BACKEND_URL}/api/v1/stocks/search`,
-    {
-      params: { query },
-    }
-  );
-  return response.data;
+  try {
+    const response = await axios.get(
+      `${PYTHON_BACKEND_URL}/api/v1/stocks/search`,
+      {
+        params: { query },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    NotificationService.error('Failed to search stocks. Please try again later.');
+    throw error;
+  }
 };
 
 /**\r
@@ -95,11 +122,17 @@ export const getStockHistory = async (
   period: string = "1mo",
   interval: string = "1d"
 ): Promise<StockHistory> => {
-  const response = await axios.get(
-    `${PYTHON_BACKEND_URL}/api/v1/stocks/history`,
-    {
-      params: { symbol, period, interval },
-    }
-  );
-  return response.data;
+  try {
+    const response = await axios.get(
+      `${PYTHON_BACKEND_URL}/api/v1/stocks/history`,
+      {
+        params: { symbol, period, interval },
+      }
+    );
+    NotificationService.success(`Historical data for ${symbol} loaded successfully.`);
+    return response.data;
+  } catch (error) {
+    NotificationService.error(`Failed to load historical data for ${symbol}. Please try again later.`);
+    throw error;
+  }
 };
