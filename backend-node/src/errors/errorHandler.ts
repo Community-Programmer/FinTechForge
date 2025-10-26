@@ -24,7 +24,7 @@ export const buildErrorResponse = (
     statusCode: error.statusCode,
     message: error.message,
     errorCode: error.errorCode,
-    datails: error.details,
+    details: error.details,
     stack: includeStack ? error.stack : undefined,
   };
 };
