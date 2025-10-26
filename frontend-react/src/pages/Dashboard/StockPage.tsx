@@ -1,9 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import TickerTape from "@/components/Analysis/TickerTape";
 import TradingWidgets from "@/components/Analysis/TradingWidgets";
 
 const StockPage = () => {
-  const [symbol, setSymbol] = useState("BSE:SENSEX"); // Default symbol
+  const [searchParams] = useSearchParams();
+  const urlSymbol = searchParams.get("symbol");
+  const [symbol, setSymbol] = useState(urlSymbol || "BSE:SENSEX"); // Default symbol
+
+  useEffect(() => {
+    if (urlSymbol) {
+      setSymbol(urlSymbol);
+    }
+  }, [urlSymbol]);
 
   document.title = `Stock Details - ${symbol}`;
 
@@ -12,7 +21,7 @@ const StockPage = () => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
-    const inputSymbol = (formData.get('symbol') as string)?.trim();
+    const inputSymbol = (formData.get("symbol") as string)?.trim();
     if (inputSymbol) {
       setSymbol(inputSymbol); // Update the stock symbol dynamically
     }

@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes.AIChatbot import chatbot
 from app.api.routes.SentimentAnalysis import sentiment
+from app.api.routes.StockData import stock_data
 
 
 from chromadb import PersistentClient
@@ -41,6 +42,7 @@ app.add_middleware(
 
 app.include_router(chatbot.router, prefix="/api/v1/chatbot", tags=["chatbot"])
 app.include_router(sentiment.router, prefix="/api/v1/news", tags=["sentiment"])
+app.include_router(stock_data.router, prefix="/api/v1/stocks", tags=["stocks"])
 
 
 @app.get("/")
