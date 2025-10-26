@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { UserStats } from "./use-user-stats";
 
@@ -25,60 +25,60 @@ export interface AvailableAchievement {
   earnedAt?: string;
 }
 
+// List of all possible achievements (moved outside component to avoid re-creation)
+const allPossibleAchievements: Omit<
+  AvailableAchievement,
+  "unlocked" | "earnedAt"
+>[] = [
+  {
+    id: "budget-master",
+    type: "lesson_completion",
+    title: "Budget Master",
+    description: "Complete all budgeting lessons",
+    color: "#3B82F6",
+    requirement: "Complete all lessons in the Budgeting path",
+  },
+  {
+    id: "investor-initiate",
+    type: "quiz_completion",
+    title: "Investor Initiate",
+    description: "Complete your first investment quiz",
+    color: "#10B981",
+    requirement: "Complete an investment quiz with 80% or higher score",
+  },
+  {
+    id: "savings-scholar",
+    type: "module_completion",
+    title: "Savings Scholar",
+    description: "Learn all saving strategies",
+    color: "#94A3B8",
+    requirement: "Complete the Savings module",
+  },
+  {
+    id: "streak-starter",
+    type: "streak",
+    title: "Streak Starter",
+    description: "Maintain a 3-day learning streak",
+    color: "#F59E0B",
+    requirement: "Log in and learn for 3 consecutive days",
+  },
+  {
+    id: "financial-advisor",
+    type: "xp",
+    title: "Financial Advisor",
+    description: "Reach level 5 in your financial journey",
+    color: "#8B5CF6",
+    requirement: "Reach level 5",
+  },
+];
+
 export function useAchievement() {
   const [achievements, setAchievements] = useState<AvailableAchievement[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // List of all possible achievements
-  const allPossibleAchievements: Omit<
-    AvailableAchievement,
-    "unlocked" | "earnedAt"
-  >[] = [
-    {
-      id: "budget-master",
-      type: "lesson_completion",
-      title: "Budget Master",
-      description: "Complete all budgeting lessons",
-      color: "#3B82F6",
-      requirement: "Complete all lessons in the Budgeting path",
-    },
-    {
-      id: "investor-initiate",
-      type: "quiz_completion",
-      title: "Investor Initiate",
-      description: "Complete your first investment quiz",
-      color: "#10B981",
-      requirement: "Complete an investment quiz with 80% or higher score",
-    },
-    {
-      id: "savings-scholar",
-      type: "module_completion",
-      title: "Savings Scholar",
-      description: "Learn all saving strategies",
-      color: "#94A3B8",
-      requirement: "Complete the Savings module",
-    },
-    {
-      id: "streak-starter",
-      type: "streak",
-      title: "Streak Starter",
-      description: "Maintain a 3-day learning streak",
-      color: "#F59E0B",
-      requirement: "Log in and learn for 3 consecutive days",
-    },
-    {
-      id: "financial-advisor",
-      type: "xp",
-      title: "Financial Advisor",
-      description: "Reach level 5 in your financial journey",
-      color: "#8B5CF6",
-      requirement: "Reach level 5",
-    },
-  ];
-
   // Fetch user achievements
-  const fetchAchievements = async () => {
+  const fetchAchievements = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get(
@@ -111,7 +111,7 @@ export function useAchievement() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Unlock a new achievement
   const unlockAchievement = async (achievementType: string) => {
@@ -165,7 +165,7 @@ export function useAchievement() {
   // Load achievements on mount
   useEffect(() => {
     fetchAchievements();
-  }, []);
+  }, [fetchAchievements]);
 
   return {
     achievements,

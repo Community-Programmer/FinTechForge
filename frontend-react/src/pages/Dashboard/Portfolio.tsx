@@ -11,16 +11,12 @@ import {
   TrendingDown, 
   DollarSign, 
   PieChart, 
-  Plus,
   BarChart3,
   Target,
   Clock
 } from 'lucide-react';
 import PortfolioOverviewCards from '@/components/Portfolio/PortfolioOverviewCards';
 import HoldingsTable from '@/components/Portfolio/HoldingsTable';
-import PortfolioPerformanceChart from '@/components/Portfolio/PortfolioPerformanceChart';
-import AssetAllocationChart from '@/components/Portfolio/AssetAllocationChart';
-import AddHoldingDialog from '@/components/Portfolio/AddHoldingDialog';
 
 const Portfolio: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -65,7 +61,7 @@ const Portfolio: React.FC = () => {
             Track your investments and portfolio performance
           </p>
         </div>
-        <AddHoldingDialog />
+        <Button>Add Holding</Button>
       </div>
 
       {/* Portfolio Overview Cards */}
@@ -158,7 +154,9 @@ const Portfolio: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <PortfolioPerformanceChart data={performance} />
+                <div className="h-[200px] bg-muted rounded-lg flex items-center justify-center">
+                  <p className="text-muted-foreground">Performance Chart Coming Soon</p>
+                </div>
               </CardContent>
             </Card>
 
@@ -173,7 +171,9 @@ const Portfolio: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <AssetAllocationChart holdings={holdings} />
+                <div className="h-[200px] bg-muted rounded-lg flex items-center justify-center">
+                  <p className="text-muted-foreground">Asset Allocation Chart Coming Soon</p>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -187,10 +187,7 @@ const Portfolio: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <HoldingsTable 
-                holdings={holdings.slice(0, 5)} 
-                showActions={false}
-              />
+              <HoldingsTable />
             </CardContent>
           </Card>
         </TabsContent>
@@ -204,7 +201,7 @@ const Portfolio: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <HoldingsTable holdings={holdings} showActions={true} />
+              <HoldingsTable />
             </CardContent>
           </Card>
         </TabsContent>
@@ -221,8 +218,8 @@ const Portfolio: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-80">
-                <PortfolioPerformanceChart data={performance} />
+              <div className="h-80 bg-muted rounded-lg flex items-center justify-center">
+                <p className="text-muted-foreground">Performance Analysis Chart Coming Soon</p>
               </div>
               
               <div className="mt-6 grid gap-4 md:grid-cols-3">
@@ -259,7 +256,9 @@ const Portfolio: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <AssetAllocationChart holdings={holdings} />
+                <div className="h-[300px] bg-muted rounded-lg flex items-center justify-center">
+                  <p className="text-muted-foreground">Asset Allocation Chart Coming Soon</p>
+                </div>
               </CardContent>
             </Card>
 

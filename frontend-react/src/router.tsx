@@ -27,8 +27,6 @@ import EtfHeatmap from "./pages/Dashboard/MarketTrends/EtfHeatmap";
 import ForexHeatMap from "./pages/Dashboard/MarketTrends/ForexHeatmap";
 import StockPage from "./pages/Dashboard/StockPage";
 import Portfolio from "./pages/Dashboard/Portfolio";
-
-import NearServices from "./pages/NearbyATM/NearServices";
 import News from "./pages/News/News";
 
 import Profile from "./pages/Profile/Profile";
