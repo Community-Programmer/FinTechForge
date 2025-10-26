@@ -86,7 +86,9 @@ async def get_multiple_stock_quotes(symbols: str):
                     # Get current price from batch data or fast_info
                     try:
                         # Try to get from batch download data
-                        if hasattr(data.columns, 'levels') and symbol in data.columns.levels[0]:
+                        if (hasattr(data.columns, 'levels') and 
+                            len(data.columns.levels) > 0 and 
+                            symbol in data.columns.levels[0]):
                             close_series = data[symbol]['Close']
                             current_price = close_series.iloc[-1] if not close_series.empty and len(close_series) > 0 else None
                         elif not data.empty and 'Close' in data.columns:
@@ -239,17 +241,25 @@ async def get_stock_history(symbol: str, period: str = "1mo", interval: str = "1
         if hist.empty:
             raise HTTPException(status_code=404, detail=f"No historical data found for symbol: {symbol}")
         
-        # Convert to list of dictionaries
-        data = []
-        for index, row in hist.iterrows():
-            data.append({
-                "date": index.isoformat(),
-                "open": round(row['Open'], 2),
-                "high": round(row['High'], 2),
-                "low": round(row['Low'], 2),
-                "close": round(row['Close'], 2),
-                "volume": int(row['Volume'])
-            })
+        # Convert to list of dictionaries using to_dict('records') for better performance
+        hist_reset = hist.reset_index()
+        hist_reset.rename(columns={'Date': 'date', 'Open': 'open', 'High': 'high', 'Low': 'low', 'Close': 'close', 'Volume': 'volume'}, inplace=True)
+        data = hist_reset.to_dict('records')
+        
+        # Format the data properly with rounded values
+        formatted_data = []
+        for record in data:
+            formatted_record = {
+                "date": record['date'].isoformat() if hasattr(record['date'], 'isoformat') else str(record['date']),
+                "open": round(float(record['open']), 2),
+                "high": round(float(record['high']), 2),
+                "low": round(float(record['low']), 2),
+                "close": round(float(record['close']), 2),
+                "volume": int(record['volume'])
+            }
+            formatted_data.append(formatted_record)
+        
+        data = formatted_data
         
         return {
             "symbol": symbol.upper(),

@@ -16,7 +16,7 @@ import {
   DollarSign,
   Loader2,
 } from "lucide-react";
-import { getMultipleStockQuotes, StockQuote } from "@/api/stockService";
+import { getMultipleStockQuotes, StockQuote, MultipleStockQuotesResponse } from "@/api/stockService";
 import {
   Dialog,
   DialogContent,
@@ -26,6 +26,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const STORAGE_KEY = "stock_watchlist";
 
@@ -56,10 +57,31 @@ const StockWatchlist = () => {
 
     setLoading(true);
     try {
-      const data = await getMultipleStockQuotes(watchlist);
-      setStocks(data);
+      const response: MultipleStockQuotesResponse = await getMultipleStockQuotes(watchlist);
+      const successfulStocks = response.data.filter((stock): stock is StockQuote => !('error' in stock));
+      const failedStocks = response.data.filter((stock): stock is { symbol: string; error: string } => 'error' in stock);
+      
+      setStocks(successfulStocks);
+      
+      // Provide feedback for failed stocks
+      if (failedStocks.length > 0) {
+        const failedSymbols = failedStocks.map(stock => stock.symbol).join(', ');
+        toast.error(`Failed to load data for: ${failedSymbols}`, {
+          duration: 5000,
+        });
+      }
+      
+      // Provide feedback if all stocks failed
+      if (successfulStocks.length === 0 && failedStocks.length > 0) {
+        toast.error('No stock data could be loaded. Please check the symbols and try again.', {
+          duration: 5000,
+        });
+      }
     } catch (error) {
       console.error("Error fetching stock data:", error);
+      toast.error('Failed to fetch stock data. Please try again later.', {
+        duration: 5000,
+      });
     } finally {
       setLoading(false);
     }

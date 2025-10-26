@@ -39,8 +39,12 @@ export interface StockHistory {
   data: StockHistoryPoint[];
 }
 
-/**
- * Get stock quote for a single symbol
+export interface MultipleStockQuotesResponse {
+  data: (StockQuote | { symbol: string; error: string })[];
+}
+
+/**\r
+ * Get stock quote for a single symbol\r
  */
 export const getStockQuote = async (symbol: string): Promise<StockQuote> => {
   const response = await axios.get(
@@ -52,13 +56,13 @@ export const getStockQuote = async (symbol: string): Promise<StockQuote> => {
   return response.data;
 };
 
-/**
- * Get stock quotes for multiple symbols
+/**\r
+ * Get stock quotes for multiple symbols\r
  */
 export const getMultipleStockQuotes = async (
   symbols: string[]
-): Promise<StockQuote[]> => {
-  if (symbols.length === 0) return [];
+): Promise<MultipleStockQuotesResponse> => {
+  if (symbols.length === 0) return { data: [] };
 
   const symbolsString = symbols.join(",");
   const response = await axios.get(
@@ -67,11 +71,11 @@ export const getMultipleStockQuotes = async (
       params: { symbols: symbolsString },
     }
   );
-  return response.data.data.filter((stock: any) => !stock.error);
+  return response.data;
 };
 
-/**
- * Search for stocks
+/**\r
+ * Search for stocks\r
  */
 export const searchStocks = async (query: string) => {
   const response = await axios.get(
@@ -83,8 +87,8 @@ export const searchStocks = async (query: string) => {
   return response.data;
 };
 
-/**
- * Get historical stock data
+/**\r
+ * Get historical stock data\r
  */
 export const getStockHistory = async (
   symbol: string,
