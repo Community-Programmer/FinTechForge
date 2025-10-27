@@ -54,6 +54,11 @@ const data = {
           url: "/dashboard/portfolio",
           icon: Briefcase
         },
+        {
+          title: "Financial Calculator",
+          url: "/dashboard/financial-calculator",
+          icon: BarChart3Icon
+        },
       ],
     },
     {
