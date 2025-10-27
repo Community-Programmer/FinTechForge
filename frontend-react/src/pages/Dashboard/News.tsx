@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { getNews, getNewsSentiment } from "@/api/newsService";
 import { parseApiError } from "@/lib/apiError";
+import RecentSearches from "@/components/RecentSearches";
 
 type NewsItem = {
   url: string;
@@ -80,6 +81,17 @@ export function MarketNews() {
         ))
   );
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    
+    // Add to recent searches when user has a search term
+    if (value.trim() !== "") {
+      // Add to recent searches
+      RecentSearchService.add(value, 'news');
+    }
+  };
+
   const getSentimentIcon = (sentiment: string) => {
     switch (sentiment) {
       case "bullish":
@@ -127,12 +139,19 @@ export function MarketNews() {
             <Input
               placeholder="Search news, sources, tickers..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchChange}
               className="pl-8 w-full"
             />
           </div>
         </div>
       </div>
+
+      <RecentSearches 
+        type="news" 
+        onSearchSelect={(query) => {
+          setSearchTerm(query);
+        }} 
+      />
       {errorMessage && (
         <div className="rounded-md bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-200 p-4">
           {errorMessage}
