@@ -53,14 +53,34 @@ def root():
 @app.get("/chroma-search")
 def chroma_search(q: str):
     try:
-        embedding = genai.embed_content(
+        # Try to generate embedding using Google API
+        embedding_result = genai.embed_content(
             model="models/embedding-001",
             content=q
-        )["embedding"]
+        )
+        
+        if "embedding" not in embedding_result:
+            raise HTTPException(status_code=500, detail="Failed to generate embedding")
+            
+        embedding = embedding_result["embedding"]
         result = collection.query(query_embeddings=[embedding], n_results=3)
-        return result["documents"][0] if "documents" in result else []
+        
+        # Return documents if they exist, otherwise return empty list
+        if "documents" in result and result["documents"]:
+            return result["documents"][0] if len(result["documents"]) > 0 else []
+        else:
+            return []
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        error_msg = str(e)
+        print(f"Chroma search error: {error_msg}")  # Log the error for debugging
+        
+        # Check if it's a quota exceeded error
+        if "quota" in error_msg.lower() or "429" in error_msg:
+            # Return a default response when quota is exceeded
+            return ["We're currently experiencing high demand. Please try again later or check back soon."]
+        else:
+            # Provide a more helpful message for other errors
+            return [f"Search temporarily unavailable: {str(e)[:100]}..."]
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
