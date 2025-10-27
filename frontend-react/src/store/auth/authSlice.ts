@@ -40,8 +40,8 @@ import NotificationService from '@/components/NotificationService';
       const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/signin`, credentials, { withCredentials: true });
       NotificationService.success('Login successful!');
       return response.data;
-    } catch (error: any) {
-      const message = error.response?.data?.message || 'Login failed. Please try again.';
+    } catch (error: unknown) {
+      const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Login failed. Please try again.';
       NotificationService.error(message);
       return rejectWithValue(message);
     }
@@ -52,8 +52,8 @@ import NotificationService from '@/components/NotificationService';
       const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/signup`, userData, { withCredentials: true });
       NotificationService.success('Registration successful! Please check your email for verification.');
       return response.data;
-    } catch (error: any) {
-      const message = error.response?.data?.message || 'Registration failed. Please try again.';
+    } catch (error: unknown) {
+      const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Registration failed. Please try again.';
       NotificationService.error(message);
       return rejectWithValue(message);
     }
@@ -109,7 +109,7 @@ import NotificationService from '@/components/NotificationService';
       builder.addCase(register.pending, (state) => {
         state.loading = true;
       });
-      builder.addCase(register.fulfilled, (state, action) => {
+      builder.addCase(register.fulfilled, (state) => {
         state.loading = false;
       });
       builder.addCase(register.rejected, (state) => {

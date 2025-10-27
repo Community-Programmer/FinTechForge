@@ -39,6 +39,7 @@ import PasswordResetForm from "./pages/ForgotPassword/PasswordResetForm";
 import NearServices from "./pages/NearbyATM/NearServices";
 import FAQ from "./pages/FAQ/FAQ";
 import Feedback from "./pages/Feedback/Feedback";
+import TaxCenter from "./pages/Dashboard/TaxCenter/TaxCenter";
 
 
 const mainLayoutRoutes = [
@@ -150,6 +151,11 @@ const dashboardLayoutRoutes = [
     path: "financial-calculator",
     index: true,
     element: <FinancialCalculator />,
+  },
+  {
+    path: "tax-center",
+    index: true,
+    element: <TaxCenter />,
   },
 ];
 
