@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import TickerTape from "@/components/Analysis/TickerTape";
 import TradingWidgets from "@/components/Analysis/TradingWidgets";
+import RecentSearchService from "@/services/RecentSearchService";
+import RecentSearches from "@/components/RecentSearches";
 
 const StockPage = () => {
   const [searchParams] = useSearchParams();
@@ -11,6 +13,10 @@ const StockPage = () => {
   useEffect(() => {
     if (urlSymbol) {
       setSymbol(urlSymbol);
+      // Add to recent searches when symbol comes from URL
+      if (urlSymbol) {
+        RecentSearchService.add(urlSymbol, 'stock');
+      }
     }
   }, [urlSymbol]);
 
@@ -24,6 +30,8 @@ const StockPage = () => {
     const inputSymbol = (formData.get("symbol") as string)?.trim();
     if (inputSymbol) {
       setSymbol(inputSymbol); // Update the stock symbol dynamically
+      // Add to recent searches
+      RecentSearchService.add(inputSymbol, 'stock');
     }
   };
 
@@ -58,6 +66,13 @@ const StockPage = () => {
             Search
           </button>
         </form>
+        
+        <RecentSearches 
+          type="stock" 
+          onSearchSelect={(query) => {
+            setSymbol(query);
+          }} 
+        />
       </div>
       <TickerTape />
       <TradingWidgets symbol={symbol} /> {/* Updates dynamically */}
