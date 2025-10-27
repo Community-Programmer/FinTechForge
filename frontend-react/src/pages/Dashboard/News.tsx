@@ -24,6 +24,7 @@ import {
 import { getNews, getNewsSentiment } from "@/api/newsService";
 import { parseApiError } from "@/lib/apiError";
 import RecentSearches from "@/components/RecentSearches";
+import NewsEmptyState from "@/components/EmptyStates/NewsEmptyState";
 
 type NewsItem = {
   url: string;
@@ -172,53 +173,89 @@ export function MarketNews() {
         </TabsList>
 
         <TabsContent value="all" className="space-y-4">
-          {filteredNews.map((news, index) => (
-            <NewsCard
-              key={index}
-              news={news}
-              getSentimentIcon={getSentimentIcon}
-              getSentimentColor={getSentimentColor}
-            />
-          ))}
+          {filteredNews.length > 0 ? (
+            filteredNews.map((news, index) => (
+              <NewsCard
+                key={index}
+                news={news}
+                getSentimentIcon={getSentimentIcon}
+                getSentimentColor={getSentimentColor}
+              />
+            ))
+          ) : (
+            <div className="min-h-[400px]">
+              <NewsEmptyState 
+                title="No News Found" 
+                subtitle="There are currently no news items matching your search criteria. Try adjusting your search terms or check back later for updates." 
+              />
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="bullish" className="space-y-4">
-          {filteredNews
-            .filter((news) => news.sentiment === "bullish")
-            .map((news, index) => (
-              <NewsCard
-                key={index}
-                news={news}
-                getSentimentIcon={getSentimentIcon}
-                getSentimentColor={getSentimentColor}
+          {filteredNews.filter((news) => news.sentiment === "bullish").length > 0 ? (
+            filteredNews
+              .filter((news) => news.sentiment === "bullish")
+              .map((news, index) => (
+                <NewsCard
+                  key={index}
+                  news={news}
+                  getSentimentIcon={getSentimentIcon}
+                  getSentimentColor={getSentimentColor}
+                />
+              ))
+          ) : (
+            <div className="min-h-[400px]">
+              <NewsEmptyState 
+                title="No Bullish News Found" 
+                subtitle="There are currently no bullish news items matching your search criteria. Try adjusting your search terms or check other categories." 
               />
-            ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="bearish" className="space-y-4">
-          {filteredNews
-            .filter((news) => news.sentiment === "bearish")
-            .map((news, index) => (
-              <NewsCard
-                key={index}
-                news={news}
-                getSentimentIcon={getSentimentIcon}
-                getSentimentColor={getSentimentColor}
+          {filteredNews.filter((news) => news.sentiment === "bearish").length > 0 ? (
+            filteredNews
+              .filter((news) => news.sentiment === "bearish")
+              .map((news, index) => (
+                <NewsCard
+                  key={index}
+                  news={news}
+                  getSentimentIcon={getSentimentIcon}
+                  getSentimentColor={getSentimentColor}
+                />
+              ))
+          ) : (
+            <div className="min-h-[400px]">
+              <NewsEmptyState 
+                title="No Bearish News Found" 
+                subtitle="There are currently no bearish news items matching your search criteria. Try adjusting your search terms or check other categories." 
               />
-            ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="neutral" className="space-y-4">
-          {filteredNews
-            .filter((news) => news.sentiment === "neutral")
-            .map((news, index) => (
-              <NewsCard
-                key={index}
-                news={news}
-                getSentimentIcon={getSentimentIcon}
-                getSentimentColor={getSentimentColor}
+          {filteredNews.filter((news) => news.sentiment === "neutral").length > 0 ? (
+            filteredNews
+              .filter((news) => news.sentiment === "neutral")
+              .map((news, index) => (
+                <NewsCard
+                  key={index}
+                  news={news}
+                  getSentimentIcon={getSentimentIcon}
+                  getSentimentColor={getSentimentColor}
+                />
+              ))
+          ) : (
+            <div className="min-h-[400px]">
+              <NewsEmptyState 
+                title="No Neutral News Found" 
+                subtitle="There are currently no neutral news items matching your search criteria. Try adjusting your search terms or check other categories." 
               />
-            ))}
+            </div>
+          )}
         </TabsContent>
       </Tabs>
     </div>

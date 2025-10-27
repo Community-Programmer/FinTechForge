@@ -85,6 +85,8 @@ const Navbar: React.FC = () => {
             </Link>
             <Link to="/Pricing" className={navLink}>Pricing</Link>
             <Link to="/Community" className={navLink}>Community</Link>
+            <Link to="/faq" className={navLink}>FAQ</Link>
+            <Link to="/feedback" className={navLink}>Feedback</Link>
           </div>
 
           {/* Auth actions (desktop) */}
@@ -160,6 +162,20 @@ const Navbar: React.FC = () => {
                       onClick={handleMobileNavigation}
                     >
                       Pricing
+                    </Link>
+                    <Link 
+                      to="/faq" 
+                      className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center"
+                      onClick={handleMobileNavigation}
+                    >
+                      FAQ
+                    </Link>
+                    <Link 
+                      to="/feedback" 
+                      className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center"
+                      onClick={handleMobileNavigation}
+                    >
+                      Feedback
                     </Link>
                     <Link to="/Login" onClick={handleMobileNavigation}>
                       <Button variant="outline">Log In</Button>

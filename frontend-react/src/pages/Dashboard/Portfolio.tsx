@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import PortfolioOverviewCards from '@/components/Portfolio/PortfolioOverviewCards';
 import HoldingsTable from '@/components/Portfolio/HoldingsTable';
+import PortfolioEmptyState from '@/components/EmptyStates/PortfolioEmptyState';
 
 const Portfolio: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -187,7 +188,16 @@ const Portfolio: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <HoldingsTable />
+              {holdings.length > 0 ? (
+                <HoldingsTable />
+              ) : (
+                <div className="min-h-[200px] flex items-center justify-center">
+                  <PortfolioEmptyState 
+                    title="No Holdings Yet" 
+                    subtitle="You don't have any portfolio holdings yet. Start by adding your first investment to track its performance." 
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -201,7 +211,16 @@ const Portfolio: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <HoldingsTable />
+              {holdings.length > 0 ? (
+                <HoldingsTable />
+              ) : (
+                <div className="min-h-[300px]">
+                  <PortfolioEmptyState 
+                    title="No Holdings Yet" 
+                    subtitle="You don't have any portfolio holdings yet. Start by adding your first investment to track its performance." 
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
