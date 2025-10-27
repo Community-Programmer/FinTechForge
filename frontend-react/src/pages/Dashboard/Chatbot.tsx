@@ -8,6 +8,7 @@ import { BrainCircuit, Send, User, RefreshCw } from "lucide-react"
 import { getChatbotResponse } from "@/api/chatBotService"
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import ChatbotEmptyState from "@/components/EmptyStates/ChatbotEmptyState";
 
 type Message = {
   id: string
@@ -94,55 +95,65 @@ export function AiChatbot() {
         <CardContent className="flex-1 p-0">
           <ScrollArea className="h-[calc(100vh-350px)] px-4">
             <div className="space-y-4 pt-4">
-           
-              {messages.map((message) => (
-                <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
-                  <div className="flex items-start gap-2 max-w-[80%]">
-                    {message.sender === "ai" && (
-                      <Avatar className="mt-0.5 h-8 w-8 border">
-                        <AvatarFallback className="bg-primary text-primary-foreground">
-                          <BrainCircuit className="h-4 w-4" />
-                        </AvatarFallback>
-                      </Avatar>
-                    )}
-                    <div>
-                      <div
-                        className={`rounded-lg px-4 py-2 ${
-                          message.sender === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
-                        }`}
-                      >
-                        <p> <Markdown remarkPlugins={[remarkGfm]}>{message.content}</Markdown></p>
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-1">{formatTime(message.timestamp)}</p>
-                    </div>
-                    {message.sender === "user" && (
-                      <Avatar className="mt-0.5 h-8 w-8 border">
-                        <AvatarFallback className="bg-muted">
-                          <User className="h-4 w-4" />
-                        </AvatarFallback>
-                      </Avatar>
-                    )}
-                  </div>
+              {messages.length === 1 && !isTyping ? ( // Only the initial AI welcome message
+                <div className="min-h-[300px]">
+                  <ChatbotEmptyState 
+                    title="How can I help you today?" 
+                    subtitle="Ask me about market trends, investment advice, financial planning, or any other financial topic. I'm here to assist you with your financial questions." 
+                  />
                 </div>
-              ))}
-   
-              {isTyping && (
-                <div className="flex justify-start">
-                  <div className="flex items-start gap-2 max-w-[80%]">
-                    <Avatar className="mt-0.5 h-8 w-8 border">
-                      <AvatarFallback className="bg-primary text-primary-foreground">
-                        <BrainCircuit className="h-4 w-4" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="rounded-lg px-4 py-2 bg-muted">
-                      <div className="flex items-center gap-1">
-                        <div className="h-2 w-2 rounded-full bg-current animate-bounce" />
-                        <div className="h-2 w-2 rounded-full bg-current animate-bounce [animation-delay:0.2s]" />
-                        <div className="h-2 w-2 rounded-full bg-current animate-bounce [animation-delay:0.4s]" />
+              ) : (
+                <>
+                  {messages.map((message) => (
+                    <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
+                      <div className="flex items-start gap-2 max-w-[80%]">
+                        {message.sender === "ai" && (
+                          <Avatar className="mt-0.5 h-8 w-8 border">
+                            <AvatarFallback className="bg-primary text-primary-foreground">
+                              <BrainCircuit className="h-4 w-4" />
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
+                        <div>
+                          <div
+                            className={`rounded-lg px-4 py-2 ${
+                              message.sender === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
+                            }`}
+                          >
+                            <p> <Markdown remarkPlugins={[remarkGfm]}>{message.content}</Markdown></p>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">{formatTime(message.timestamp)}</p>
+                        </div>
+                        {message.sender === "user" && (
+                          <Avatar className="mt-0.5 h-8 w-8 border">
+                            <AvatarFallback className="bg-muted">
+                              <User className="h-4 w-4" />
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
                       </div>
                     </div>
-                  </div>
-                </div>
+                  ))}
+       
+                  {isTyping && (
+                    <div className="flex justify-start">
+                      <div className="flex items-start gap-2 max-w-[80%]">
+                        <Avatar className="mt-0.5 h-8 w-8 border">
+                          <AvatarFallback className="bg-primary text-primary-foreground">
+                            <BrainCircuit className="h-4 w-4" />
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="rounded-lg px-4 py-2 bg-muted">
+                          <div className="flex items-center gap-1">
+                            <div className="h-2 w-2 rounded-full bg-current animate-bounce" />
+                            <div className="h-2 w-2 rounded-full bg-current animate-bounce [animation-delay:0.2s]" />
+                            <div className="h-2 w-2 rounded-full bg-current animate-bounce [animation-delay:0.4s]" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
               <div ref={messagesEndRef} />
             </div>

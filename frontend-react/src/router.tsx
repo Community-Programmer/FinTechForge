@@ -27,6 +27,7 @@ import EtfHeatmap from "./pages/Dashboard/MarketTrends/EtfHeatmap";
 import ForexHeatMap from "./pages/Dashboard/MarketTrends/ForexHeatmap";
 import StockPage from "./pages/Dashboard/StockPage";
 import Portfolio from "./pages/Dashboard/Portfolio";
+import FinancialCalculator from "./pages/Dashboard/FinancialCalculator";
 import News from "./pages/News/News";
 
 import Profile from "./pages/Profile/Profile";
@@ -36,6 +37,8 @@ import SignUpForm from "./pages/SignUp/SignUp";
 import NotFound from "./pages/NotFound/NotFound";
 import PasswordResetForm from "./pages/ForgotPassword/PasswordResetForm";
 import NearServices from "./pages/NearbyATM/NearServices";
+import FAQ from "./pages/FAQ/FAQ";
+import Feedback from "./pages/Feedback/Feedback";
 
 
 const mainLayoutRoutes = [
@@ -81,6 +84,14 @@ const mainLayoutRoutes = [
   {
     path: "/profile",
     element: <Profile />,
+  },
+  {
+    path: "/faq",
+    element: <FAQ />,
+  },
+  {
+    path: "/feedback",
+    element: <Feedback />,
   },
 ];
 
@@ -134,6 +145,11 @@ const dashboardLayoutRoutes = [
     path: "portfolio",
     index: true,
     element: <Portfolio />,
+  },
+  {
+    path: "financial-calculator",
+    index: true,
+    element: <FinancialCalculator />,
   },
 ];
 

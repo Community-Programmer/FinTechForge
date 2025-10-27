@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/dialog";
 import { getNews, getNewsSentiment } from "@/api/newsService";
 import { parseApiError } from "@/lib/apiError";
+import RecentSearches from "@/components/RecentSearches";
+import NewsEmptyState from "@/components/EmptyStates/NewsEmptyState";
 
 type NewsItem = {
   url: string;
@@ -80,6 +82,17 @@ export function MarketNews() {
         ))
   );
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    
+    // Add to recent searches when user has a search term
+    if (value.trim() !== "") {
+      // Add to recent searches
+      RecentSearchService.add(value, 'news');
+    }
+  };
+
   const getSentimentIcon = (sentiment: string) => {
     switch (sentiment) {
       case "bullish":
@@ -127,12 +140,19 @@ export function MarketNews() {
             <Input
               placeholder="Search news, sources, tickers..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchChange}
               className="pl-8 w-full"
             />
           </div>
         </div>
       </div>
+
+      <RecentSearches 
+        type="news" 
+        onSearchSelect={(query) => {
+          setSearchTerm(query);
+        }} 
+      />
       {errorMessage && (
         <div className="rounded-md bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-200 p-4">
           {errorMessage}
@@ -153,53 +173,89 @@ export function MarketNews() {
         </TabsList>
 
         <TabsContent value="all" className="space-y-4">
-          {filteredNews.map((news, index) => (
-            <NewsCard
-              key={index}
-              news={news}
-              getSentimentIcon={getSentimentIcon}
-              getSentimentColor={getSentimentColor}
-            />
-          ))}
+          {filteredNews.length > 0 ? (
+            filteredNews.map((news, index) => (
+              <NewsCard
+                key={index}
+                news={news}
+                getSentimentIcon={getSentimentIcon}
+                getSentimentColor={getSentimentColor}
+              />
+            ))
+          ) : (
+            <div className="min-h-[400px]">
+              <NewsEmptyState 
+                title="No News Found" 
+                subtitle="There are currently no news items matching your search criteria. Try adjusting your search terms or check back later for updates." 
+              />
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="bullish" className="space-y-4">
-          {filteredNews
-            .filter((news) => news.sentiment === "bullish")
-            .map((news, index) => (
-              <NewsCard
-                key={index}
-                news={news}
-                getSentimentIcon={getSentimentIcon}
-                getSentimentColor={getSentimentColor}
+          {filteredNews.filter((news) => news.sentiment === "bullish").length > 0 ? (
+            filteredNews
+              .filter((news) => news.sentiment === "bullish")
+              .map((news, index) => (
+                <NewsCard
+                  key={index}
+                  news={news}
+                  getSentimentIcon={getSentimentIcon}
+                  getSentimentColor={getSentimentColor}
+                />
+              ))
+          ) : (
+            <div className="min-h-[400px]">
+              <NewsEmptyState 
+                title="No Bullish News Found" 
+                subtitle="There are currently no bullish news items matching your search criteria. Try adjusting your search terms or check other categories." 
               />
-            ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="bearish" className="space-y-4">
-          {filteredNews
-            .filter((news) => news.sentiment === "bearish")
-            .map((news, index) => (
-              <NewsCard
-                key={index}
-                news={news}
-                getSentimentIcon={getSentimentIcon}
-                getSentimentColor={getSentimentColor}
+          {filteredNews.filter((news) => news.sentiment === "bearish").length > 0 ? (
+            filteredNews
+              .filter((news) => news.sentiment === "bearish")
+              .map((news, index) => (
+                <NewsCard
+                  key={index}
+                  news={news}
+                  getSentimentIcon={getSentimentIcon}
+                  getSentimentColor={getSentimentColor}
+                />
+              ))
+          ) : (
+            <div className="min-h-[400px]">
+              <NewsEmptyState 
+                title="No Bearish News Found" 
+                subtitle="There are currently no bearish news items matching your search criteria. Try adjusting your search terms or check other categories." 
               />
-            ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="neutral" className="space-y-4">
-          {filteredNews
-            .filter((news) => news.sentiment === "neutral")
-            .map((news, index) => (
-              <NewsCard
-                key={index}
-                news={news}
-                getSentimentIcon={getSentimentIcon}
-                getSentimentColor={getSentimentColor}
+          {filteredNews.filter((news) => news.sentiment === "neutral").length > 0 ? (
+            filteredNews
+              .filter((news) => news.sentiment === "neutral")
+              .map((news, index) => (
+                <NewsCard
+                  key={index}
+                  news={news}
+                  getSentimentIcon={getSentimentIcon}
+                  getSentimentColor={getSentimentColor}
+                />
+              ))
+          ) : (
+            <div className="min-h-[400px]">
+              <NewsEmptyState 
+                title="No Neutral News Found" 
+                subtitle="There are currently no neutral news items matching your search criteria. Try adjusting your search terms or check other categories." 
               />
-            ))}
+            </div>
+          )}
         </TabsContent>
       </Tabs>
     </div>

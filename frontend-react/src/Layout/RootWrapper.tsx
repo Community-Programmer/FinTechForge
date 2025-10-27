@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 import { ChatBot } from '@/components/ChatBot';
+import { Toaster } from '@/components/ui/sonner';
 
 const RootWrapper = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -20,6 +21,7 @@ const RootWrapper = () => {
     <>
       <Outlet />
       <ChatBot />
+      <Toaster />
     </>
   );
 };
