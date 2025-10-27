@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
 import { useChatStore } from '@/store/useChatStore';
 import { GEMINI_API_KEY, DATABASE_URL, isGeminiEnabled, isDatabaseEnabled } from '@/config/env';
+import { useLocation } from 'react-router-dom';
 
 // Initialize Gemini API with validation
 let genAI: GoogleGenerativeAI | null = null;
@@ -52,7 +53,7 @@ interface Message {
 }
 
 export function ChatBot() {
-
+  const location = useLocation();
   const { setChatOpen } = useChatStore();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -206,6 +207,68 @@ export function ChatBot() {
       minute: '2-digit' 
     });
   };
+
+  // Hide chatbot on 404/NotFound page and other non-existing pages
+  const shouldHideChatBot = () => {
+    const currentPath = location.pathname;
+    
+    // Define all valid routes explicitly
+    const validRoutes = [
+      '/',
+      '/News',
+      '/map',
+      '/About',
+      '/Features', 
+      '/Premium',
+      '/Pricing',
+      '/Community',
+      '/profile',
+      '/education',
+      '/Login',
+      '/SignUp',
+      '/verifymail',
+      '/forgot-password',
+      // Dashboard routes
+      '/dashboard',
+      '/dashboard/news',
+      '/dashboard/analysis',
+      '/dashboard/finance-chatbot',
+      '/dashboard/currencyconvertor',
+      '/dashboard/stock-heatmap',
+      '/dashboard/crypto-heatmap',
+      '/dashboard/etf-heatmap',
+      '/dashboard/forex-heatmap',
+      '/dashboard/portfolio'
+    ];
+    
+    // Check for exact matches first
+    if (validRoutes.includes(currentPath)) {
+      return false;
+    }
+    
+    // Check for dynamic routes with parameters
+    const dynamicRoutePatterns = [
+      /^\/verifymail\/[^/]+$/, // /verifymail/:verificationToken
+      /^\/reset-password\/[^/]+$/ // /reset-password/:resetToken
+    ];
+    
+    const matchesDynamicRoute = dynamicRoutePatterns.some(pattern => 
+      pattern.test(currentPath)
+    );
+    
+    // If it matches a dynamic route, don't hide chatbot
+    if (matchesDynamicRoute) {
+      return false;
+    }
+    
+    // If we get here, it's likely a 404 page - hide chatbot
+    return true;
+  };
+  
+  // Don't render chatbot if it should be hidden
+  if (shouldHideChatBot()) {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
