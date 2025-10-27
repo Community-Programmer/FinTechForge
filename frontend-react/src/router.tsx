@@ -27,6 +27,7 @@ import EtfHeatmap from "./pages/Dashboard/MarketTrends/EtfHeatmap";
 import ForexHeatMap from "./pages/Dashboard/MarketTrends/ForexHeatmap";
 import StockPage from "./pages/Dashboard/StockPage";
 import Portfolio from "./pages/Dashboard/Portfolio";
+import FinancialCalculator from "./pages/Dashboard/FinancialCalculator";
 import News from "./pages/News/News";
 
 import Profile from "./pages/Profile/Profile";
@@ -134,6 +135,11 @@ const dashboardLayoutRoutes = [
     path: "portfolio",
     index: true,
     element: <Portfolio />,
+  },
+  {
+    path: "financial-calculator",
+    index: true,
+    element: <FinancialCalculator />,
   },
 ];
 
