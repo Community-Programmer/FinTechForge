@@ -37,6 +37,8 @@ import SignUpForm from "./pages/SignUp/SignUp";
 import NotFound from "./pages/NotFound/NotFound";
 import PasswordResetForm from "./pages/ForgotPassword/PasswordResetForm";
 import NearServices from "./pages/NearbyATM/NearServices";
+import FAQ from "./pages/FAQ/FAQ";
+import Feedback from "./pages/Feedback/Feedback";
 
 
 const mainLayoutRoutes = [
@@ -82,6 +84,14 @@ const mainLayoutRoutes = [
   {
     path: "/profile",
     element: <Profile />,
+  },
+  {
+    path: "/faq",
+    element: <FAQ />,
+  },
+  {
+    path: "/feedback",
+    element: <Feedback />,
   },
 ];
 
